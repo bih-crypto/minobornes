@@ -1,0 +1,1336 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>ミノボーンズ MINOBORNES</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0c0913; --panel:#171226; --panel2:#1e1733; --line:#342a55;
+  --ink:#d8d2e8; --dim:#8f86ab; --gold:#d9a441; --gold2:#f5cf7a;
+  --blood:#e8544f; --life:#56d67c; --water:#54b8ff;
+  --fire:#ff7a52; --wood:#63d96f; --light:#ffd966;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:'DotGothic16','Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;
+  overflow:hidden; touch-action:manipulation;
+  user-select:none;-webkit-user-select:none;
+}
+#app{height:100dvh;display:flex;flex-direction:column;max-width:520px;margin:0 auto;position:relative;}
+/* vignette + scanline mood */
+#app::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:50;
+  background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.45) 100%),
+  repeating-linear-gradient(0deg,rgba(255,255,255,.015) 0 1px,transparent 1px 3px);}
+/* ---------- top bar ---------- */
+#topbar{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--panel);
+  border-bottom:1px solid var(--line);z-index:5;}
+#floorLabel{font-size:13px;color:var(--gold2);letter-spacing:1px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#goldLabel{font-size:13px;color:var(--gold);}
+.iconbtn{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:6px;
+  font-size:14px;padding:3px 8px;cursor:pointer;font-family:inherit;}
+.iconbtn:active{background:var(--line);}
+/* ---------- screens ---------- */
+.screen{display:none;flex:1;flex-direction:column;overflow-y:auto;padding:14px;position:relative;}
+.screen.active{display:flex;}
+h1.logo{font-size:34px;text-align:center;color:var(--gold2);letter-spacing:4px;
+  text-shadow:0 0 18px rgba(217,164,65,.5);margin-top:10vh;}
+.logo small{display:block;font-size:12px;color:var(--dim);letter-spacing:6px;margin-top:6px;}
+.flavor{color:var(--dim);font-size:12px;line-height:1.9;text-align:center;margin:18px 8px;}
+.bigbtn{display:block;margin:14px auto;padding:13px 34px;font-size:16px;font-family:inherit;
+  background:linear-gradient(180deg,#2a2145,#1a1430);border:1px solid var(--gold);color:var(--gold2);
+  border-radius:8px;letter-spacing:3px;cursor:pointer;box-shadow:0 0 14px rgba(217,164,65,.25);}
+.bigbtn:active{transform:translateY(1px);}
+.subtxt{text-align:center;color:var(--dim);font-size:11px;margin-top:4px;}
+/* cards */
+.cardrow{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;
+  display:flex;gap:12px;align-items:center;cursor:pointer;text-align:left;font-family:inherit;color:var(--ink);}
+.card:active{background:var(--panel2);}
+.card.disabled{opacity:.4;pointer-events:none;}
+.card .emo{font-size:34px;width:44px;text-align:center;flex:none;filter:drop-shadow(0 0 6px rgba(0,0,0,.8));}
+.card .body{flex:1;min-width:0;}
+.card .t{font-size:14px;color:var(--gold2);margin-bottom:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+.card .d{font-size:11px;color:var(--dim);line-height:1.6;}
+.chip{font-size:10px;border-radius:4px;padding:1px 5px;color:#111;font-weight:bold;}
+.chip.fire{background:var(--fire);} .chip.water{background:var(--water);}
+.chip.wood{background:var(--wood);} .chip.light{background:var(--light);}
+.price{color:var(--gold);font-size:12px;flex:none;}
+h2.sect{font-size:16px;color:var(--gold2);text-align:center;letter-spacing:2px;margin:8px 0 2px;}
+.sectsub{font-size:11px;color:var(--dim);text-align:center;margin-bottom:6px;line-height:1.7;}
+/* ---------- battle layout ---------- */
+#scr-battle{padding:0;overflow:hidden;}
+#enemyPanel{position:relative;background:linear-gradient(180deg,#241a3d,#171226);
+  border-bottom:1px solid var(--line);padding:8px 12px 9px;display:flex;gap:12px;align-items:center;min-height:92px;}
+#enemyEmo{font-size:52px;line-height:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,.8));transition:transform .1s;}
+#enemyEmo.hit{transform:scale(.86) rotate(-6deg);}
+#enemyInfo{flex:1;min-width:0;}
+#enemyName{font-size:14px;color:var(--ink);display:flex;gap:6px;align-items:center;}
+.hpwrap{height:12px;background:#0a0812;border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:5px 0 4px;position:relative;}
+.hpfill{height:100%;background:linear-gradient(90deg,#a33,#e8544f);transition:width .25s;}
+.hptxt{position:absolute;inset:0;font-size:9px;text-align:center;line-height:11px;color:#fff;text-shadow:0 1px 2px #000;}
+#intentRow{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gold2);}
+#pips{display:flex;gap:3px;}
+.pip{width:9px;height:9px;border-radius:50%;background:#3a2f5e;border:1px solid var(--line);}
+.pip.on{background:var(--gold);box-shadow:0 0 6px var(--gold);}
+#enemyStatus{font-size:10px;color:var(--dim);margin-top:2px;min-height:12px;}
+#fxLayer{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.float{position:absolute;font-size:22px;color:var(--gold2);text-shadow:0 0 8px rgba(217,164,65,.8),0 2px 3px #000;
+  animation:floatUp .9s ease-out forwards;font-weight:bold;white-space:nowrap;}
+.float.heal{color:var(--life);text-shadow:0 0 8px rgba(86,214,124,.8);}
+.float.bad{color:var(--blood);text-shadow:0 0 8px rgba(232,84,79,.8);}
+.float.small{font-size:13px;}
+@keyframes floatUp{0%{transform:translateY(0);opacity:1;}100%{transform:translateY(-46px);opacity:0;}}
+#boardRow{flex:1;display:flex;gap:8px;padding:8px;min-height:0;align-items:stretch;}
+#boardArea{flex:1;display:flex;align-items:center;justify-content:center;min-width:0;position:relative;}
+#board{background:#0a0714;border:2px solid var(--line);border-radius:6px;touch-action:none;
+  box-shadow:inset 0 0 30px rgba(0,0,0,.9),0 0 20px rgba(20,10,50,.6);}
+#sideRail{width:78px;flex:none;display:flex;flex-direction:column;gap:8px;}
+.railbox{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:5px;text-align:center;}
+.railbox .lbl{font-size:9px;color:var(--dim);letter-spacing:2px;margin-bottom:3px;}
+.railbox canvas{display:block;margin:0 auto;}
+#quickWrap{height:8px;background:#0a0812;border:1px solid var(--line);border-radius:4px;overflow:hidden;}
+#quickFill{height:100%;width:0%;background:linear-gradient(90deg,#3fa9ff,#8ee3ff);transition:width .2s;}
+#comboTxt{font-size:11px;color:var(--gold2);min-height:14px;margin-top:3px;}
+#msgBanner{position:absolute;left:0;right:0;top:38%;text-align:center;font-size:20px;color:var(--gold2);
+  text-shadow:0 0 12px rgba(217,164,65,.9),0 2px 4px #000;pointer-events:none;opacity:0;z-index:20;letter-spacing:2px;}
+#msgBanner.show{animation:banner 1.1s ease forwards;}
+@keyframes banner{0%{opacity:0;transform:scale(.7);}15%{opacity:1;transform:scale(1.05);}30%{transform:scale(1);}80%{opacity:1;}100%{opacity:0;}}
+/* team */
+#teamPanel{background:var(--panel);border-top:1px solid var(--line);padding:6px 10px 4px;}
+#teamHpRow{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+#teamHpWrap{flex:1;height:14px;background:#0a0812;border:1px solid var(--line);border-radius:7px;overflow:hidden;position:relative;}
+#teamHpFill{height:100%;background:linear-gradient(90deg,#2e9e57,#56d67c);transition:width .25s;}
+#teamHpTxt{position:absolute;inset:0;text-align:center;font-size:9px;line-height:13px;color:#fff;text-shadow:0 1px 2px #000;}
+#teamStatus{font-size:11px;min-width:40px;text-align:right;color:var(--gold2);}
+#slots{display:flex;gap:6px;}
+.slot{flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:4px 2px 3px;
+  text-align:center;cursor:pointer;position:relative;transition:box-shadow .2s;}
+.slot .semo{font-size:24px;line-height:1.15;}
+.slot .snm{font-size:8px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.slot .cwrap{height:5px;background:#0a0812;border-radius:3px;overflow:hidden;margin:3px 3px 0;}
+.slot .cfill{height:100%;background:#7a6bd6;transition:width .2s;}
+.slot.ready{border-color:var(--gold);box-shadow:0 0 10px rgba(217,164,65,.55);animation:pulse 1.2s infinite;}
+.slot.ready .cfill{background:var(--gold);}
+.slot.empty{opacity:.25;cursor:default;}
+@keyframes pulse{0%,100%{box-shadow:0 0 6px rgba(217,164,65,.4);}50%{box-shadow:0 0 14px rgba(217,164,65,.85);}}
+/* controls */
+#controls{display:flex;gap:6px;padding:6px 10px calc(8px + env(safe-area-inset-bottom));background:var(--panel);}
+.ctl{flex:1;padding:13px 0;font-size:19px;background:var(--panel2);border:1px solid var(--line);
+  border-radius:9px;color:var(--ink);cursor:pointer;touch-action:none;font-family:inherit;}
+.ctl:active{background:var(--line);}
+#btnDrop{flex:1.4;color:var(--gold2);border-color:#6a5330;}
+/* map doors */
+.door{background:linear-gradient(180deg,#201941,#151027);}
+/* overlay */
+#overlay{position:absolute;inset:0;background:rgba(5,3,10,.82);z-index:60;display:none;
+  align-items:center;justify-content:center;padding:20px;}
+#overlay.show{display:flex;}
+#overlayBox{background:var(--panel);border:1px solid var(--gold);border-radius:12px;max-width:400px;width:100%;
+  max-height:82dvh;overflow-y:auto;padding:16px;box-shadow:0 0 30px rgba(217,164,65,.25);}
+#overlayBox h3{color:var(--gold2);font-size:15px;text-align:center;margin-bottom:10px;letter-spacing:2px;}
+#overlayBox p{font-size:12px;color:var(--ink);line-height:1.9;margin-bottom:8px;}
+#overlayBox .dim{color:var(--dim);font-size:11px;}
+.shake{animation:shake .3s;}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
+.hurtflash{animation:hurtf .35s;}
+@keyframes hurtf{0%{background:rgba(200,30,30,.35);}100%{background:transparent;}}
+#hurtLayer{position:absolute;inset:0;pointer-events:none;z-index:40;}
+.statline{font-size:13px;line-height:2.1;color:var(--ink);text-align:center;}
+.statline b{color:var(--gold2);}
+.endEmo{font-size:60px;text-align:center;margin-top:6vh;filter:drop-shadow(0 0 16px rgba(0,0,0,.9));}
+.relicrow{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:6px;}
+.relicchip{font-size:11px;background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:2px 6px;color:var(--gold2);}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="topbar">
+    <span id="floorLabel">MINOBORNES</span>
+    <span id="goldLabel">💰 0</span>
+    <button class="iconbtn" id="sndBtn">🔊</button>
+    <button class="iconbtn" id="helpBtn">？</button>
+  </div>
+
+  <!-- TITLE -->
+  <section class="screen active" id="scr-title">
+    <h1 class="logo">ミノボーンズ<small>— MINOBORNES —</small></h1>
+    <p class="flavor">もっとも古く、忌まわしき塔。<br>
+    その地下では 今日も“ミノ”が降り続ける。<br><br>
+    落ちものを消して魔物を討ち、<br>
+    仲間と遺物を拾い、地下十階の屍竜を狩れ。<br>
+    <span style="color:#6f6790">――だが、倒れれば全てを失う。</span></p>
+    <button class="bigbtn" id="btnStart">迷宮に潜る</button>
+    <p class="subtxt">ライン消し＝攻撃のローグライク落ちものRPG</p>
+  </section>
+
+  <!-- STARTER -->
+  <section class="screen" id="scr-starter">
+    <h2 class="sect">最初の相棒を選べ</h2>
+    <p class="sectsub">道中で仲間は最大4体まで増える。<br>スキルはミノを落とすたびに溜まる。</p>
+    <div class="cardrow" id="starterCards"></div>
+  </section>
+
+  <!-- MAP -->
+  <section class="screen" id="scr-map">
+    <h2 class="sect" id="mapTitle">B1F</h2>
+    <p class="sectsub" id="mapFlavor">進む扉を選べ。</p>
+    <div class="cardrow" id="doorRow"></div>
+    <div class="relicrow" id="relicRow"></div>
+  </section>
+
+  <!-- BATTLE -->
+  <section class="screen" id="scr-battle">
+    <div id="enemyPanel">
+      <div id="enemyEmo">👺</div>
+      <div id="enemyInfo">
+        <div id="enemyName">ゴブリン</div>
+        <div class="hpwrap"><div class="hpfill" id="enemyHpFill"></div><div class="hptxt" id="enemyHpTxt"></div></div>
+        <div id="intentRow"><span id="intentTxt">⚔ 8</span><span id="pips"></span></div>
+        <div id="enemyStatus"></div>
+      </div>
+      <div id="fxLayer"></div>
+    </div>
+    <div id="boardRow">
+      <div id="boardArea"><canvas id="board"></canvas><div id="msgBanner"></div></div>
+      <div id="sideRail">
+        <div class="railbox"><div class="lbl">HOLD</div><canvas id="holdC" width="60" height="40"></canvas></div>
+        <div class="railbox"><div class="lbl">NEXT</div>
+          <canvas class="nx" width="60" height="34"></canvas>
+          <canvas class="nx" width="60" height="34"></canvas>
+          <canvas class="nx" width="60" height="34"></canvas>
+        </div>
+        <div class="railbox"><div class="lbl">QUICK</div><div id="quickWrap"><div id="quickFill"></div></div>
+          <div id="comboTxt"></div></div>
+      </div>
+    </div>
+    <div id="teamPanel">
+      <div id="teamHpRow">
+        <div id="teamHpWrap"><div id="teamHpFill"></div><div id="teamHpTxt"></div></div>
+        <span id="teamStatus"></span>
+      </div>
+      <div id="slots"></div>
+    </div>
+    <div id="controls">
+      <button class="ctl" id="btnL">◀</button>
+      <button class="ctl" id="btnD">▼</button>
+      <button class="ctl" id="btnRot">⟳</button>
+      <button class="ctl" id="btnR">▶</button>
+      <button class="ctl" id="btnDrop">⤓落下</button>
+    </div>
+    <div id="hurtLayer"></div>
+  </section>
+
+  <!-- REWARD -->
+  <section class="screen" id="scr-reward">
+    <h2 class="sect" id="rewardTitle">勝利！</h2>
+    <p class="sectsub" id="rewardGold"></p>
+    <div class="cardrow" id="cardRow"></div>
+  </section>
+
+  <!-- EVENT / REST -->
+  <section class="screen" id="scr-event">
+    <div class="endEmo" style="margin-top:3vh"><span id="evEmo">🕯️</span></div>
+    <h2 class="sect" id="evTitle"></h2>
+    <p class="sectsub" id="evText" style="font-size:12px;"></p>
+    <div class="cardrow" id="evBtns"></div>
+  </section>
+
+  <!-- END -->
+  <section class="screen" id="scr-end">
+    <div id="endEmo" class="endEmo">💀</div>
+    <h2 class="sect" id="endTitle">力尽きた…</h2>
+    <p class="sectsub" id="endFlavor"></p>
+    <div class="statline" id="endStats"></div>
+    <button class="bigbtn" id="btnAgain">再び潜る</button>
+  </section>
+
+  <div id="overlay"><div id="overlayBox"></div></div>
+</div>
+
+<script>
+'use strict';
+/* ============ helpers ============ */
+const $=id=>document.getElementById(id);
+const rnd=n=>Math.floor(Math.random()*n);
+const pick=a=>a[rnd(a.length)];
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;};
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+/* ============ audio ============ */
+let AC=null,muted=false;
+function ensureAC(){try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();}catch(e){}}
+function tone(f,d=0.08,type='square',v=0.12,slide=0,delay=0){
+  if(muted||!AC)return;
+  try{
+    const t=AC.currentTime+delay,o=AC.createOscillator(),g=AC.createGain();
+    o.type=type;o.frequency.setValueAtTime(f,t);
+    if(slide)o.frequency.exponentialRampToValueAtTime(Math.max(20,f+slide),t+d);
+    g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+    o.connect(g).connect(AC.destination);o.start(t);o.stop(t+d+0.02);
+  }catch(e){}
+}
+const sfx={
+  move(){tone(180,.03,'square',.04);},
+  rot(){tone(330,.04,'square',.06);},
+  lock(){tone(120,.05,'triangle',.1);},
+  hold(){tone(260,.05,'sine',.08);},
+  clear(n){for(let i=0;i<n+1;i++)tone(392*Math.pow(1.19,i),.09,'square',.09,0,i*0.055);},
+  hit(){tone(95,.14,'sawtooth',.16,-50);},
+  hurt(){tone(75,.22,'sawtooth',.2,-40);tone(50,.25,'square',.12,-20,.03);},
+  skill(){for(let i=0;i<3;i++)tone(523*Math.pow(1.26,i),.08,'triangle',.1,0,i*0.06);},
+  coin(){tone(880,.06,'square',.08);tone(1320,.09,'square',.08,0,.06);},
+  win(){[523,659,784,1046].forEach((f,i)=>tone(f,.14,'square',.11,0,i*0.11));},
+  lose(){[330,262,196,131].forEach((f,i)=>tone(f,.2,'sawtooth',.12,0,i*0.16));},
+  ui(){tone(440,.04,'sine',.07);},
+};
+document.addEventListener('pointerdown',ensureAC,{once:false});
+$('sndBtn').addEventListener('click',()=>{muted=!muted;$('sndBtn').textContent=muted?'🔇':'🔊';});
+
+/* ---- noise synth ---- */
+function noiseBuf(){
+  if(noiseBuf.b)return noiseBuf.b;
+  const b=AC.createBuffer(1,Math.floor(AC.sampleRate*0.5),AC.sampleRate);
+  const d=b.getChannelData(0);
+  for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  noiseBuf.b=b;return b;
+}
+function noise(d=0.15,v=0.1,f=800,q=1,delay=0){
+  if(muted||!AC)return;
+  try{
+    const t=AC.currentTime+delay;
+    const s=AC.createBufferSource();s.buffer=noiseBuf();
+    const bp=AC.createBiquadFilter();bp.type='bandpass';bp.frequency.value=f;bp.Q.value=q;
+    const g=AC.createGain();
+    g.gain.setValueAtTime(v,t);g.gain.exponentialRampToValueAtTime(0.0001,t+d);
+    s.connect(bp);bp.connect(g);g.connect(AC.destination);
+    s.start(t);s.stop(t+d+0.05);
+  }catch(e){}
+}
+/* ---- enemy voices (attack cries) ---- */
+const VOICES={
+  fofo(){for(let i=0;i<4;i++)tone(335-i*30,.1,'triangle',.17,-35,i*0.13);},
+  kekeke(){for(let i=0;i<3;i++)tone(i%2?580:470,.05,'square',.1,30,i*0.09);},
+  slime(){tone(125,.3,'sine',.2,115);tone(235,.24,'sine',.13,-120,.2);},
+  squeak(){tone(1400,.07,'square',.07,520);tone(1250,.08,'square',.07,650,.11);},
+  growl(){tone(95,.4,'sawtooth',.17,-28);noise(.35,.06,300,1,.04);},
+  rumble(){tone(58,.55,'sine',.26,-16);noise(.5,.1,130,1,0);},
+  hiss(){noise(.45,.13,2500,2,0);},
+  moan(){tone(225,.6,'sine',.15,-85);tone(112,.6,'sine',.1,-40,.06);},
+  bubble(){[300,255,215].forEach((f,i)=>tone(f,.09,'sine',.13,45,i*0.11));},
+  hihihi(){for(let i=0;i<3;i++)tone(640+i*55,.06,'triangle',.11,70,i*0.08);},
+  clank(){tone(180,.08,'square',.15,-45);noise(.13,.15,3000,3,.02);},
+  roar(){tone(75,.8,'sawtooth',.22,-38);noise(.7,.15,250,1,.06);tone(52,.8,'square',.13,-22,.1);},
+};
+function playVoice(v){if(v&&VOICES[v])VOICES[v]();}
+/* ---- BGM: tiny step sequencer ---- */
+const NF=n=>440*Math.pow(2,(n-69)/12);
+const __=null;
+const TRACKS={
+  title:{bpm:62,vol:.05,
+    bass:[45,__,__,__,41,__,__,__,43,__,__,__,40,__,__,__],
+    lead:[__,69,72,76,__,77,76,72,74,__,71,67,68,__,__,__]},
+  dungeon:{bpm:92,vol:.042,
+    bass:[45,__,45,__,48,__,45,__,43,__,43,__,40,__,41,__],
+    lead:[__,__,69,__,__,72,__,__,__,__,67,__,__,71,__,__]},
+  battle:{bpm:138,vol:.05,
+    bass:[45,45,57,45,48,48,60,48,43,43,55,43,40,40,52,40],
+    lead:[69,__,72,74,76,__,74,72,71,__,67,71,74,72,71,68],
+    hat:[1,0,1,0,1,0,1,0,1,0,1,0,1,0,1,1]},
+  boss:{bpm:150,vol:.055,
+    bass:[45,45,44,45,45,45,47,45,41,41,40,41,43,43,44,45],
+    lead:[76,__,75,76,__,74,__,72,74,__,72,71,68,__,71,__],
+    hat:[1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,1]},
+  end:{bpm:48,vol:.045,
+    bass:[45,__,__,__,44,__,__,__,41,__,__,__,40,__,__,__],
+    lead:[__,__,72,__,__,__,71,__,__,__,68,__,__,__,64,__]},
+};
+const BGM={name:null,step:0,nextT:0};
+function setBGM(name){if(BGM.name===name)return;BGM.name=name;BGM.step=0;BGM.nextT=0;}
+setInterval(()=>{
+  if(!AC||muted||!BGM.name)return;
+  const tr=TRACKS[BGM.name];if(!tr)return;
+  const spb=60/tr.bpm/2;
+  if(BGM.nextT<AC.currentTime)BGM.nextT=AC.currentTime+0.08;
+  while(BGM.nextT<AC.currentTime+0.3){
+    const s=BGM.step%tr.bass.length;
+    const dl=BGM.nextT-AC.currentTime;
+    const b=tr.bass[s],l=tr.lead[s];
+    if(b!=null)tone(NF(b),spb*0.9,'square',tr.vol*0.8,0,dl);
+    if(l!=null)tone(NF(l),spb*0.85,'triangle',tr.vol,0,dl);
+    if(tr.hat&&tr.hat[s])noise(.03,tr.vol*0.5,6000,2,dl);
+    BGM.step++;BGM.nextT+=spb;
+  }
+},80);
+
+/* ============ data ============ */
+const EL={fire:{n:'火',cls:'fire'},water:{n:'水',cls:'water'},wood:{n:'木',cls:'wood'},light:{n:'光',cls:'light'}};
+const ADV={fire:'wood',wood:'water',water:'fire'};
+function elemMul(a,d){if(a===d)return 1;if(ADV[a]===d)return 1.5;if(ADV[d]===a)return 0.7;return 1;}
+function chip(e){return `<span class="chip ${EL[e].cls}">${EL[e].n}</span>`;}
+
+const COLORS={I:'#41d6e8',O:'#f7d94c',T:'#b96bf0',S:'#6be07a',Z:'#f06b6b',J:'#6b8cf0',L:'#f0a54c',G:'#575170'};
+const SHAPES={
+ I:[[[0,1],[1,1],[2,1],[3,1]],[[2,0],[2,1],[2,2],[2,3]],[[0,2],[1,2],[2,2],[3,2]],[[1,0],[1,1],[1,2],[1,3]]],
+ O:[[[1,0],[2,0],[1,1],[2,1]],[[1,0],[2,0],[1,1],[2,1]],[[1,0],[2,0],[1,1],[2,1]],[[1,0],[2,0],[1,1],[2,1]]],
+ T:[[[1,0],[0,1],[1,1],[2,1]],[[1,0],[1,1],[2,1],[1,2]],[[0,1],[1,1],[2,1],[1,2]],[[1,0],[0,1],[1,1],[1,2]]],
+ S:[[[1,0],[2,0],[0,1],[1,1]],[[1,0],[1,1],[2,1],[2,2]],[[1,1],[2,1],[0,2],[1,2]],[[0,0],[0,1],[1,1],[1,2]]],
+ Z:[[[0,0],[1,0],[1,1],[2,1]],[[2,0],[1,1],[2,1],[1,2]],[[0,1],[1,1],[1,2],[2,2]],[[1,0],[0,1],[1,1],[0,2]]],
+ J:[[[0,0],[0,1],[1,1],[2,1]],[[1,0],[2,0],[1,1],[1,2]],[[0,1],[1,1],[2,1],[2,2]],[[1,0],[1,1],[0,2],[1,2]]],
+ L:[[[2,0],[0,1],[1,1],[2,1]],[[1,0],[1,1],[1,2],[2,2]],[[0,1],[1,1],[2,1],[0,2]],[[0,0],[1,0],[1,1],[1,2]]],
+};
+const KICKS=[[0,0],[-1,0],[1,0],[0,-1],[-1,-1],[1,-1],[-2,0],[2,0]];
+
+/* skills fx: dmg(mult) heal(pct) rows(n) shield delay(n) minoI vamp(mult) debuff cleanse gold */
+const STARTERS=[
+ {id:'garm', nm:'焔狼ガルム', emo:'🐺', el:'fire', hp:56, atk:13,
+  sk:{nm:'火炎球',need:6,fx:'dmg',v:3.5,d:'敵にATK×3.5の炎ダメージ'}},
+ {id:'aqua', nm:'水霊アクア', emo:'💧', el:'water', hp:62, atk:11,
+  sk:{nm:'癒しの雫',need:7,fx:'heal',v:35,d:'チームHPを35%回復'}},
+ {id:'silva',nm:'森鹿シルワ', emo:'🦌', el:'wood', hp:64, atk:12,
+  sk:{nm:'大地均し',need:5,fx:'rows',v:2,d:'盤面の下2段を消し去る(整地)'}},
+ {id:'lux',  nm:'聖鳥ルクス', emo:'🕊️', el:'light', hp:52, atk:12,
+  sk:{nm:'光の護り',need:6,fx:'shield',v:1,d:'次の敵の攻撃を1回無効化'}},
+];
+const RECRUITS=[
+ {id:'skeld',nm:'骨剣士スケルド',emo:'💀',el:'fire',hp:48,atk:16,sk:{nm:'骨砕き',need:8,fx:'dmg',v:5,d:'敵にATK×5の大ダメージ'}},
+ {id:'vampi',nm:'血蝙蝠ヴァンピ',emo:'🦇',el:'fire',hp:44,atk:11,sk:{nm:'吸血',need:6,fx:'vamp',v:2.5,d:'ATK×2.5ダメージ＋同量回復'}},
+ {id:'draco',nm:'竜児ドラコ',emo:'🐲',el:'fire',hp:70,atk:15,sk:{nm:'竜の咆哮',need:9,fx:'dmg',v:6,d:'敵にATK×6の必殺ダメージ'}},
+ {id:'pheni',nm:'不死鳥フェニ',emo:'🐦‍🔥',el:'fire',hp:58,atk:13,sk:{nm:'再誕の炎',need:11,fx:'heal',v:50,d:'チームHPを50%回復'}},
+ {id:'lich',nm:'魔導リッチ',emo:'🧙',el:'water',hp:50,atk:13,sk:{nm:'時間凍結',need:8,fx:'delay',v:4,d:'敵の行動を4カウント遅らせる'}},
+ {id:'yukime',nm:'雪女ユキメ',emo:'❄️',el:'water',hp:54,atk:12,sk:{nm:'吹雪',need:7,fx:'dmgdelay',v:3,d:'ATK×3ダメージ＋行動1遅延'}},
+ {id:'krake',nm:'大蛸クラーケ',emo:'🐙',el:'water',hp:66,atk:12,sk:{nm:'墨吐き',need:7,fx:'debuff',v:0.7,d:'この戦闘中、敵の攻撃力-30%'}},
+ {id:'gomes',nm:'苔亀ゴメス',emo:'🐢',el:'wood',hp:88,atk:9,sk:{nm:'甲羅の守り',need:5,fx:'shield',v:1,d:'次の敵の攻撃を1回無効化'}},
+ {id:'pixy',nm:'妖精ピクス',emo:'🧚',el:'wood',hp:44,atk:12,sk:{nm:'ミノの祝福',need:7,fx:'minoI',v:3,d:'次のミノ3つがIミノになる'}},
+ {id:'mimic',nm:'宝魔ミミック',emo:'📦',el:'wood',hp:50,atk:13,sk:{nm:'宝あさり',need:8,fx:'gold',v:2,d:'+30G＆ATK×2ダメージ'}},
+ {id:'bolnya',nm:'雷猫ボルニャ',emo:'🐱',el:'light',hp:48,atk:14,sk:{nm:'感電',need:8,fx:'dmgdelay2',v:2,d:'ATK×2ダメージ＋行動2遅延'}},
+ {id:'pegaro',nm:'天馬ペガロ',emo:'🦄',el:'light',hp:56,atk:13,sk:{nm:'浄化の光',need:7,fx:'cleanse',v:25,d:'呪いを解き、HP25%回復'}},
+ {id:'kagerou',nm:'影猫カゲロウ',emo:'🐈‍⬛',el:'water',hp:46,atk:13,sk:{nm:'忍び足',need:6,fx:'tempo',v:2,d:'QUICKゲージ最大＆コンボ+2'}},
+ {id:'kajin',nm:'鍛冶鬼カジン',emo:'🔨',el:'fire',hp:60,atk:12,sk:{nm:'大鎚おろし',need:7,fx:'rowdmg',v:3,d:'下1段を消し、ATK×3ダメージ'}},
+ {id:'seiren',nm:'歌姫セイレン',emo:'🧜‍♀️',el:'water',hp:52,atk:12,sk:{nm:'子守唄',need:8,fx:'healdelay',v:20,d:'HP20%回復＋敵行動2遅延'}},
+ {id:'hakurei',nm:'大神ハクレイ',emo:'🐕',el:'light',hp:62,atk:14,sk:{nm:'遠吠え',need:9,fx:'rally',v:3,d:'自分以外の仲間のスキル+3チャージ'}},
+];
+const RELICS=[
+ {id:'sword',nm:'亡者の剣',emo:'⚔️',d:'与える全ダメージ+20%'},
+ {id:'shield',nm:'骨の盾',emo:'🛡️',d:'受けるダメージ-25%'},
+ {id:'hourglass',nm:'錆びた砂時計',emo:'⏳',d:'敵の行動間隔+1'},
+ {id:'sage',nm:'賢者の石',emo:'💎',d:'スキルの溜まり方が2倍に'},
+ {id:'ring',nm:'コンボの指輪',emo:'💍',d:'コンボボーナスが2倍に'},
+ {id:'fang',nm:'吸血の牙',emo:'🦷',d:'ライン消しごとにHP+2'},
+ {id:'bomb',nm:'火薬袋',emo:'🧨',d:'戦闘開始時、敵に25ダメージ'},
+ {id:'weight',nm:'鉄塊の重り',emo:'🏋️',d:'QUICKボーナス最大+40%に'},
+ {id:'purse',nm:'黄金の袋',emo:'💰',d:'獲得ゴールド+50%'},
+ {id:'tmark',nm:'Ｔの刻印',emo:'🔮',d:'3ライン以上消しのダメージ+60%'},
+ {id:'moss',nm:'癒しの苔',emo:'🍀',d:'戦闘勝利時にHP+12'},
+ {id:'mask',nm:'鬼の面',emo:'👹',d:'ATK+30%／受けるダメージ+20%'},
+ {id:'crystal',nm:'命の水晶',emo:'❤️',d:'最大HP+30(即時回復+30)'},
+ {id:'dice',nm:'イカサマのダイス',emo:'🎲',d:'戦闘報酬の選択肢+1'},
+ {id:'anchor',nm:'碇の護符',emo:'⚓',d:'盤面崩壊のダメージ半減'},
+ {id:'quill',nm:'魔導の羽ペン',emo:'🪶',d:'仲間全員のスキル必要ドロップ-1'},
+ {id:'bell',nm:'亡者の鈴',emo:'🔔',d:'戦闘開始時、全員のスキル+2チャージ'},
+ {id:'mirror',nm:'呪い返しの鏡',emo:'🪞',d:'呪いを完全に防ぐ'},
+];
+const FLOORNAMES=['朽ちた門','骨の回廊','蝕まれし聖堂','忘却の書庫','看守の間','血曇りの泉','囚われの庭','嘆きの大階段','王の墓前','塔の最深部'];
+/* enemy actions: atk garb1 garb2 charge smash curse heal shield drain */
+const ENEMY_TIERS=[
+ {min:1,max:3,list:[
+  {nm:'洞窟スライム',emo:'🟢',el:'wood',hp:40,atk:7,int:4,sc:['atk','atk','garb1'],vo:'slime'},
+  {nm:'墓場コウモリ',emo:'🦇',el:'fire',hp:34,atk:6,int:3,sc:['atk','atk','atk','garb1'],vo:'squeak'},
+  {nm:'ドブ大鼠',emo:'🐀',el:'wood',hp:46,atk:8,int:4,sc:['atk','garb1','atk'],vo:'squeak'},
+  {nm:'はぐれゴブリン',emo:'👺',el:'fire',hp:48,atk:8,int:4,sc:['atk','atk','charge','smash'],vo:'kekeke'},
+  {nm:'さまよう幽鬼',emo:'🕯️',el:'light',hp:42,atk:7,int:4,sc:['atk','garb1','curse'],vo:'moan'},
+ ]},
+ {min:4,max:6,list:[
+  {nm:'蛮族オーク',emo:'👹',el:'fire',hp:118,atk:12,int:4,sc:['atk','atk','garb1','charge','smash'],vo:'growl'},
+  {nm:'沼の呪術師',emo:'🧙‍♀️',el:'water',hp:104,atk:11,int:4,sc:['curse','atk','atk','garb1'],vo:'hihihi'},
+  {nm:'石のゴーレム',emo:'🗿',el:'wood',hp:142,atk:11,int:5,sc:['shield','atk','charge','smash'],vo:'rumble'},
+  {nm:'牙猪ボアド',emo:'🐗',el:'fire',hp:112,atk:13,int:3,sc:['atk','atk','atk','garb1'],vo:'growl'},
+  {nm:'骸のハーピー',emo:'🦅',el:'light',hp:100,atk:12,int:3,sc:['atk','garb1','atk'],vo:'squeak'},
+ ]},
+ {min:7,max:9,list:[
+  {nm:'死霊騎士',emo:'⚔️',el:'light',hp:214,atk:17,int:4,sc:['atk','charge','smash','garb2'],vo:'clank'},
+  {nm:'貴血のヴァンパイア',emo:'🧛',el:'fire',hp:196,atk:16,int:4,sc:['drain','curse','atk'],vo:'hihihi'},
+  {nm:'双牙のキメラ',emo:'🦁',el:'fire',hp:226,atk:18,int:4,sc:['atk','atk','charge','smash'],vo:'growl'},
+  {nm:'深淵の魚人',emo:'🐟',el:'water',hp:200,atk:15,int:3,sc:['garb1','atk','atk','garb2'],vo:'bubble'},
+  {nm:'白骨の王',emo:'☠️',el:'water',hp:232,atk:16,int:4,sc:['curse','atk','heal','garb1','atk'],vo:'fofo'},
+ ]},
+];
+const ELITES=[
+ {min:3,max:3,nm:'牢のミノタウロス',emo:'🐂',el:'fire',hp:92,atk:10,int:4,sc:['atk','garb1','charge','smash'],vo:'growl'},
+ {min:4,max:6,nm:'双頭蛇アンフィス',emo:'🐍',el:'wood',hp:188,atk:12,int:2,sc:['atk','atk','garb1'],vo:'hiss'},
+ {min:4,max:6,nm:'鎧の亡霊',emo:'👻',el:'light',hp:176,atk:14,int:4,sc:['shield','atk','charge','smash'],vo:'moan'},
+ {min:7,max:9,nm:'溶岩の巨人',emo:'🌋',el:'fire',hp:322,atk:20,int:5,sc:['charge','smash','garb2','atk'],vo:'rumble'},
+ {min:7,max:9,nm:'夜の女王',emo:'🕷️',el:'water',hp:300,atk:18,int:3,sc:['atk','curse','garb1','atk'],vo:'hiss'},
+];
+const BOSSES={
+ 5:{nm:'迷宮の看守グレイヴ',emo:'⚰️',el:'light',hp:330,atk:15,int:4,sc:['atk','garb2','charge','smash','curse'],boss:true,vo:'fofo'},
+ 10:{nm:'屍竜バリドボーン',emo:'🐉',el:'fire',hp:720,atk:22,int:4,sc:['atk','curse','garb2','charge','smash','heal'],boss:true,final:true,vo:'roar'},
+};
+
+/* ============ run state ============ */
+let run=null, battle=null, state='title';
+function newRun(starter){
+  const m=makeAlly(starter);
+  run={floor:1,gold:0,team:[m],relics:[],kills:0,tut:true,
+    hpmax:m.hp,hp:m.hp,atkBoost:0};
+}
+function makeAlly(base){const m={...base, sk:{...base.sk}, charge:0};if(run&&run.relics&&has('quill'))m.sk.need=Math.max(3,m.sk.need-1);return m;}
+function has(id){return run.relics.some(r=>r.id===id);}
+function teamAtk(m){let a=m.atk;if(has('mask'))a=Math.round(a*1.3);return a;}
+function addGold(n){run.gold+=Math.round(n*(has('purse')?1.5:1));updateTop();}
+function healTeam(n){run.hp=clamp(run.hp+Math.round(n),0,run.hpmax);updateTeamHP();}
+function updateTop(){
+  $('goldLabel').textContent='💰 '+run.gold;
+  $('floorLabel').textContent=run?`B${run.floor}F ${FLOORNAMES[run.floor-1]||''}`:'MINOBORNES';
+}
+
+/* ============ screens ============ */
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  $(id).classList.add('active');
+}
+function openOverlay(html){$('overlayBox').innerHTML=html;$('overlay').classList.add('show');}
+function closeOverlay(){$('overlay').classList.remove('show');}
+$('overlay').addEventListener('click',e=>{if(e.target.id==='overlay')closeOverlay();});
+$('helpBtn').addEventListener('click',()=>{sfx.ui();openOverlay(helpHTML());});
+function helpHTML(){
+  return `<h3>― 遊び方 ―</h3>
+  <p>▶ ミノ(ブロック)で横一列を揃えると<b style="color:var(--gold2)">チーム全員で攻撃</b>。同時消しが多いほど大ダメージ(4列消し=×6)。</p>
+  <p>▶ 敵は<b style="color:var(--gold2)">ミノを置くたび</b>にカウントが減り、0で行動する。行動予告(⚔=攻撃 🧱=ガレキ 💢=溜め 🌀=呪い ✨=回復 🛡=守り)を見て立ち回ろう。</p>
+  <p>▶ 味方の顔の下ゲージが満タンになったら<b style="color:var(--gold2)">タップでスキル発動</b>。</p>
+  <p>▶ 素早く置くとQUICKボーナス(最大+20%)。連続でラインを消すとコンボ。属性相性は 火→木→水→火 (×1.5)。</p>
+  <p class="dim">操作: ドラッグ=移動 / タップ=回転 / 下フリック=即落下。ボタンやHOLD枠タップも使える。PCは←→↓、X/↑回転、SPACE落下、Cホールド。</p>
+  <p class="dim">HPは階をまたいで持ち越し。0になれば冒険は終わる。</p>
+  <button class="bigbtn" style="margin-top:6px" onclick="closeOverlay()">閉じる</button>
+  <button class="iconbtn" style="display:block;margin:10px auto 0" onclick="if(confirm('冒険を最初からやり直す？')){closeOverlay();toTitle();}">最初からやり直す</button>`;
+}
+function toTitle(){state='title';run=null;battle=null;updateTopSafe();setBGM('title');show('scr-title');}
+function updateTopSafe(){if(run)updateTop();else{$('goldLabel').textContent='💰 0';$('floorLabel').textContent='MINOBORNES';}}
+
+/* --- title & starter --- */
+$('btnStart').addEventListener('click',()=>{sfx.ui();setBGM('dungeon');renderStarter();show('scr-starter');state='starter';});
+function allyCardHTML(m,extra=''){
+  return `<span class="emo">${m.emo}</span><div class="body">
+   <div class="t">${m.nm} ${chip(m.el)} <span style="color:var(--dim);font-size:10px">HP${m.hp} / ATK${m.atk}</span></div>
+   <div class="d">【${m.sk.nm}】${m.sk.d}<br><span style="color:#7a6bd6">必要ドロップ:${m.sk.need}</span>${extra}</div></div>`;
+}
+function renderStarter(){
+  const row=$('starterCards');row.innerHTML='';
+  STARTERS.forEach(s=>{
+    const b=document.createElement('button');b.className='card';
+    b.innerHTML=allyCardHTML(s);
+    b.addEventListener('click',()=>{sfx.skill();newRun(s);updateTop();gotoMap();});
+    row.appendChild(b);
+  });
+}
+
+/* --- map --- */
+function gotoMap(){
+  state='map';updateTop();setBGM('dungeon');
+  $('mapTitle').textContent=`B${run.floor}F 「${FLOORNAMES[run.floor-1]}」`;
+  const row=$('doorRow');row.innerHTML='';
+  let doors;
+  if(run.floor===5||run.floor===10){
+    doors=[{t:'boss'}];
+    $('mapFlavor').textContent=run.floor===10?'……最深部。巨大な気配が渦巻いている。':'重い扉の奥から、鎖の音がする。';
+  }else{
+    $('mapFlavor').textContent='進む扉を選べ。気配を読み、有利な相手や道を選ぶのも戦術だ。';
+    const extra=shuffle(['event','rest','battle'].concat(run.floor>=3?['elite']:[])).slice(0,2);
+    doors=shuffle([{t:'battle'}].concat(extra.map(t=>({t}))));
+  }
+  doors.forEach(d=>{if(d.t==='battle'||d.t==='elite'||d.t==='boss')d.enemy=makeEnemy(d.t);});
+  const meta={
+    battle:{emo:'⚔️',nm:'戦いの扉',d:'魔物が待ち構えている。勝てば報酬。'},
+    elite:{emo:'💀',nm:'強敵の扉',d:'手強い相手。だが遺物(レリック)が確定で手に入る。'},
+    event:{emo:'❓',nm:'異変の扉',d:'何が起こるかわからない。'},
+    rest:{emo:'⛺',nm:'安らぎの扉',d:'ひととき休める場所。回復・瞑想・鍛錬。'},
+    boss:{emo:'👑',nm:'覇者の扉',d:'この階の主が待つ。'},
+  };
+  doors.forEach(d=>{
+    const b=document.createElement('button');b.className='card door';
+    const m=meta[d.t];
+    const prev=d.enemy?`<br><span style="color:var(--gold2)">気配: ${d.enemy.emo} ${d.enemy.nm}</span> ${chip(d.enemy.el)}`:'';
+    b.innerHTML=`<span class="emo">${m.emo}</span><div class="body"><div class="t">${m.nm}</div><div class="d">${m.d}${prev}</div></div>`;
+    b.addEventListener('click',()=>{sfx.ui();enterDoor(d.t,d.enemy);});
+    row.appendChild(b);
+  });
+  const rr=$('relicRow');
+  rr.innerHTML=run.relics.map(r=>`<span class="relicchip">${r.emo}${r.nm}</span>`).join('')||'<span class="relicchip" style="opacity:.4">遺物なし</span>';
+  show('scr-map');
+}
+function enterDoor(t,enemy){
+  if(t==='battle')startBattle('battle',enemy);
+  else if(t==='elite')startBattle('elite',enemy);
+  else if(t==='boss')startBattle('boss',enemy);
+  else if(t==='rest')openRest();
+  else openEvent();
+}
+function nextFloor(){
+  run.floor++;
+  if(run.floor>10){victory();return;}
+  gotoMap();
+}
+
+/* ============ battle ============ */
+const COLS=8,ROWS=14;
+let cv=$('board'),ctx=cv.getContext('2d'),CELL=30,DPR=1;
+function fitBoard(){
+  const area=$('boardArea');
+  const w=area.clientWidth-4,h=area.clientHeight-4;
+  CELL=Math.max(14,Math.floor(Math.min(w/COLS,h/ROWS)));
+  DPR=window.devicePixelRatio||1;
+  cv.width=COLS*CELL*DPR;cv.height=ROWS*CELL*DPR;
+  cv.style.width=COLS*CELL+'px';cv.style.height=ROWS*CELL+'px';
+  ctx.setTransform(DPR,0,0,DPR,0,0);
+}
+window.addEventListener('resize',()=>{if(state==='battle')fitBoard();});
+
+function makeEnemy(kind){
+  let base;
+  if(kind==='boss')base=BOSSES[run.floor];
+  else if(kind==='elite'){
+    const c=ELITES.filter(e=>run.floor>=e.min&&run.floor<=e.max);
+    base=pick(c.length?c:ELITES);
+  }else{
+    const tier=ENEMY_TIERS.find(t=>run.floor>=t.min&&run.floor<=t.max)||ENEMY_TIERS[2];
+    base=pick(tier.list);
+    base={...base,hp:Math.round(base.hp*(1+0.07*(run.floor-tier.min)))};
+  }
+  return {...base,hpmax:base.hp,hp:base.hp,cd:base.int+(has('hourglass')?1:0),
+    pi:0,charged:false,shield:false,atkMul:1,kind};
+}
+function startBattle(kind,pre){
+  state='battle';
+  setBGM(kind==='battle'?'battle':'boss');
+  battle={
+    kind,enemy:pre||makeEnemy(kind),
+    board:Array.from({length:ROWS},()=>Array(COLS).fill(null)),
+    bag:[],queue:[],piece:null,hold:null,canHold:true,
+    combo:0,quick:0,b2b:false,curse:0,allyShield:0,
+    won:false,lost:false,gravAcc:0,lockAcc:0,lockResets:0,soft:false,
+    spawnAt:0,over:false,
+  };
+  refillQueue();
+  if(has('bell'))run.team.forEach(m=>m.charge=clamp(m.charge+2,0,m.sk.need));
+  show('scr-battle');
+  requestAnimationFrame(()=>{fitBoard();spawnPiece();renderAllBattle();});
+  banner(kind==='boss'?'👑 '+battle.enemy.nm:'たたかえ！');
+  if(has('bomb')){setTimeout(()=>{if(battle&&!battle.over){dmgEnemy(25,'🧨');}},450);}
+  if(run.tut){run.tut=false;setTimeout(()=>{openOverlay(
+   `<h3>― はじめての戦い ―</h3>
+    <p>▶ 横一列を揃えて消すと<b style="color:var(--gold2)">攻撃</b>！ 同時に多く消すほど強い。</p>
+    <p>▶ 敵の横の●●●は<b style="color:var(--gold2)">行動カウント</b>。ミノを置くたび減り、0で敵が動く。</p>
+    <p>▶ 下の仲間のゲージが満タンになったら<b style="color:var(--gold2)">顔をタップ</b>でスキル！</p>
+    <p class="dim">ドラッグ=移動 / タップ=回転 / 下フリック=即落下</p>
+    <button class="bigbtn" onclick="closeOverlay()">わかった！</button>`);},600);}
+}
+function refillQueue(){
+  while(battle.queue.length<6){
+    if(!battle.bag.length)battle.bag=shuffle(['I','O','T','S','Z','J','L']);
+    battle.queue.push(battle.bag.pop());
+  }
+}
+function collide(t,rot,px,py){
+  for(const [dx,dy] of SHAPES[t][rot]){
+    const x=px+dx,y=py+dy;
+    if(x<0||x>=COLS||y>=ROWS)return true;
+    if(y>=0&&battle.board[y][x])return true;
+  }
+  return false;
+}
+function spawnPiece(){
+  refillQueue();
+  const t=battle.queue.shift();
+  const p={t,rot:0,x:2,y:t==='I'?-1:0};
+  if(collide(t,0,p.x,p.y)){collapseBoard();}
+  battle.piece=p;battle.canHold=true;
+  battle.gravAcc=0;battle.lockAcc=0;battle.lockResets=0;
+  battle.spawnAt=performance.now();
+  renderNext();
+}
+function collapseBoard(){
+  battle.board=Array.from({length:ROWS},()=>Array(COLS).fill(null));
+  battle.combo=0;battle.quick=0;
+  banner('盤面崩壊！');sfx.hurt();
+  hurtTeam(Math.ceil(run.hpmax*(has('anchor')?0.08:0.15)),true);
+}
+function tryMove(dx,dy){
+  const p=battle.piece;if(!p)return false;
+  if(!collide(p.t,p.rot,p.x+dx,p.y+dy)){p.x+=dx;p.y+=dy;
+    if(dx!==0)sfx.move();
+    if(battle.lockAcc>0&&battle.lockResets<12){battle.lockAcc=0;battle.lockResets++;}
+    return true;}
+  return false;
+}
+function tryRotate(dir){
+  const p=battle.piece;if(!p)return;
+  const nr=(p.rot+dir+4)%4;
+  for(const [kx,ky] of KICKS){
+    if(!collide(p.t,nr,p.x+kx,p.y+ky)){
+      p.rot=nr;p.x+=kx;p.y+=ky;sfx.rot();
+      if(battle.lockAcc>0&&battle.lockResets<12){battle.lockAcc=0;battle.lockResets++;}
+      return;
+    }
+  }
+}
+function ghostY(){
+  const p=battle.piece;let y=p.y;
+  while(!collide(p.t,p.rot,p.x,y+1))y++;
+  return y;
+}
+function hardDrop(){
+  const p=battle.piece;if(!p)return;
+  p.y=ghostY();lockPiece();
+}
+function doHold(){
+  if(!battle.canHold||!battle.piece)return;
+  sfx.hold();
+  const cur=battle.piece.t;
+  if(battle.hold){battle.queue.unshift(battle.hold);}
+  battle.hold=cur;battle.canHold=false;
+  spawnPiece();battle.canHold=false;
+  renderHold();
+}
+function lockPiece(){
+  const p=battle.piece;if(!p)return;
+  battle.piece=null;
+  for(const [dx,dy] of SHAPES[p.t][p.rot]){
+    const y=p.y+dy,x=p.x+dx;
+    if(y>=0&&y<ROWS)battle.board[y][x]=COLORS[p.t];
+  }
+  sfx.lock();
+  /* quick gauge */
+  const el=performance.now()-battle.spawnAt;
+  const wmax=has('weight')?200:100;
+  if(el<2600)battle.quick=clamp(battle.quick+34,0,wmax);
+  else battle.quick=clamp(battle.quick-25,0,wmax);
+  /* clear lines */
+  let cleared=0;
+  for(let y=ROWS-1;y>=0;y--){
+    if(battle.board[y].every(c=>c)){battle.board.splice(y,1);battle.board.unshift(Array(COLS).fill(null));cleared++;y++;}
+  }
+  if(cleared>0){
+    battle.combo++;
+    const perfect=battle.board.every(r=>r.every(c=>!c));
+    dealLineDamage(cleared,perfect);
+    if(has('fang'))healTeam(2*cleared);
+    battle.b2b=(cleared===4);
+    sfx.clear(cleared);
+  }else{
+    battle.combo=0;
+  }
+  /* charge skills */
+  const gain=has('sage')?2:1;
+  run.team.forEach(m=>{m.charge=clamp(m.charge+gain,0,m.sk.need);});
+  if(battle.curse>0)battle.curse--;
+  renderSlots();renderQuickCombo();
+  if(battle.over)return;
+  /* enemy countdown */
+  const e=battle.enemy;
+  e.cd--;
+  if(e.cd<=0){enemyAct();}
+  renderEnemy();
+  if(!battle.over)spawnPiece();
+}
+function dealLineDamage(lines,perfect){
+  const e=battle.enemy;
+  let base=0;
+  run.team.forEach(m=>{base+=teamAtk(m)*elemMul(m.el,e.el);});
+  const lineMul=[0,1,2.2,3.6,6][lines]||6;
+  let dmg=base*lineMul;
+  const comboMul=1+(battle.combo-1)*0.2*(has('ring')?2:1);
+  dmg*=Math.max(1,comboMul);
+  if(lines===4&&battle.b2b)dmg*=1.5;
+  dmg*=1+battle.quick*0.002;
+  if(has('sword'))dmg*=1.2;
+  if(has('tmark')&&lines>=3)dmg*=1.6;
+  if(battle.curse>0)dmg*=0.7;
+  if(e.shield){dmg*=0.5;e.shield=false;}
+  dmg=Math.max(1,Math.round(dmg));
+  if(perfect){dmg*=3;banner('パーフェクト！');run.team.forEach(m=>m.charge=m.sk.need);}
+  else if(lines===4)banner('4ライン消し！');
+  const adv=run.team.some(m=>ADV[m.el]===e.el);
+  dmgEnemy(dmg,null,adv&&lines>0);
+}
+function dmgEnemy(n,icon,adv){
+  const e=battle.enemy;
+  e.hp=clamp(e.hp-n,0,e.hpmax);
+  spawnFloat((icon?icon+' ':'')+n+(adv?'!':''),adv?'':'');
+  $('enemyEmo').classList.remove('hit');void $('enemyEmo').offsetWidth;$('enemyEmo').classList.add('hit');
+  sfx.hit();
+  renderEnemy();
+  if(e.hp<=0)winBattle();
+}
+function spawnFloat(txt,cls){
+  const f=document.createElement('div');f.className='float '+(cls||'');
+  f.textContent=txt;
+  f.style.left=(20+rnd(45))+'%';f.style.top=(28+rnd(30))+'%';
+  $('fxLayer').appendChild(f);
+  setTimeout(()=>f.remove(),950);
+}
+function enemyAct(){
+  const e=battle.enemy;
+  const act=e.sc[e.pi%e.sc.length];e.pi++;
+  e.cd=e.int+(has('hourglass')?1:0);
+  if(e.final&&e.hp<e.hpmax*0.5)e.cd=Math.max(2,e.cd-1);
+  switch(act){
+    case 'atk':enemyAttack(e.atk);break;
+    case 'smash':enemyAttack(Math.round(e.atk*2.5));e.charged=false;break;
+    case 'charge':e.charged=true;spawnFloat('💢溜め','bad small');break;
+    case 'garb1':addGarbage(1);break;
+    case 'garb2':addGarbage(2);break;
+    case 'curse':if(has('mirror')){spawnFloat('🪞呪い反射！','small');}else{battle.curse=8;spawnFloat('🌀呪い','bad small');}break;
+    case 'heal':{const h=Math.round(e.hpmax*0.08);e.hp=clamp(e.hp+h,0,e.hpmax);spawnFloat('+'+h,'heal');}break;
+    case 'shield':e.shield=true;spawnFloat('🛡','small');break;
+    case 'drain':{const d=enemyAttack(e.atk);if(d>0){const h=Math.round(d/2);e.hp=clamp(e.hp+h,0,e.hpmax);spawnFloat('+'+h,'heal small');}}break;
+  }
+  renderEnemy();
+}
+function enemyAttack(v){
+  const e=battle.enemy;
+  playVoice(e.vo);
+  let d=Math.round(v*e.atkMul*(e.charged?2.5:1));
+  e.charged=false;
+  if(battle.allyShield>0){battle.allyShield--;banner('🛡ガード！');renderTeamStatus();return 0;}
+  if(has('shield'))d=Math.round(d*0.75);
+  if(has('mask'))d=Math.round(d*1.2);
+  d=Math.max(1,d);
+  hurtTeam(d,false);
+  return d;
+}
+function hurtTeam(d,noShake){
+  run.hp=clamp(run.hp-d,0,run.hpmax);
+  sfx.hurt();
+  const hl=$('hurtLayer');hl.classList.remove('hurtflash');void hl.offsetWidth;hl.classList.add('hurtflash');
+  if(!noShake){$('scr-battle').classList.remove('shake');void $('scr-battle').offsetWidth;$('scr-battle').classList.add('shake');}
+  spawnFloat('-'+d,'bad');
+  updateTeamHP();
+  if(run.hp<=0)loseBattle();
+}
+function addGarbage(n){
+  for(let i=0;i<n;i++){
+    battle.board.shift();
+    const row=Array(COLS).fill(COLORS.G);
+    row[rnd(COLS)]=null;
+    battle.board.push(row);
+  }
+  spawnFloat('🧱ガレキ+'+n,'bad small');
+  const p=battle.piece;
+  if(p){let tries=0;while(collide(p.t,p.rot,p.x,p.y)&&tries<4){p.y--;tries++;}
+    if(collide(p.t,p.rot,p.x,p.y)){battle.piece=null;collapseBoard();if(!battle.over)spawnPiece();}}
+}
+/* --- ally skills --- */
+function useSkill(i){
+  if(state!=='battle'||!battle||battle.over)return;
+  const m=run.team[i];if(!m)return;
+  if(m.charge<m.sk.need){
+    const s=document.querySelectorAll('.slot')[i];
+    if(s){s.classList.remove('shake');void s.offsetWidth;s.classList.add('shake');}
+    return;
+  }
+  m.charge=0;sfx.skill();
+  const e=battle.enemy;
+  const atkMod=teamAtk(m)*elemMul(m.el,e.el)*(has('sword')?1.2:1)*(battle.curse>0?0.7:1);
+  const fx=m.sk.fx,v=m.sk.v;
+  banner(m.sk.nm+'！');
+  if(fx==='dmg')skillDmg(atkMod*v);
+  else if(fx==='heal')healFloat(Math.round(run.hpmax*v/100));
+  else if(fx==='rows')clearBottomRows(v);
+  else if(fx==='shield'){battle.allyShield+=1;renderTeamStatus();}
+  else if(fx==='delay'){e.cd+=v;spawnFloat('⏳+'+v,'small');}
+  else if(fx==='dmgdelay'){skillDmg(atkMod*v);if(!battle.over){e.cd+=1;spawnFloat('⏳+1','small');}}
+  else if(fx==='dmgdelay2'){skillDmg(atkMod*v);if(!battle.over){e.cd+=2;spawnFloat('⏳+2','small');}}
+  else if(fx==='vamp'){const d=skillDmg(atkMod*v);healFloat(d);}
+  else if(fx==='debuff'){e.atkMul=0.7;spawnFloat('攻撃力DOWN','small');}
+  else if(fx==='minoI'){battle.queue.unshift('I','I','I');renderNext();spawnFloat('I×3！','small');}
+  else if(fx==='cleanse'){battle.curse=0;healFloat(Math.round(run.hpmax*v/100));}
+  else if(fx==='gold'){addGold(30);sfx.coin();skillDmg(atkMod*v);}
+  else if(fx==='tempo'){battle.quick=has('weight')?200:100;battle.combo+=2;spawnFloat('TEMPO UP!','small');renderQuickCombo();}
+  else if(fx==='rowdmg'){clearBottomRows(1);skillDmg(atkMod*v);}
+  else if(fx==='healdelay'){healFloat(Math.round(run.hpmax*v/100));if(!battle.over){e.cd+=2;spawnFloat('⏳+2','small');}}
+  else if(fx==='rally'){run.team.forEach(o=>{if(o!==m)o.charge=clamp(o.charge+3,0,o.sk.need);});spawnFloat('鼓舞！','small');}
+  renderSlots();renderEnemy();
+}
+function skillDmg(raw){
+  let d=Math.max(1,Math.round(raw));
+  if(battle.enemy.shield){d=Math.round(d*0.5);battle.enemy.shield=false;}
+  dmgEnemy(d,'✦');
+  return d;
+}
+function healFloat(n){healTeam(n);spawnFloat('+'+n,'heal');}
+function clearBottomRows(n){
+  battle.board.splice(ROWS-n,n);
+  for(let i=0;i<n;i++)battle.board.unshift(Array(COLS).fill(null));
+  spawnFloat('整地！','small');
+}
+/* --- win / lose --- */
+function winBattle(){
+  if(battle.over)return;
+  battle.over=true;battle.won=true;battle.piece=null;
+  run.kills++;
+  sfx.win();banner('勝利！');
+  if(has('moss'))healTeam(12);
+  const kind=battle.kind;
+  let g=18+rnd(14)+run.floor*2;
+  if(kind==='elite')g+=30;
+  if(kind==='boss')g+=60;
+  addGold(g);
+  setTimeout(()=>{
+    if(kind==='boss'&&run.floor===10){victory();return;}
+    openReward(kind,g);
+  },900);
+}
+function loseBattle(){
+  if(battle.over)return;
+  battle.over=true;battle.lost=true;battle.piece=null;
+  sfx.lose();
+  setTimeout(()=>gameOver(),800);
+}
+function scoreCalc(){return run.floor*100+run.kills*25+run.gold+Math.max(0,run.hp);}
+function gameOver(){
+  state='end';setBGM('end');
+  $('endEmo').textContent='💀';
+  $('endTitle').textContent='力尽きた…';
+  $('endFlavor').textContent='亡骸は迷宮に呑まれ、また一体の"骨"となる。';
+  $('endStats').innerHTML=endStats();
+  show('scr-end');
+}
+function victory(){
+  state='end';setBGM('title');
+  $('endEmo').textContent='👑';
+  $('endTitle').textContent='屍竜討伐！';
+  $('endFlavor').textContent='塔は静まり返った。……だが、ミノは今も降り続けている。';
+  $('endStats').innerHTML=endStats();
+  sfx.win();
+  show('scr-end');
+}
+function endStats(){
+  return `到達 <b>B${run.floor}F</b> ／ 撃破 <b>${run.kills}</b>体<br>
+  所持金 <b>${run.gold}G</b> ／ 生存HP <b>${Math.max(0,run.hp)}</b><br>
+  スコア <b style="font-size:18px">${scoreCalc()}</b><br>
+  <span style="font-size:11px;color:var(--dim)">仲間: ${run.team.map(m=>m.emo).join(' ')}　遺物: ${run.relics.map(r=>r.emo).join(' ')||'なし'}</span>`;
+}
+$('btnAgain').addEventListener('click',()=>{sfx.ui();setBGM('dungeon');renderStarter();show('scr-starter');state='starter';});
+
+/* ============ rewards ============ */
+function ownedIds(){return run.team.map(m=>m.id);}
+function randomRecruit(){
+  const c=RECRUITS.filter(m=>!ownedIds().includes(m.id));
+  return c.length?pick(c):null;
+}
+function randomRelic(){
+  const c=RELICS.filter(r=>!has(r.id));
+  return c.length?pick(c):null;
+}
+function openReward(kind,gold){
+  state='reward';setBGM('dungeon');
+  $('rewardTitle').textContent=(kind==='boss'?'👑 階の主を討った！':kind==='elite'?'💀 強敵撃破！':'⚔️ 勝利！');
+  $('rewardGold').textContent=`${gold}G を手に入れた。報酬をひとつ選べ。`;
+  const row=$('cardRow');row.innerHTML='';
+  const cards=[];
+  const rel=randomRelic(),mon=randomRecruit();
+  if(kind==='elite'||kind==='boss'){
+    if(rel)cards.push({k:'relic',v:rel});
+    if(mon)cards.push({k:'mon',v:mon});
+    cards.push({k:'heal'});
+    if(has('dice'))cards.push({k:'forge'});
+  }else{
+    const pool=[];
+    if(mon)pool.push({k:'mon',v:mon});
+    if(rel&&Math.random()<0.45)pool.push({k:'relic',v:rel});
+    pool.push({k:'heal'});
+    pool.push({k:'train'});
+    pool.push({k:'gold'});
+    pool.push({k:'forge'});
+    const sel=shuffle(pool).slice(0,has('dice')?4:3);
+    if(!sel.some(c=>c.k==='mon')&&mon&&Math.random()<0.5)sel[0]={k:'mon',v:mon};
+    cards.push(...sel);
+  }
+  cards.forEach(c=>row.appendChild(rewardCard(c)));
+  const skip=document.createElement('button');skip.className='card';skip.style.opacity=.7;
+  skip.innerHTML=`<span class="emo">🚪</span><div class="body"><div class="t">受け取らず進む</div><div class="d">次の階へ。</div></div>`;
+  skip.addEventListener('click',()=>{sfx.ui();nextFloor();});
+  row.appendChild(skip);
+  show('scr-reward');
+}
+function rewardCard(c){
+  const b=document.createElement('button');b.className='card';
+  if(c.k==='mon'){
+    b.innerHTML=allyCardHTML(c.v,'<br><span style="color:var(--gold2)">仲間にする</span>');
+    b.addEventListener('click',()=>{recruitFlow(c.v,()=>nextFloor());});
+  }else if(c.k==='relic'){
+    b.innerHTML=`<span class="emo">${c.v.emo}</span><div class="body"><div class="t">遺物「${c.v.nm}」</div><div class="d">${c.v.d}</div></div>`;
+    b.addEventListener('click',()=>{sfx.coin();gainRelic(c.v);nextFloor();});
+  }else if(c.k==='heal'){
+    b.innerHTML=`<span class="emo">🧪</span><div class="body"><div class="t">生命の薬</div><div class="d">チームHPを35%回復する。</div></div>`;
+    b.addEventListener('click',()=>{sfx.skill();healTeam(run.hpmax*0.35);nextFloor();});
+  }else if(c.k==='train'){
+    b.innerHTML=`<span class="emo">📕</span><div class="body"><div class="t">鍛錬の書</div><div class="d">仲間全員のATK+2。</div></div>`;
+    b.addEventListener('click',()=>{sfx.skill();run.team.forEach(m=>m.atk+=2);nextFloor();});
+  }else if(c.k==='gold'){
+    b.innerHTML=`<span class="emo">💰</span><div class="body"><div class="t">金貨の袋</div><div class="d">+25G。</div></div>`;
+    b.addEventListener('click',()=>{sfx.coin();addGold(25);nextFloor();});
+  }else if(c.k==='forge'){
+    b.innerHTML=`<span class="emo">⚒️</span><div class="body"><div class="t">スキル錬磨</div><div class="d">仲間ひとりのスキル必要ドロップ-2(最低3)。</div></div>`;
+    b.addEventListener('click',()=>{pickMember('誰のスキルを錬磨する？',i=>{const m=run.team[i];m.sk.need=Math.max(3,m.sk.need-2);sfx.skill();nextFloor();});});
+  }
+  return b;
+}
+function pickMember(title,cb){
+  let html=`<h3>${title}</h3><div class="cardrow">`;
+  run.team.forEach((m,i)=>{
+    html+=`<button class="card" data-pm="${i}"><span class="emo">${m.emo}</span><div class="body"><div class="t">${m.nm} ${chip(m.el)}</div><div class="d">ATK${m.atk}【${m.sk.nm}】必要${m.sk.need}</div></div></button>`;
+  });
+  html+=`</div><button class="bigbtn" id="pmCancel">やめておく</button>`;
+  openOverlay(html);
+  document.querySelectorAll('[data-pm]').forEach(b=>{
+    b.addEventListener('click',()=>{const i=+b.dataset.pm;closeOverlay();cb(i);});
+  });
+  $('pmCancel').addEventListener('click',()=>{sfx.ui();closeOverlay();});
+}
+function gainRelic(r){
+  run.relics.push(r);
+  if(r.id==='crystal'){run.hpmax+=30;healTeam(30);}
+  if(r.id==='quill'){run.team.forEach(m=>m.sk.need=Math.max(3,m.sk.need-1));}
+}
+function recruitFlow(mon,done){
+  if(run.team.length<4){
+    const m=makeAlly(mon);
+    run.team.push(m);
+    run.hpmax+=m.hp;run.hp+=m.hp;
+    sfx.skill();done();
+    return;
+  }
+  let html=`<h3>${mon.emo} ${mon.nm} を仲間に？</h3><p class="dim">チームは満員(4体)。入れ替える仲間を選べ。<br>※入れ替えた分の最大HPは失われる。</p><div class="cardrow">`;
+  run.team.forEach((m,i)=>{
+    html+=`<button class="card" data-rep="${i}"><span class="emo">${m.emo}</span><div class="body"><div class="t">${m.nm} ${chip(m.el)}</div><div class="d">HP${m.hp} ATK${m.atk}【${m.sk.nm}】</div></div></button>`;
+  });
+  html+=`</div><button class="bigbtn" id="repCancel">やめておく</button>`;
+  openOverlay(html);
+  document.querySelectorAll('[data-rep]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const i=+b.dataset.rep,old=run.team[i],nm=makeAlly(mon);
+      run.hpmax=Math.max(30,run.hpmax-old.hp+nm.hp);
+      run.hp=clamp(run.hp,1,run.hpmax);
+      run.team[i]=nm;run.hp=clamp(run.hp+nm.hp,1,run.hpmax);
+      sfx.skill();closeOverlay();done();
+    });
+  });
+  $('repCancel').addEventListener('click',()=>{sfx.ui();closeOverlay();});
+}
+
+/* ============ events & rest ============ */
+function evScreen(emo,title,text,btns){
+  state='event';setBGM('dungeon');
+  $('evEmo').textContent=emo;$('evTitle').textContent=title;$('evText').innerHTML=text;
+  const row=$('evBtns');row.innerHTML='';
+  btns.forEach(bt=>{
+    const b=document.createElement('button');b.className='card'+(bt.dis?' disabled':'');
+    b.innerHTML=`<span class="emo">${bt.emo}</span><div class="body"><div class="t">${bt.t}</div><div class="d">${bt.d||''}</div></div>`;
+    if(!bt.dis)b.addEventListener('click',()=>{sfx.ui();bt.fn();});
+    row.appendChild(b);
+  });
+  show('scr-event');
+}
+function evResult(emo,title,text){
+  evScreen(emo,title,text,[{emo:'▶',t:'先へ進む',fn:nextFloor}]);
+}
+function openRest(){
+  evScreen('⛺','安らぎの焚き火','骨の転がる迷宮に、ささやかな灯り。<br>ひとつだけ選べる。',[
+    {emo:'💤',t:'休む',d:'HPを40%回復する。',fn:()=>{healTeam(run.hpmax*0.4);evResult('💤','ぐっすり眠った','HPが回復した。夢に骨の音は聞こえない。');}},
+    {emo:'🧘',t:'瞑想する',d:'仲間全員のスキルを満タンにする。',fn:()=>{run.team.forEach(m=>m.charge=m.sk.need);evResult('🧘','精神統一','全員のスキルが冴えわたる。');}},
+    {emo:'🗡️',t:'鍛錬する',d:'仲間全員のATK+2。',fn:()=>{run.team.forEach(m=>m.atk+=2);evResult('🗡️','素振り千回','仲間たちの目つきが変わった。ATK+2。');}},
+  ]);
+}
+const EVENTS=[
+ function altar(){
+  evScreen('🕯️','怪しい祭壇','黒い蝋燭が骨の祭壇を照らす。<br>血の代償を求めているようだ。',[
+   {emo:'🩸',t:'血を捧げる(HP-15)',d:'遺物をひとつ授かる。',fn:()=>{
+     run.hp=clamp(run.hp-15,1,run.hpmax);
+     const r=randomRelic();
+     if(r){gainRelic(r);evResult('✨','祭壇が応えた',`遺物「${r.emo}${r.nm}」を授かった。<br>${r.d}`);}
+     else evResult('…','祭壇は沈黙した','もう授けるものがないようだ。');
+   }},
+   {emo:'🙏',t:'祈る',d:'何かが起こる…かもしれない。',fn:()=>{
+     if(Math.random()<0.5){run.team.forEach(m=>m.charge=m.sk.need);evResult('✨','祈りが届いた','全員のスキルが満タンになった！');}
+     else evResult('…','何も起こらない','蝋燭が一本、静かに消えた。');
+   }},
+   {emo:'🚪',t:'立ち去る',fn:nextFloor},
+  ]);
+ },
+ function merchant(){
+  const r=randomRelic(),m=randomRecruit();
+  const btns=[];
+  if(r)btns.push({emo:r.emo,t:`遺物「${r.nm}」 <span class="price">60G</span>`,d:r.d,dis:run.gold<60,fn:()=>{run.gold-=60;gainRelic(r);sfx.coin();updateTop();evResult(r.emo,'取引成立','「まいどあり…カタカタ」');}});
+  btns.push({emo:'🧪',t:'回復薬 <span class="price">30G</span>',d:'HPを40%回復。',dis:run.gold<30,fn:()=>{run.gold-=30;healTeam(run.hpmax*0.4);sfx.coin();updateTop();evResult('🧪','ごくごく','じんわり傷が塞がっていく。');}});
+  if(m)btns.push({emo:m.emo,t:`${m.nm}を雇う <span class="price">50G</span>`,d:`${EL[m.el].n}属性/【${m.sk.nm}】${m.sk.d}`,dis:run.gold<50,fn:()=>{run.gold-=50;sfx.coin();updateTop();recruitFlow(m,()=>evResult(m.emo,'契約成立','新たな仲間が加わった！'));}});
+  btns.push({emo:'🚪',t:'立ち去る',fn:nextFloor});
+  evScreen('🎩','行商ガイコツ','「ヒヒ…冷やかしなら帰んな」<br>骨の商人が店を広げている。',btns);
+ },
+ function spring(){
+  evScreen('⛲','忘れられた泉','底光りする水面。飲めば力が湧きそうだ。',[
+   {emo:'💧',t:'水を飲む',d:'HPを50%回復する。',fn:()=>{healTeam(run.hpmax*0.5);evResult('💧','甘露','傷が癒えていく。');}},
+   {emo:'🫗',t:'水を浴びる',d:'最大HP+12(即時回復も+12)。',fn:()=>{run.hpmax+=12;healTeam(12);evResult('🫗','活力','体の芯が強くなった。最大HP+12。');}},
+   {emo:'🚪',t:'立ち去る',fn:nextFloor},
+  ]);
+ },
+ function stray(){
+  const m=randomRecruit();
+  if(!m){EVENTS[4]();return;}
+  evScreen(m.emo,'迷子のモンスター',`${m.nm}が物陰からこちらを見ている。<br>${EL[m.el].n}属性／【${m.sk.nm}】${m.sk.d}`,[
+   {emo:'🤝',t:'仲間にする',fn:()=>{recruitFlow(m,()=>evResult(m.emo,'なついた！','新たな仲間が加わった。'));}},
+   {emo:'🍖',t:'餌だけあげて見送る',d:'+20G(お礼を落としていった)。',fn:()=>{addGold(20);sfx.coin();evResult('🍖','もぐもぐ','去り際に金貨を落としていった。+20G');}},
+  ]);
+ },
+ function vault(){
+  evScreen('💎','崩れた宝物庫','半壊した扉の奥に、埃をかぶった宝箱。<br>罠の気配もする。',[
+   {emo:'🗝️',t:'開ける',d:'60%: 宝／40%: 罠(HP-20)。',fn:()=>{
+     if(Math.random()<0.6){
+       if(Math.random()<0.5){const r=randomRelic();if(r){gainRelic(r);evResult('✨','大当たり！',`遺物「${r.emo}${r.nm}」を発見！<br>${r.d}`);return;}}
+       const g=40+rnd(21);addGold(g);sfx.coin();evResult('💰','金貨ざくざく',`+${g}G！`);
+     }else{run.hp=clamp(run.hp-20,1,run.hpmax);sfx.hurt();evResult('💥','罠だ！','毒針が飛び出した。HP-20。');}
+   }},
+   {emo:'🚪',t:'触れずに去る',fn:nextFloor},
+  ]);
+ },
+ function whisper(){
+  evScreen('👻','亡者の囁き','「チカラ…ホシイカ…」<br>冷たい声が骨身に染みる。',[
+   {emo:'🤝',t:'力を受け入れる',d:'遺物「亡者の契約」: ATK+15%／最大HP-10。',
+    dis:has('pact'),
+    fn:()=>{
+     run.relics.push({id:'pact',nm:'亡者の契約',emo:'👻',d:'ATK+15%／最大HP-10'});
+     run.team.forEach(m=>m.atk=Math.round(m.atk*1.15));
+     run.hpmax=Math.max(30,run.hpmax-10);run.hp=clamp(run.hp,1,run.hpmax);
+     evResult('👻','契約完了','腕に黒い紋様が浮かぶ。力が…漲る。');
+   }},
+   {emo:'🙅',t:'断る',d:'囁きは消え、静寂が戻る。',fn:()=>{evResult('🙅','拒絶','「…ソウカ」声は闇に溶けた。');}},
+  ]);
+ },
+ function gamble(){
+  const bet=b=>{
+    run.gold-=b;updateTop();
+    if(Math.random()<0.5){addGold(b*2);sfx.coin();evResult('🎲','勝った！',`骸骨が悔しそうに金貨を差し出す。+${b*2}G！`);}
+    else{sfx.hurt();evResult('🎲','負けた…','「ヘッヘッ…また来なよ」');}
+  };
+  evScreen('🎲','骸骨賭博場','骨のディーラーがダイスを転がしている。<br>「倍賭けだ。乗るかい？」(勝率50%)',[
+   {emo:'🪙',t:'10G賭ける',d:'勝てば+20G。',dis:run.gold<10,fn:()=>bet(10)},
+   {emo:'💰',t:'30G賭ける',d:'勝てば+60G。',dis:run.gold<30,fn:()=>bet(30)},
+   {emo:'🚪',t:'立ち去る',fn:nextFloor},
+  ]);
+ },
+ function armory(){
+  evScreen('🗡️','古びた武器庫','朽ちた得物の山。まだ使える物もありそうだ。',[
+   {emo:'⚒️',t:'仲間に装備させる',d:'選んだ仲間ひとりのATK+4。',fn:()=>{pickMember('誰を強化する？',i=>{run.team[i].atk+=4;sfx.skill();evResult('⚒️','装備完了',`${run.team[i].nm}のATK+4！`);});}},
+   {emo:'🪙',t:'金目の物を漁る',d:'+15〜30G。',fn:()=>{const g=15+rnd(16);addGold(g);sfx.coin();evResult('🪙','換金成功',`くず鉄に混じって金細工を発見。+${g}G。`);}},
+   {emo:'🚪',t:'立ち去る',fn:nextFloor},
+  ]);
+ },
+];
+let lastEv=-1;
+function openEvent(){
+  let i;do{i=rnd(EVENTS.length);}while(i===lastEv&&EVENTS.length>1);
+  lastEv=i;EVENTS[i]();
+}
+
+/* ============ battle rendering ============ */
+function renderAllBattle(){renderEnemy();renderSlots();updateTeamHP();renderHold();renderNext();renderQuickCombo();renderTeamStatus();}
+function renderEnemy(){
+  if(!battle)return;
+  const e=battle.enemy;
+  $('enemyEmo').textContent=e.emo;
+  $('enemyName').innerHTML=`${e.nm} ${chip(e.el)}${e.kind==='elite'?' <span style="color:var(--blood);font-size:10px">強敵</span>':''}${e.boss?' <span style="color:var(--gold);font-size:10px">BOSS</span>':''}`;
+  $('enemyHpFill').style.width=(e.hp/e.hpmax*100)+'%';
+  $('enemyHpTxt').textContent=`${e.hp} / ${e.hpmax}`;
+  const next=e.sc[e.pi%e.sc.length];
+  const icon={atk:'⚔ '+Math.round(e.atk*e.atkMul*(e.charged?2.5:1)),
+    smash:'💥 '+Math.round(e.atk*2.5*e.atkMul),charge:'💢 溜め',garb1:'🧱 ガレキ1',garb2:'🧱 ガレキ2',
+    curse:'🌀 呪い',heal:'✨ 回復',shield:'🛡 守り',drain:'🩸 '+Math.round(e.atk*e.atkMul*(e.charged?2.5:1))}[next]||next;
+  $('intentTxt').textContent='次: '+icon;
+  const pips=$('pips');pips.innerHTML='';
+  const total=e.int+(has('hourglass')?1:0);
+  for(let i=0;i<Math.max(total,e.cd);i++){
+    const p=document.createElement('span');p.className='pip'+(i<e.cd?' on':'');pips.appendChild(p);
+  }
+  const st=[];
+  if(e.charged)st.push('💢力を溜めている！');
+  if(e.shield)st.push('🛡守りの構え');
+  if(e.atkMul<1)st.push('⬇攻撃力低下');
+  if(battle.curse>0)st.push(`🌀呪い(あと${battle.curse}ドロップ 与ダメ-30%)`);
+  $('enemyStatus').textContent=st.join('　');
+}
+function renderTeamStatus(){
+  $('teamStatus').textContent=battle&&battle.allyShield>0?('🛡×'+battle.allyShield):'';
+}
+function updateTeamHP(){
+  if(!run)return;
+  $('teamHpFill').style.width=clamp(run.hp/run.hpmax*100,0,100)+'%';
+  $('teamHpTxt').textContent=`${Math.max(0,run.hp)} / ${run.hpmax}`;
+}
+function renderSlots(){
+  const wrap=$('slots');wrap.innerHTML='';
+  for(let i=0;i<4;i++){
+    const m=run.team[i];
+    const d=document.createElement('div');
+    if(!m){d.className='slot empty';d.innerHTML='<div class="semo">·</div><div class="snm">-</div><div class="cwrap"><div class="cfill"></div></div>';}
+    else{
+      const ready=m.charge>=m.sk.need;
+      d.className='slot'+(ready?' ready':'');
+      d.innerHTML=`<div class="semo">${m.emo}</div><div class="snm">${ready?'▶'+m.sk.nm:m.nm}</div>
+        <div class="cwrap"><div class="cfill" style="width:${m.charge/m.sk.need*100}%"></div></div>`;
+      d.addEventListener('pointerdown',ev=>{ev.preventDefault();useSkill(i);});
+    }
+    wrap.appendChild(d);
+  }
+}
+function renderQuickCombo(){
+  if(!battle)return;
+  $('quickFill').style.width=clamp(battle.quick,0,200)/2+'%';
+  $('comboTxt').textContent=battle.combo>1?`${battle.combo} COMBO!`:(battle.b2b?'B2B待機':'');
+}
+function drawMini(c,t){
+  const g=c.getContext('2d');
+  g.clearRect(0,0,c.width,c.height);
+  if(!t)return;
+  const cells=SHAPES[t][0];
+  const s=9,ox=(c.width-4*s)/2,oy=(c.height-2*s)/2-(t==='I'?4:0);
+  g.fillStyle=COLORS[t];
+  cells.forEach(([x,y])=>{g.fillRect(ox+x*s,oy+y*s,s-1,s-1);});
+}
+function renderHold(){drawMini($('holdC'),battle?battle.hold:null);}
+function renderNext(){
+  const cs=document.querySelectorAll('.nx');
+  cs.forEach((c,i)=>drawMini(c,battle?battle.queue[i]:null));
+}
+function banner(txt){
+  const b=$('msgBanner');b.textContent=txt;
+  b.classList.remove('show');void b.offsetWidth;b.classList.add('show');
+}
+function drawBoard(){
+  ctx.clearRect(0,0,COLS*CELL,ROWS*CELL);
+  /* grid */
+  ctx.strokeStyle='rgba(120,100,180,0.08)';ctx.lineWidth=1;
+  for(let x=1;x<COLS;x++){ctx.beginPath();ctx.moveTo(x*CELL+.5,0);ctx.lineTo(x*CELL+.5,ROWS*CELL);ctx.stroke();}
+  for(let y=1;y<ROWS;y++){ctx.beginPath();ctx.moveTo(0,y*CELL+.5);ctx.lineTo(COLS*CELL,y*CELL+.5);ctx.stroke();}
+  /* stack */
+  for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
+    const c=battle.board[y][x];
+    if(c)drawCell(x,y,c,false);
+  }
+  const p=battle.piece;
+  if(p){
+    const gy=ghostY();
+    for(const [dx,dy] of SHAPES[p.t][p.rot]){
+      const y=gy+dy;if(y>=0)drawCell(p.x+dx,y,COLORS[p.t],true);
+    }
+    for(const [dx,dy] of SHAPES[p.t][p.rot]){
+      const y=p.y+dy;if(y>=0)drawCell(p.x+dx,y,COLORS[p.t],false);
+    }
+  }
+}
+function drawCell(x,y,color,ghost){
+  const px=x*CELL,py=y*CELL;
+  if(ghost){
+    ctx.strokeStyle=color;ctx.globalAlpha=0.35;ctx.lineWidth=2;
+    ctx.strokeRect(px+2,py+2,CELL-4,CELL-4);ctx.globalAlpha=1;
+    return;
+  }
+  ctx.fillStyle=color;
+  ctx.fillRect(px+1,py+1,CELL-2,CELL-2);
+  ctx.fillStyle='rgba(255,255,255,0.28)';
+  ctx.fillRect(px+1,py+1,CELL-2,3);
+  ctx.fillStyle='rgba(0,0,0,0.3)';
+  ctx.fillRect(px+1,py+CELL-4,CELL-2,3);
+}
+
+/* ============ game loop ============ */
+let lastT=0;
+function loop(t){
+  requestAnimationFrame(loop);
+  const dt=Math.min(60,t-lastT);lastT=t;
+  if(state!=='battle'||!battle||battle.over)return;
+  if($('overlay').classList.contains('show')){drawBoard();return;}
+  const p=battle.piece;
+  if(p){
+    const grounded=collide(p.t,p.rot,p.x,p.y+1);
+    if(grounded){
+      battle.lockAcc+=dt;
+      if(battle.lockAcc>450)lockPiece();
+    }else{
+      battle.gravAcc+=dt;
+      const th=battle.soft?45:800;
+      while(battle.gravAcc>th&&battle.piece){
+        battle.gravAcc-=th;
+        if(!tryMove(0,1))break;
+      }
+    }
+  }
+  if(battle&&!battle.over)drawBoard();
+}
+requestAnimationFrame(loop);
+
+/* ============ input ============ */
+function bindHold(btn,fnDown,fnUp,repeat){
+  let iv=null,to=null;
+  const down=e=>{e.preventDefault();ensureAC();fnDown();
+    if(repeat){to=setTimeout(()=>{iv=setInterval(fnDown,110);},220);}};
+  const up=e=>{if(to)clearTimeout(to);if(iv)clearInterval(iv);iv=to=null;if(fnUp)fnUp();};
+  btn.addEventListener('pointerdown',down);
+  btn.addEventListener('pointerup',up);
+  btn.addEventListener('pointercancel',up);
+  btn.addEventListener('pointerleave',up);
+}
+bindHold($('btnL'),()=>inB()&&tryMove(-1,0),null,true);
+bindHold($('btnR'),()=>inB()&&tryMove(1,0),null,true);
+bindHold($('btnD'),()=>{if(inB())battle.soft=true;},()=>{if(battle)battle.soft=false;},false);
+$('btnRot').addEventListener('pointerdown',e=>{e.preventDefault();ensureAC();if(inB())tryRotate(1);});
+$('btnDrop').addEventListener('pointerdown',e=>{e.preventDefault();ensureAC();if(inB())hardDrop();});
+$('holdC').parentElement.addEventListener('pointerdown',e=>{e.preventDefault();if(inB())doHold();});
+function inB(){return state==='battle'&&battle&&!battle.over&&!$('overlay').classList.contains('show');}
+/* canvas gestures */
+let g={on:false,x0:0,y0:0,t0:0,accX:0,moved:false};
+cv.addEventListener('pointerdown',e=>{
+  e.preventDefault();ensureAC();
+  g={on:true,x0:e.clientX,y0:e.clientY,t0:performance.now(),accX:0,moved:false};
+});
+cv.addEventListener('pointermove',e=>{
+  if(!g.on||!inB())return;
+  const dx=e.clientX-g.x0;
+  g.accX+=dx;g.x0=e.clientX;
+  while(g.accX>CELL*0.8){g.accX-=CELL*0.8;if(tryMove(1,0))g.moved=true;else g.accX=0;}
+  while(g.accX<-CELL*0.8){g.accX+=CELL*0.8;if(tryMove(-1,0))g.moved=true;else g.accX=0;}
+});
+function gestureEnd(e){
+  if(!g.on)return;g.on=false;
+  if(!inB())return;
+  const dt=performance.now()-g.t0;
+  const dy=e.clientY-g.y0;
+  if(dy>60&&dt<300){hardDrop();return;}
+  if(!g.moved&&dt<280&&Math.abs(dy)<14){tryRotate(1);}
+}
+cv.addEventListener('pointerup',gestureEnd);
+cv.addEventListener('pointercancel',()=>{g.on=false;});
+document.addEventListener('contextmenu',e=>e.preventDefault());
+/* keyboard */
+document.addEventListener('keydown',e=>{
+  if(!inB()){if(e.key==='Escape')closeOverlay();return;}
+  switch(e.key){
+    case 'ArrowLeft':e.preventDefault();tryMove(-1,0);break;
+    case 'ArrowRight':e.preventDefault();tryMove(1,0);break;
+    case 'ArrowDown':e.preventDefault();battle.soft=true;break;
+    case 'ArrowUp':case 'x':case 'X':e.preventDefault();tryRotate(1);break;
+    case 'z':case 'Z':e.preventDefault();tryRotate(-1);break;
+    case ' ':e.preventDefault();hardDrop();break;
+    case 'c':case 'C':e.preventDefault();doHold();break;
+  }
+});
+document.addEventListener('keyup',e=>{if(e.key==='ArrowDown'&&battle)battle.soft=false;});
+
+updateTopSafe();
+setBGM('title');
+</script>
+</body>
+</html>
