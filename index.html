@@ -5,146 +5,181 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>ミノボーンズ MINOBORNES</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DotGothic16&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Kiwi+Maru:wght@400;500&family=DotGothic16&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#0c0913; --panel:#171226; --panel2:#1e1733; --line:#342a55;
-  --ink:#d8d2e8; --dim:#8f86ab; --gold:#d9a441; --gold2:#f5cf7a;
-  --blood:#e8544f; --life:#56d67c; --water:#54b8ff;
-  --fire:#ff7a52; --wood:#63d96f; --light:#ffd966;
+  --bg:#151022; --panel:#231b3d; --panel2:#2c2350; --line:#463a75;
+  --ink:#efeaff; --dim:#a89ecf; --gold:#f0b64f; --gold2:#ffd98a;
+  --blood:#ff6b7a; --life:#6ee7a0; --pink:#ff9ecf;
+  --fire:#ff8f6b; --water:#6fc3ff; --wood:#7fe39a; --light:#ffd97a; --gray:#8d87a3;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
 html,body{height:100%;}
 body{
   background:var(--bg); color:var(--ink);
-  font-family:'DotGothic16','Hiragino Kaku Gothic ProN','Yu Gothic',sans-serif;
+  font-family:'Kiwi Maru','Hiragino Maru Gothic ProN','Yu Gothic',sans-serif;
   overflow:hidden; touch-action:manipulation;
   user-select:none;-webkit-user-select:none;
 }
 #app{height:100dvh;display:flex;flex-direction:column;max-width:520px;margin:0 auto;position:relative;}
-/* vignette + scanline mood */
 #app::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:50;
-  background:radial-gradient(ellipse at center,transparent 55%,rgba(0,0,0,.45) 100%),
-  repeating-linear-gradient(0deg,rgba(255,255,255,.015) 0 1px,transparent 1px 3px);}
+  background:radial-gradient(ellipse at center,transparent 60%,rgba(5,0,20,.4) 100%);}
+.hidden{display:none!important;}
 /* ---------- top bar ---------- */
 #topbar{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--panel);
   border-bottom:1px solid var(--line);z-index:5;}
-#floorLabel{font-size:13px;color:var(--gold2);letter-spacing:1px;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#floorLabel{font-size:13px;color:var(--gold2);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 #goldLabel{font-size:13px;color:var(--gold);}
-.iconbtn{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:6px;
-  font-size:14px;padding:3px 8px;cursor:pointer;font-family:inherit;}
-.iconbtn:active{background:var(--line);}
+.iconbtn{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:10px;
+  font-size:14px;padding:4px 9px;cursor:pointer;font-family:inherit;transition:transform .08s;}
+.iconbtn:active{transform:scale(.92);}
 /* ---------- screens ---------- */
 .screen{display:none;flex:1;flex-direction:column;overflow-y:auto;padding:14px;position:relative;}
 .screen.active{display:flex;}
-h1.logo{font-size:34px;text-align:center;color:var(--gold2);letter-spacing:4px;
-  text-shadow:0 0 18px rgba(217,164,65,.5);margin-top:10vh;}
+h1.logo{font-size:33px;text-align:center;color:var(--gold2);letter-spacing:4px;
+  text-shadow:0 0 20px rgba(240,182,79,.55);margin-top:7vh;font-family:'DotGothic16','Kiwi Maru',sans-serif;}
 .logo small{display:block;font-size:12px;color:var(--dim);letter-spacing:6px;margin-top:6px;}
-.flavor{color:var(--dim);font-size:12px;line-height:1.9;text-align:center;margin:18px 8px;}
-.bigbtn{display:block;margin:14px auto;padding:13px 34px;font-size:16px;font-family:inherit;
-  background:linear-gradient(180deg,#2a2145,#1a1430);border:1px solid var(--gold);color:var(--gold2);
-  border-radius:8px;letter-spacing:3px;cursor:pointer;box-shadow:0 0 14px rgba(217,164,65,.25);}
-.bigbtn:active{transform:translateY(1px);}
-.subtxt{text-align:center;color:var(--dim);font-size:11px;margin-top:4px;}
+.flavor{color:var(--dim);font-size:12px;line-height:1.9;text-align:center;margin:16px 8px;}
+.bigbtn{display:block;margin:12px auto;padding:13px 34px;font-size:16px;font-family:inherit;
+  background:linear-gradient(180deg,#3a2d63,#241b45);border:1.5px solid var(--gold);color:var(--gold2);
+  border-radius:16px;letter-spacing:3px;cursor:pointer;box-shadow:0 4px 16px rgba(240,182,79,.28);transition:transform .08s;}
+.bigbtn:active{transform:scale(.95);}
+.subtxt{text-align:center;color:var(--dim);font-size:11px;margin-top:4px;line-height:1.8;}
+#soulsLabel{text-align:center;font-size:14px;color:#b9a6ff;margin-top:10px;}
 /* cards */
 .cardrow{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:10px 12px;
-  display:flex;gap:12px;align-items:center;cursor:pointer;text-align:left;font-family:inherit;color:var(--ink);}
-.card:active{background:var(--panel2);}
+.card{background:var(--panel);border:1.5px solid var(--line);border-radius:16px;padding:10px 12px;
+  display:flex;gap:12px;align-items:center;cursor:pointer;text-align:left;font-family:inherit;color:var(--ink);
+  transition:transform .08s;position:relative;overflow:hidden;}
+.card:active{transform:scale(.97);}
 .card.disabled{opacity:.4;pointer-events:none;}
-.card .emo{font-size:34px;width:44px;text-align:center;flex:none;filter:drop-shadow(0 0 6px rgba(0,0,0,.8));}
+.card .emo{font-size:34px;width:44px;text-align:center;flex:none;filter:drop-shadow(0 3px 5px rgba(0,0,0,.6));}
 .card .body{flex:1;min-width:0;}
 .card .t{font-size:14px;color:var(--gold2);margin-bottom:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
 .card .d{font-size:11px;color:var(--dim);line-height:1.6;}
-.chip{font-size:10px;border-radius:4px;padding:1px 5px;color:#111;font-weight:bold;}
+.chip{font-size:10px;border-radius:6px;padding:1px 6px;color:#241b45;font-weight:bold;}
 .chip.fire{background:var(--fire);} .chip.water{background:var(--water);}
 .chip.wood{background:var(--wood);} .chip.light{background:var(--light);}
 .price{color:var(--gold);font-size:12px;flex:none;}
 h2.sect{font-size:16px;color:var(--gold2);text-align:center;letter-spacing:2px;margin:8px 0 2px;}
 .sectsub{font-size:11px;color:var(--dim);text-align:center;margin-bottom:6px;line-height:1.7;}
+/* rarity auras */
+.aura-n{border-color:var(--line);}
+.aura-r{border-color:var(--water);box-shadow:0 0 14px rgba(111,195,255,.45);}
+.aura-sr{border-color:var(--gold);box-shadow:0 0 18px rgba(240,182,79,.6);animation:pulseG 1.2s infinite;}
+.aura-ur{border-width:2px;border-color:#fff;box-shadow:0 0 22px rgba(255,255,255,.7);
+  background:linear-gradient(60deg,#3a2d63,#4b2d5e,#2d4b63,#3a2d63);background-size:300% 300%;animation:rainbowBG 2s linear infinite;}
+@keyframes rainbowBG{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+@keyframes pulseG{0%,100%{box-shadow:0 0 10px rgba(240,182,79,.4);}50%{box-shadow:0 0 22px rgba(240,182,79,.9);}}
 /* ---------- battle layout ---------- */
 #scr-battle{padding:0;overflow:hidden;}
-#enemyPanel{position:relative;background:linear-gradient(180deg,#241a3d,#171226);
-  border-bottom:1px solid var(--line);padding:8px 12px 9px;display:flex;gap:12px;align-items:center;min-height:92px;}
-#enemyEmo{font-size:52px;line-height:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,.8));transition:transform .1s;}
-#enemyEmo.hit{transform:scale(.86) rotate(-6deg);}
+#enemyPanel{position:relative;background:linear-gradient(180deg,#2e2352,#231b3d);
+  border-bottom:1px solid var(--line);padding:7px 12px 7px;display:flex;gap:12px;align-items:center;min-height:96px;}
+#enemyEmo{font-size:50px;line-height:1;filter:drop-shadow(0 4px 8px rgba(0,0,0,.7));transition:transform .1s;animation:bob 2.6s ease-in-out infinite;}
+@keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+#enemyEmo.hit{animation:none;transform:scale(.82) rotate(-8deg);}
 #enemyInfo{flex:1;min-width:0;}
-#enemyName{font-size:14px;color:var(--ink);display:flex;gap:6px;align-items:center;}
-.hpwrap{height:12px;background:#0a0812;border:1px solid var(--line);border-radius:6px;overflow:hidden;margin:5px 0 4px;position:relative;}
-.hpfill{height:100%;background:linear-gradient(90deg,#a33,#e8544f);transition:width .25s;}
-.hptxt{position:absolute;inset:0;font-size:9px;text-align:center;line-height:11px;color:#fff;text-shadow:0 1px 2px #000;}
+#enemyName{font-size:13px;color:var(--ink);display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.hpwrap{height:13px;background:#120d22;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:4px 0 4px;position:relative;}
+.hpfill{height:100%;background:linear-gradient(90deg,#d14b6a,#ff8f9f);transition:width .25s;border-radius:8px;}
+.hptxt{position:absolute;inset:0;font-size:9px;text-align:center;line-height:12px;color:#fff;text-shadow:0 1px 2px #000;}
 #intentRow{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gold2);}
-#pips{display:flex;gap:3px;}
-.pip{width:9px;height:9px;border-radius:50%;background:#3a2f5e;border:1px solid var(--line);}
-.pip.on{background:var(--gold);box-shadow:0 0 6px var(--gold);}
+#timeWrap{flex:1;height:7px;background:#120d22;border:1px solid var(--line);border-radius:5px;overflow:hidden;max-width:110px;}
+#timeFill{height:100%;width:100%;background:linear-gradient(90deg,#8f7bd8,#c3b3ff);border-radius:5px;}
 #enemyStatus{font-size:10px;color:var(--dim);margin-top:2px;min-height:12px;}
+/* ult cast */
+#castRow{margin-top:3px;background:#3d1230;border:1.5px solid var(--blood);border-radius:10px;padding:3px 8px;
+  font-size:12px;color:#ffd2da;animation:pulseR .7s infinite;}
+@keyframes pulseR{0%,100%{box-shadow:0 0 6px rgba(255,107,122,.4);}50%{box-shadow:0 0 16px rgba(255,107,122,.95);}}
+#castTop{display:flex;align-items:center;gap:6px;}
+#castClock{margin-left:auto;font-family:'DotGothic16',monospace;font-size:15px;color:#fff;}
+.breakwrap{height:6px;background:#120d22;border-radius:4px;overflow:hidden;margin-top:2px;}
+#castBreakFill{height:100%;width:0%;background:linear-gradient(90deg,#6ee7a0,#c8ffde);border-radius:4px;transition:width .15s;}
 #fxLayer{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
-.float{position:absolute;font-size:22px;color:var(--gold2);text-shadow:0 0 8px rgba(217,164,65,.8),0 2px 3px #000;
-  animation:floatUp .9s ease-out forwards;font-weight:bold;white-space:nowrap;}
-.float.heal{color:var(--life);text-shadow:0 0 8px rgba(86,214,124,.8);}
-.float.bad{color:var(--blood);text-shadow:0 0 8px rgba(232,84,79,.8);}
+.float{position:absolute;font-size:22px;color:var(--gold2);text-shadow:0 0 8px rgba(240,182,79,.8),0 2px 3px #000;
+  animation:floatUp .9s ease-out forwards;font-weight:bold;white-space:nowrap;font-family:'DotGothic16',sans-serif;}
+.float.heal{color:var(--life);text-shadow:0 0 8px rgba(110,231,160,.8);}
+.float.bad{color:var(--blood);text-shadow:0 0 8px rgba(255,107,122,.8);}
 .float.small{font-size:13px;}
-@keyframes floatUp{0%{transform:translateY(0);opacity:1;}100%{transform:translateY(-46px);opacity:0;}}
+.float.big{font-size:30px;}
+@keyframes floatUp{0%{transform:translateY(0) scale(.6);opacity:1;}20%{transform:translateY(-8px) scale(1.15);}100%{transform:translateY(-50px) scale(1);opacity:0;}}
 #boardRow{flex:1;display:flex;gap:8px;padding:8px;min-height:0;align-items:stretch;}
-#boardArea{flex:1;display:flex;align-items:center;justify-content:center;min-width:0;position:relative;}
-#board{background:#0a0714;border:2px solid var(--line);border-radius:6px;touch-action:none;
-  box-shadow:inset 0 0 30px rgba(0,0,0,.9),0 0 20px rgba(20,10,50,.6);}
-#sideRail{width:78px;flex:none;display:flex;flex-direction:column;gap:8px;}
-.railbox{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:5px;text-align:center;}
+#boardArea{flex:1;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;position:relative;overflow:hidden;}
+#board{background:#120c20;border:2px solid var(--line);border-radius:12px;touch-action:none;
+  box-shadow:inset 0 0 26px rgba(0,0,0,.8);}
+#sideRail{width:76px;flex:none;display:flex;flex-direction:column;gap:7px;overflow:hidden;}
+.railbox{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:5px;text-align:center;}
 .railbox .lbl{font-size:9px;color:var(--dim);letter-spacing:2px;margin-bottom:3px;}
 .railbox canvas{display:block;margin:0 auto;}
-#quickWrap{height:8px;background:#0a0812;border:1px solid var(--line);border-radius:4px;overflow:hidden;}
-#quickFill{height:100%;width:0%;background:linear-gradient(90deg,#3fa9ff,#8ee3ff);transition:width .2s;}
-#comboTxt{font-size:11px;color:var(--gold2);min-height:14px;margin-top:3px;}
-#msgBanner{position:absolute;left:0;right:0;top:38%;text-align:center;font-size:20px;color:var(--gold2);
-  text-shadow:0 0 12px rgba(217,164,65,.9),0 2px 4px #000;pointer-events:none;opacity:0;z-index:20;letter-spacing:2px;}
+#quickWrap{height:8px;background:#120d22;border:1px solid var(--line);border-radius:5px;overflow:hidden;}
+#quickFill{height:100%;width:0%;background:linear-gradient(90deg,#4fb6ff,#a5e6ff);transition:width .2s;border-radius:5px;}
+#comboTxt{font-size:11px;color:var(--gold2);min-height:14px;margin-top:3px;font-family:'DotGothic16',sans-serif;}
+#msgBanner{position:absolute;left:0;right:0;top:36%;text-align:center;font-size:21px;color:var(--gold2);
+  text-shadow:0 0 14px rgba(240,182,79,.9),0 2px 4px #000;pointer-events:none;opacity:0;z-index:20;letter-spacing:2px;}
 #msgBanner.show{animation:banner 1.1s ease forwards;}
-@keyframes banner{0%{opacity:0;transform:scale(.7);}15%{opacity:1;transform:scale(1.05);}30%{transform:scale(1);}80%{opacity:1;}100%{opacity:0;}}
+@keyframes banner{0%{opacity:0;transform:scale(.6);}15%{opacity:1;transform:scale(1.12);}30%{transform:scale(1);}80%{opacity:1;}100%{opacity:0;}}
 /* team */
-#teamPanel{background:var(--panel);border-top:1px solid var(--line);padding:6px 10px 4px;}
+#teamPanel{background:var(--panel);border-top:1px solid var(--line);padding:5px 10px 4px;}
+#lvRow{display:flex;align-items:center;gap:8px;margin-bottom:4px;}
+#lvBadge{font-size:11px;color:#241b45;background:var(--gold2);border-radius:8px;padding:0 8px;font-weight:bold;white-space:nowrap;}
+#expWrap{flex:1;height:6px;background:#120d22;border:1px solid var(--line);border-radius:4px;overflow:hidden;}
+#expFill{height:100%;width:0%;background:linear-gradient(90deg,#b9a6ff,#e3d9ff);border-radius:4px;transition:width .25s;}
 #teamHpRow{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
-#teamHpWrap{flex:1;height:14px;background:#0a0812;border:1px solid var(--line);border-radius:7px;overflow:hidden;position:relative;}
-#teamHpFill{height:100%;background:linear-gradient(90deg,#2e9e57,#56d67c);transition:width .25s;}
+#teamHpWrap{flex:1;height:14px;background:#120d22;border:1px solid var(--line);border-radius:8px;overflow:hidden;position:relative;}
+#teamHpFill{height:100%;background:linear-gradient(90deg,#37b06b,#7dedae);transition:width .25s;border-radius:8px;}
 #teamHpTxt{position:absolute;inset:0;text-align:center;font-size:9px;line-height:13px;color:#fff;text-shadow:0 1px 2px #000;}
-#teamStatus{font-size:11px;min-width:40px;text-align:right;color:var(--gold2);}
+#teamStatus{font-size:11px;min-width:36px;text-align:right;color:var(--gold2);}
 #slots{display:flex;gap:6px;}
-.slot{flex:1;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:4px 2px 3px;
-  text-align:center;cursor:pointer;position:relative;transition:box-shadow .2s;}
-.slot .semo{font-size:24px;line-height:1.15;}
+.slot{flex:1;background:var(--panel2);border:1.5px solid var(--line);border-radius:14px;padding:4px 2px 3px;
+  text-align:center;cursor:pointer;position:relative;transition:box-shadow .2s,transform .1s;}
+.slot:active{transform:scale(.93);}
+.slot .semo{font-size:23px;line-height:1.15;}
 .slot .snm{font-size:8px;color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.slot .cwrap{height:5px;background:#0a0812;border-radius:3px;overflow:hidden;margin:3px 3px 0;}
-.slot .cfill{height:100%;background:#7a6bd6;transition:width .2s;}
-.slot.ready{border-color:var(--gold);box-shadow:0 0 10px rgba(217,164,65,.55);animation:pulse 1.2s infinite;}
+.slot .cwrap{height:5px;background:#120d22;border-radius:3px;overflow:hidden;margin:3px 3px 0;}
+.slot .cfill{height:100%;background:#8f7bd8;transition:width .2s;border-radius:3px;}
+.slot.ready{border-color:var(--gold);animation:readyB 1s infinite;}
 .slot.ready .cfill{background:var(--gold);}
 .slot.empty{opacity:.25;cursor:default;}
-@keyframes pulse{0%,100%{box-shadow:0 0 6px rgba(217,164,65,.4);}50%{box-shadow:0 0 14px rgba(217,164,65,.85);}}
+@keyframes readyB{0%,100%{box-shadow:0 0 6px rgba(240,182,79,.45);transform:translateY(0);}50%{box-shadow:0 0 16px rgba(240,182,79,.95);transform:translateY(-2px);}}
 /* controls */
 #controls{display:flex;gap:6px;padding:6px 10px calc(8px + env(safe-area-inset-bottom));background:var(--panel);}
-.ctl{flex:1;padding:13px 0;font-size:19px;background:var(--panel2);border:1px solid var(--line);
-  border-radius:9px;color:var(--ink);cursor:pointer;touch-action:none;font-family:inherit;}
-.ctl:active{background:var(--line);}
-#btnDrop{flex:1.4;color:var(--gold2);border-color:#6a5330;}
-/* map doors */
-.door{background:linear-gradient(180deg,#201941,#151027);}
+.ctl{flex:1;padding:13px 0;font-size:19px;background:var(--panel2);border:1.5px solid var(--line);
+  border-radius:14px;color:var(--ink);cursor:pointer;touch-action:none;font-family:inherit;transition:transform .06s;}
+.ctl:active{transform:scale(.93);background:var(--line);}
+#btnDrop{flex:1.4;color:var(--gold2);border-color:#7a6330;}
+.door{background:linear-gradient(180deg,#2c2350,#1c1536);}
 /* overlay */
-#overlay{position:absolute;inset:0;background:rgba(5,3,10,.82);z-index:60;display:none;
-  align-items:center;justify-content:center;padding:20px;}
+#overlay{position:absolute;inset:0;background:rgba(8,4,20,.85);z-index:60;display:none;
+  align-items:center;justify-content:center;padding:18px;}
 #overlay.show{display:flex;}
-#overlayBox{background:var(--panel);border:1px solid var(--gold);border-radius:12px;max-width:400px;width:100%;
-  max-height:82dvh;overflow-y:auto;padding:16px;box-shadow:0 0 30px rgba(217,164,65,.25);}
+#overlayBox{background:var(--panel);border:1.5px solid var(--gold);border-radius:18px;max-width:400px;width:100%;
+  max-height:84dvh;overflow-y:auto;padding:16px;box-shadow:0 0 30px rgba(240,182,79,.3);}
 #overlayBox h3{color:var(--gold2);font-size:15px;text-align:center;margin-bottom:10px;letter-spacing:2px;}
 #overlayBox p{font-size:12px;color:var(--ink);line-height:1.9;margin-bottom:8px;}
 #overlayBox .dim{color:var(--dim);font-size:11px;}
+/* gacha slot */
+#reels{display:flex;justify-content:center;gap:8px;margin:14px 0;}
+.reel{width:64px;height:64px;background:#120d22;border:2px solid var(--line);border-radius:14px;
+  font-size:38px;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 12px rgba(0,0,0,.8);}
+.reel.stopped{border-color:var(--gold);animation:reelPop .25s;}
+@keyframes reelPop{0%{transform:scale(1.25);}100%{transform:scale(1);}}
+#reachTxt{text-align:center;font-size:16px;color:var(--blood);min-height:22px;font-family:'DotGothic16',sans-serif;letter-spacing:2px;}
+.urflash{position:absolute;inset:0;z-index:70;pointer-events:none;
+  background:linear-gradient(60deg,rgba(255,120,120,.35),rgba(255,220,120,.35),rgba(140,255,170,.35),rgba(120,190,255,.35),rgba(220,140,255,.35));
+  background-size:400% 400%;animation:rainbowBG 1s linear infinite,fadeout 2.4s forwards;}
+@keyframes fadeout{0%{opacity:1;}80%{opacity:1;}100%{opacity:0;}}
 .shake{animation:shake .3s;}
-@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-5px);}75%{transform:translateX(5px);}}
+@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
 .hurtflash{animation:hurtf .35s;}
-@keyframes hurtf{0%{background:rgba(200,30,30,.35);}100%{background:transparent;}}
+@keyframes hurtf{0%{background:rgba(220,40,60,.35);}100%{background:transparent;}}
 #hurtLayer{position:absolute;inset:0;pointer-events:none;z-index:40;}
 .statline{font-size:13px;line-height:2.1;color:var(--ink);text-align:center;}
 .statline b{color:var(--gold2);}
-.endEmo{font-size:60px;text-align:center;margin-top:6vh;filter:drop-shadow(0 0 16px rgba(0,0,0,.9));}
-.relicrow{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:6px;}
-.relicchip{font-size:11px;background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:2px 6px;color:var(--gold2);}
+.endEmo{font-size:58px;text-align:center;margin-top:5vh;filter:drop-shadow(0 0 16px rgba(0,0,0,.9));}
+.relicrow{display:flex;flex-wrap:wrap;gap:4px;justify-content:center;margin-top:8px;}
+.relicchip{font-size:11px;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:2px 7px;color:var(--gold2);}
+.confetti{position:absolute;top:-10px;font-size:14px;z-index:65;pointer-events:none;animation:confall 1.3s ease-in forwards;}
+@keyframes confall{0%{transform:translateY(0) rotate(0);opacity:1;}100%{transform:translateY(70vh) rotate(360deg);opacity:0;}}
 </style>
 </head>
 <body>
@@ -159,27 +194,30 @@ h2.sect{font-size:16px;color:var(--gold2);text-align:center;letter-spacing:2px;m
   <!-- TITLE -->
   <section class="screen active" id="scr-title">
     <h1 class="logo">ミノボーンズ<small>— MINOBORNES —</small></h1>
-    <p class="flavor">もっとも古く、忌まわしき塔。<br>
-    その地下では 今日も“ミノ”が降り続ける。<br><br>
-    落ちものを消して魔物を討ち、<br>
-    仲間と遺物を拾い、地下十階の屍竜を狩れ。<br>
-    <span style="color:#6f6790">――だが、倒れれば全てを失う。</span></p>
-    <button class="bigbtn" id="btnStart">迷宮に潜る</button>
-    <p class="subtxt">ライン消し＝攻撃のローグライク落ちものRPG</p>
+    <p class="flavor">もっとも古く、ちょっとかわいい呪われた塔。<br>
+    その地下では今日も「カケラ」が降り続ける。<br><br>
+    カケラを消して魔物を討ち、仲間と遺物を集め、<br>
+    地下十階の屍竜を狩れ。<br>
+    <span style="color:#7d72a8">倒れても魂は残る。何度でも、強くなって帰ってこい。</span></p>
+    <div id="soulsLabel">💠 魂: 0</div>
+    <button class="bigbtn" id="btnStart">迷宮にもぐる</button>
+    <button class="bigbtn" id="btnShrine" style="font-size:13px;padding:9px 22px;">💠 転生の祭壇（永続強化）</button>
+    <p class="subtxt">ライン消し＝こうげき の ローグライク落ちものRPG</p>
   </section>
 
   <!-- STARTER -->
   <section class="screen" id="scr-starter">
-    <h2 class="sect">最初の相棒を選べ</h2>
-    <p class="sectsub">道中で仲間は最大4体まで増える。<br>スキルはミノを落とすたびに溜まる。</p>
+    <h2 class="sect">さいしょの相棒をえらぼう</h2>
+    <p class="sectsub">仲間は最大4体。スキルはカケラを置くたびたまる。</p>
     <div class="cardrow" id="starterCards"></div>
   </section>
 
   <!-- MAP -->
   <section class="screen" id="scr-map">
     <h2 class="sect" id="mapTitle">B1F</h2>
-    <p class="sectsub" id="mapFlavor">進む扉を選べ。</p>
+    <p class="sectsub" id="mapFlavor">すすむ扉をえらぼう。</p>
     <div class="cardrow" id="doorRow"></div>
+    <button class="bigbtn" id="gachaBtn" style="font-size:14px;padding:10px 24px;">🎰 骨ガチャをまわす (45G)</button>
     <div class="relicrow" id="relicRow"></div>
   </section>
 
@@ -190,7 +228,11 @@ h2.sect{font-size:16px;color:var(--gold2);text-align:center;letter-spacing:2px;m
       <div id="enemyInfo">
         <div id="enemyName">ゴブリン</div>
         <div class="hpwrap"><div class="hpfill" id="enemyHpFill"></div><div class="hptxt" id="enemyHpTxt"></div></div>
-        <div id="intentRow"><span id="intentTxt">⚔ 8</span><span id="pips"></span></div>
+        <div id="intentRow"><span id="intentTxt">⚔ 8</span><div id="timeWrap"><div id="timeFill"></div></div></div>
+        <div id="castRow" class="hidden">
+          <div id="castTop">⚡<span id="castName">必殺技</span><span id="castClock">9.0</span></div>
+          <div class="breakwrap"><div id="castBreakFill"></div></div>
+        </div>
         <div id="enemyStatus"></div>
       </div>
       <div id="fxLayer"></div>
@@ -209,6 +251,7 @@ h2.sect{font-size:16px;color:var(--gold2);text-align:center;letter-spacing:2px;m
       </div>
     </div>
     <div id="teamPanel">
+      <div id="lvRow"><span id="lvBadge">Lv1</span><div id="expWrap"><div id="expFill"></div></div></div>
       <div id="teamHpRow">
         <div id="teamHpWrap"><div id="teamHpFill"></div><div id="teamHpTxt"></div></div>
         <span id="teamStatus"></span>
@@ -246,7 +289,7 @@ h2.sect{font-size:16px;color:var(--gold2);text-align:center;letter-spacing:2px;m
     <h2 class="sect" id="endTitle">力尽きた…</h2>
     <p class="sectsub" id="endFlavor"></p>
     <div class="statline" id="endStats"></div>
-    <button class="bigbtn" id="btnAgain">再び潜る</button>
+    <button class="bigbtn" id="btnAgain">ふたたび潜る</button>
   </section>
 
   <div id="overlay"><div id="overlayBox"></div></div>
@@ -260,6 +303,21 @@ const rnd=n=>Math.floor(Math.random()*n);
 const pick=a=>a[rnd(a.length)];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(i+1);[a[i],a[j]]=[a[j],a[i]];}return a;};
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+
+/* ============ persistent meta (souls) ============ */
+function loadMeta(){
+  try{const s=localStorage.getItem('mb_meta');if(s)return JSON.parse(s);}catch(e){}
+  return {souls:0,up:{atk:0,hp:0,gold:0,gacha:0,exp:0}};
+}
+let meta=loadMeta();
+function saveMeta(){try{localStorage.setItem('mb_meta',JSON.stringify(meta));}catch(e){}}
+const UPGRADES=[
+ {k:'atk',nm:'ごうわんの魂',emo:'💪',d:'仲間全員の初期ATK+1',max:5,cost:l=>20+l*15},
+ {k:'hp',nm:'いのちの魂',emo:'💗',d:'開始時の最大HP+10',max:5,cost:l=>15+l*10},
+ {k:'gold',nm:'あきないの魂',emo:'💰',d:'開始ゴールド+30',max:4,cost:l=>15+l*10},
+ {k:'gacha',nm:'ごううんの魂',emo:'🍀',d:'ガチャのUR率+2%',max:3,cost:l=>30+l*20},
+ {k:'exp',nm:'ちえの魂',emo:'📚',d:'獲得EXP+15%',max:3,cost:l=>20+l*15},
+];
 
 /* ============ audio ============ */
 let AC=null,muted=false;
@@ -287,6 +345,11 @@ const sfx={
   win(){[523,659,784,1046].forEach((f,i)=>tone(f,.14,'square',.11,0,i*0.11));},
   lose(){[330,262,196,131].forEach((f,i)=>tone(f,.2,'sawtooth',.12,0,i*0.16));},
   ui(){tone(440,.04,'sine',.07);},
+  levelup(){[523,659,784,1046,1318].forEach((f,i)=>tone(f,.12,'triangle',.12,0,i*0.09));},
+  reel(){tone(600+rnd(200),.03,'square',.05);},
+  reelstop(){tone(300,.09,'square',.12,-80);},
+  warn(){tone(220,.25,'sawtooth',.14,60);tone(220,.25,'sawtooth',.12,60,.3);},
+  break_(){[784,988,1175,1568].forEach((f,i)=>tone(f,.1,'square',.12,0,i*0.06));},
 };
 document.addEventListener('pointerdown',ensureAC,{once:false});
 $('sndBtn').addEventListener('click',()=>{muted=!muted;$('sndBtn').textContent=muted?'🔇':'🔊';});
@@ -311,7 +374,7 @@ function noise(d=0.15,v=0.1,f=800,q=1,delay=0){
     s.start(t);s.stop(t+d+0.05);
   }catch(e){}
 }
-/* ---- enemy voices (attack cries) ---- */
+/* ---- enemy voices ---- */
 const VOICES={
   fofo(){for(let i=0;i<4;i++)tone(335-i*30,.1,'triangle',.17,-35,i*0.13);},
   kekeke(){for(let i=0;i<3;i++)tone(i%2?580:470,.05,'square',.1,30,i*0.09);},
@@ -327,7 +390,7 @@ const VOICES={
   roar(){tone(75,.8,'sawtooth',.22,-38);noise(.7,.15,250,1,.06);tone(52,.8,'square',.13,-22,.1);},
 };
 function playVoice(v){if(v&&VOICES[v])VOICES[v]();}
-/* ---- BGM: tiny step sequencer ---- */
+/* ---- BGM ---- */
 const NF=n=>440*Math.pow(2,(n-69)/12);
 const __=null;
 const TRACKS={
@@ -368,117 +431,161 @@ setInterval(()=>{
 },80);
 
 /* ============ data ============ */
-const EL={fire:{n:'火',cls:'fire'},water:{n:'水',cls:'water'},wood:{n:'木',cls:'wood'},light:{n:'光',cls:'light'}};
+const EL={fire:{n:'火',cls:'fire',c:'#ff8f6b'},water:{n:'水',cls:'water',c:'#6fc3ff'},wood:{n:'木',cls:'wood',c:'#7fe39a'},light:{n:'光',cls:'light',c:'#ffd97a'}};
+const ELKEYS=['fire','water','wood','light'];
+const GRAYC='#8d87a3';
 const ADV={fire:'wood',wood:'water',water:'fire'};
 function elemMul(a,d){if(a===d)return 1;if(ADV[a]===d)return 1.5;if(ADV[d]===a)return 0.7;return 1;}
 function chip(e){return `<span class="chip ${EL[e].cls}">${EL[e].n}</span>`;}
-
-const COLORS={I:'#41d6e8',O:'#f7d94c',T:'#b96bf0',S:'#6be07a',Z:'#f06b6b',J:'#6b8cf0',L:'#f0a54c',G:'#575170'};
-const SHAPES={
- I:[[[0,1],[1,1],[2,1],[3,1]],[[2,0],[2,1],[2,2],[2,3]],[[0,2],[1,2],[2,2],[3,2]],[[1,0],[1,1],[1,2],[1,3]]],
- O:[[[1,0],[2,0],[1,1],[2,1]],[[1,0],[2,0],[1,1],[2,1]],[[1,0],[2,0],[1,1],[2,1]],[[1,0],[2,0],[1,1],[2,1]]],
- T:[[[1,0],[0,1],[1,1],[2,1]],[[1,0],[1,1],[2,1],[1,2]],[[0,1],[1,1],[2,1],[1,2]],[[1,0],[0,1],[1,1],[1,2]]],
- S:[[[1,0],[2,0],[0,1],[1,1]],[[1,0],[1,1],[2,1],[2,2]],[[1,1],[2,1],[0,2],[1,2]],[[0,0],[0,1],[1,1],[1,2]]],
- Z:[[[0,0],[1,0],[1,1],[2,1]],[[2,0],[1,1],[2,1],[1,2]],[[0,1],[1,1],[1,2],[2,2]],[[1,0],[0,1],[1,1],[0,2]]],
- J:[[[0,0],[0,1],[1,1],[2,1]],[[1,0],[2,0],[1,1],[1,2]],[[0,1],[1,1],[2,1],[2,2]],[[1,0],[1,1],[0,2],[1,2]]],
- L:[[[2,0],[0,1],[1,1],[2,1]],[[1,0],[1,1],[1,2],[2,2]],[[0,1],[1,1],[2,1],[0,2]],[[0,0],[1,0],[1,1],[1,2]]],
+/* runes embedded in pieces */
+const RUNES={
+  heart:{emo:'❤️',w:30,d:'HP4%回復'},
+  sword:{emo:'⚔️',w:25,d:'その攻撃+30%'},
+  coin:{emo:'💰',w:20,d:'+6G'},
+  star:{emo:'⭐',w:15,d:'全員スキル+2'},
+  bomb:{emo:'💣',w:10,d:'追加15ダメージ'},
 };
+function randRune(){let t=0;for(const k in RUNES)t+=RUNES[k].w;let r=Math.random()*t;for(const k in RUNES){r-=RUNES[k].w;if(r<0)return k;}return 'heart';}
+/* ---- original piece set 「カケラ」(polyomino mix / not the standard 7) ---- */
+const BASE_SHAPES={
+  D1:{c:[[0,0]],w:7},
+  I2:{c:[[0,0],[1,0]],w:15},
+  I3:{c:[[0,0],[1,0],[2,0]],w:15},
+  L3:{c:[[0,0],[0,1],[1,1]],w:16},
+  O4:{c:[[0,0],[1,0],[0,1],[1,1]],w:15},
+  I4:{c:[[0,0],[1,0],[2,0],[3,0]],w:12},
+  P5:{c:[[1,0],[0,1],[1,1],[2,1],[1,2]],w:10},
+  U5:{c:[[0,0],[2,0],[0,1],[1,1],[2,1]],w:10},
+};
+function rots(cells){
+  const out=[];let cur=cells.map(c=>c.slice());
+  for(let r=0;r<4;r++){
+    const minx=Math.min(...cur.map(c=>c[0])),miny=Math.min(...cur.map(c=>c[1]));
+    out.push(cur.map(([x,y])=>[x-minx,y-miny]));
+    const maxy=Math.max(...cur.map(c=>c[1]));
+    cur=cur.map(([x,y])=>[maxy-y,x]);
+  }
+  return out;
+}
+const SHAPES={},SHAPE_KEYS=[];
+for(const k in BASE_SHAPES){SHAPES[k]=rots(BASE_SHAPES[k].c);SHAPE_KEYS.push(k);}
+function randShapeKey(){
+  let t=0;for(const k of SHAPE_KEYS)t+=BASE_SHAPES[k].w;
+  let r=Math.random()*t;
+  for(const k of SHAPE_KEYS){r-=BASE_SHAPES[k].w;if(r<0)return k;}
+  return 'L3';
+}
+function shapeW(t){return Math.max(...SHAPES[t][0].map(c=>c[0]))+1;}
 const KICKS=[[0,0],[-1,0],[1,0],[0,-1],[-1,-1],[1,-1],[-2,0],[2,0]];
 
-/* skills fx: dmg(mult) heal(pct) rows(n) shield delay(n) minoI vamp(mult) debuff cleanse gold */
+/* ---- allies ---- */
 const STARTERS=[
  {id:'garm', nm:'焔狼ガルム', emo:'🐺', el:'fire', hp:56, atk:13,
   sk:{nm:'火炎球',need:6,fx:'dmg',v:3.5,d:'敵にATK×3.5の炎ダメージ'}},
  {id:'aqua', nm:'水霊アクア', emo:'💧', el:'water', hp:62, atk:11,
   sk:{nm:'癒しの雫',need:7,fx:'heal',v:35,d:'チームHPを35%回復'}},
  {id:'silva',nm:'森鹿シルワ', emo:'🦌', el:'wood', hp:64, atk:12,
-  sk:{nm:'大地均し',need:5,fx:'rows',v:2,d:'盤面の下2段を消し去る(整地)'}},
+  sk:{nm:'大地ならし',need:5,fx:'rows',v:2,d:'盤面の下2段を消し去る(整地)'}},
  {id:'lux',  nm:'聖鳥ルクス', emo:'🕊️', el:'light', hp:52, atk:12,
-  sk:{nm:'光の護り',need:6,fx:'shield',v:1,d:'次の敵の攻撃を1回無効化'}},
+  sk:{nm:'光のまもり',need:6,fx:'shield',v:1,d:'次の敵の攻撃を1回無効化'}},
 ];
 const RECRUITS=[
- {id:'skeld',nm:'骨剣士スケルド',emo:'💀',el:'fire',hp:48,atk:16,sk:{nm:'骨砕き',need:8,fx:'dmg',v:5,d:'敵にATK×5の大ダメージ'}},
+ {id:'skeld',nm:'骨剣士スケルド',emo:'💀',el:'fire',hp:48,atk:16,sk:{nm:'骨くだき',need:8,fx:'dmg',v:5,d:'敵にATK×5の大ダメージ'}},
  {id:'vampi',nm:'血蝙蝠ヴァンピ',emo:'🦇',el:'fire',hp:44,atk:11,sk:{nm:'吸血',need:6,fx:'vamp',v:2.5,d:'ATK×2.5ダメージ＋同量回復'}},
- {id:'draco',nm:'竜児ドラコ',emo:'🐲',el:'fire',hp:70,atk:15,sk:{nm:'竜の咆哮',need:9,fx:'dmg',v:6,d:'敵にATK×6の必殺ダメージ'}},
+ {id:'draco',nm:'竜児ドラコ',emo:'🐲',el:'fire',hp:70,atk:15,sk:{nm:'竜のほうこう',need:9,fx:'dmg',v:6,d:'敵にATK×6の必殺ダメージ'}},
  {id:'pheni',nm:'不死鳥フェニ',emo:'🐦‍🔥',el:'fire',hp:58,atk:13,sk:{nm:'再誕の炎',need:11,fx:'heal',v:50,d:'チームHPを50%回復'}},
- {id:'lich',nm:'魔導リッチ',emo:'🧙',el:'water',hp:50,atk:13,sk:{nm:'時間凍結',need:8,fx:'delay',v:4,d:'敵の行動を4カウント遅らせる'}},
- {id:'yukime',nm:'雪女ユキメ',emo:'❄️',el:'water',hp:54,atk:12,sk:{nm:'吹雪',need:7,fx:'dmgdelay',v:3,d:'ATK×3ダメージ＋行動1遅延'}},
- {id:'krake',nm:'大蛸クラーケ',emo:'🐙',el:'water',hp:66,atk:12,sk:{nm:'墨吐き',need:7,fx:'debuff',v:0.7,d:'この戦闘中、敵の攻撃力-30%'}},
- {id:'gomes',nm:'苔亀ゴメス',emo:'🐢',el:'wood',hp:88,atk:9,sk:{nm:'甲羅の守り',need:5,fx:'shield',v:1,d:'次の敵の攻撃を1回無効化'}},
- {id:'pixy',nm:'妖精ピクス',emo:'🧚',el:'wood',hp:44,atk:12,sk:{nm:'ミノの祝福',need:7,fx:'minoI',v:3,d:'次のミノ3つがIミノになる'}},
+ {id:'lich',nm:'魔導リッチ',emo:'🧙',el:'water',hp:50,atk:13,sk:{nm:'時間凍結',need:8,fx:'delay',v:5,d:'敵の行動を5秒遅らせる'}},
+ {id:'yukime',nm:'雪女ユキメ',emo:'❄️',el:'water',hp:54,atk:12,sk:{nm:'ふぶき',need:7,fx:'dmgdelay',v:3,d:'ATK×3ダメージ＋敵1.5秒遅延'}},
+ {id:'krake',nm:'大蛸クラーケ',emo:'🐙',el:'water',hp:66,atk:12,sk:{nm:'すみはき',need:7,fx:'debuff',v:0.7,d:'この戦闘中、敵の攻撃力-30%'}},
+ {id:'gomes',nm:'苔亀ゴメス',emo:'🐢',el:'wood',hp:88,atk:9,sk:{nm:'甲羅のまもり',need:5,fx:'shield',v:1,d:'次の敵の攻撃を1回無効化'}},
+ {id:'pixy',nm:'妖精ピクス',emo:'🧚',el:'wood',hp:44,atk:12,sk:{nm:'カケラの祝福',need:7,fx:'i4',v:3,d:'次のカケラ3つが棒型(I4)になる'}},
  {id:'mimic',nm:'宝魔ミミック',emo:'📦',el:'wood',hp:50,atk:13,sk:{nm:'宝あさり',need:8,fx:'gold',v:2,d:'+30G＆ATK×2ダメージ'}},
- {id:'bolnya',nm:'雷猫ボルニャ',emo:'🐱',el:'light',hp:48,atk:14,sk:{nm:'感電',need:8,fx:'dmgdelay2',v:2,d:'ATK×2ダメージ＋行動2遅延'}},
+ {id:'bolnya',nm:'雷猫ボルニャ',emo:'🐱',el:'light',hp:48,atk:14,sk:{nm:'感電',need:8,fx:'dmgdelay2',v:2,d:'ATK×2ダメージ＋敵2.5秒遅延'}},
  {id:'pegaro',nm:'天馬ペガロ',emo:'🦄',el:'light',hp:56,atk:13,sk:{nm:'浄化の光',need:7,fx:'cleanse',v:25,d:'呪いを解き、HP25%回復'}},
- {id:'kagerou',nm:'影猫カゲロウ',emo:'🐈‍⬛',el:'water',hp:46,atk:13,sk:{nm:'忍び足',need:6,fx:'tempo',v:2,d:'QUICKゲージ最大＆コンボ+2'}},
- {id:'kajin',nm:'鍛冶鬼カジン',emo:'🔨',el:'fire',hp:60,atk:12,sk:{nm:'大鎚おろし',need:7,fx:'rowdmg',v:3,d:'下1段を消し、ATK×3ダメージ'}},
- {id:'seiren',nm:'歌姫セイレン',emo:'🧜‍♀️',el:'water',hp:52,atk:12,sk:{nm:'子守唄',need:8,fx:'healdelay',v:20,d:'HP20%回復＋敵行動2遅延'}},
+ {id:'kagerou',nm:'影猫カゲロウ',emo:'🐈‍⬛',el:'water',hp:46,atk:13,sk:{nm:'しのび足',need:6,fx:'tempo',v:2,d:'QUICKゲージ最大＆コンボ+2'}},
+ {id:'kajin',nm:'鍛冶鬼カジン',emo:'🔨',el:'fire',hp:60,atk:12,sk:{nm:'大づちおろし',need:7,fx:'rowdmg',v:3,d:'下1段を消し、ATK×3ダメージ'}},
+ {id:'seiren',nm:'歌姫セイレン',emo:'🧜‍♀️',el:'water',hp:52,atk:12,sk:{nm:'子守唄',need:8,fx:'healdelay',v:20,d:'HP20%回復＋敵2.5秒遅延'}},
  {id:'hakurei',nm:'大神ハクレイ',emo:'🐕',el:'light',hp:62,atk:14,sk:{nm:'遠吠え',need:9,fx:'rally',v:3,d:'自分以外の仲間のスキル+3チャージ'}},
+];
+/* gacha-exclusive UR monsters */
+const GACHA_UR=[
+ {id:'chronoa',nm:'時の女神クロノア',emo:'🧝‍♀️',el:'light',hp:70,atk:22,sk:{nm:'時よ止まれ',need:8,fx:'chrono',v:3,d:'敵を8秒遅延＋ATK×3ダメージ'}},
+ {id:'bebigon',nm:'魔王ベビゴン',emo:'😈',el:'fire',hp:76,atk:26,sk:{nm:'魔王砲',need:10,fx:'dmg',v:8,d:'敵にATK×8の超ダメージ'}},
+ {id:'spica',nm:'織姫スピカ',emo:'🌟',el:'light',hp:64,atk:20,sk:{nm:'星ふる夜',need:9,fx:'starfall',v:25,d:'仲間全員スキル満タン＋HP25%回復'}},
+ {id:'minokami',nm:'骨神ミノカミ',emo:'🦴',el:'wood',hp:90,atk:24,sk:{nm:'神域の型',need:9,fx:'i4rush',v:3,d:'次のカケラ4つがI4に＋ATK×3ダメージ'}},
 ];
 const RELICS=[
  {id:'sword',nm:'亡者の剣',emo:'⚔️',d:'与える全ダメージ+20%'},
  {id:'shield',nm:'骨の盾',emo:'🛡️',d:'受けるダメージ-25%'},
- {id:'hourglass',nm:'錆びた砂時計',emo:'⏳',d:'敵の行動間隔+1'},
- {id:'sage',nm:'賢者の石',emo:'💎',d:'スキルの溜まり方が2倍に'},
+ {id:'hourglass',nm:'さびた砂時計',emo:'⏳',d:'敵の行動間隔+1.5秒'},
+ {id:'sage',nm:'賢者の石',emo:'💎',d:'スキルのたまり方が2倍に'},
  {id:'ring',nm:'コンボの指輪',emo:'💍',d:'コンボボーナスが2倍に'},
  {id:'fang',nm:'吸血の牙',emo:'🦷',d:'ライン消しごとにHP+2'},
  {id:'bomb',nm:'火薬袋',emo:'🧨',d:'戦闘開始時、敵に25ダメージ'},
- {id:'weight',nm:'鉄塊の重り',emo:'🏋️',d:'QUICKボーナス最大+40%に'},
+ {id:'weight',nm:'鉄塊のおもり',emo:'🏋️',d:'QUICKボーナス最大+40%に'},
  {id:'purse',nm:'黄金の袋',emo:'💰',d:'獲得ゴールド+50%'},
- {id:'tmark',nm:'Ｔの刻印',emo:'🔮',d:'3ライン以上消しのダメージ+60%'},
+ {id:'tmark',nm:'大割りの刻印',emo:'🔮',d:'3ライン以上消しのダメージ+60%'},
  {id:'moss',nm:'癒しの苔',emo:'🍀',d:'戦闘勝利時にHP+12'},
  {id:'mask',nm:'鬼の面',emo:'👹',d:'ATK+30%／受けるダメージ+20%'},
  {id:'crystal',nm:'命の水晶',emo:'❤️',d:'最大HP+30(即時回復+30)'},
  {id:'dice',nm:'イカサマのダイス',emo:'🎲',d:'戦闘報酬の選択肢+1'},
- {id:'anchor',nm:'碇の護符',emo:'⚓',d:'盤面崩壊のダメージ半減'},
- {id:'quill',nm:'魔導の羽ペン',emo:'🪶',d:'仲間全員のスキル必要ドロップ-1'},
+ {id:'anchor',nm:'いかりの護符',emo:'⚓',d:'盤面崩壊のダメージ半減'},
+ {id:'quill',nm:'魔導の羽ペン',emo:'🪶',d:'仲間全員のスキル必要数-1'},
  {id:'bell',nm:'亡者の鈴',emo:'🔔',d:'戦闘開始時、全員のスキル+2チャージ'},
- {id:'mirror',nm:'呪い返しの鏡',emo:'🪞',d:'呪いを完全に防ぐ'},
+ {id:'mirror',nm:'呪いがえしの鏡',emo:'🪞',d:'呪いを完全に防ぐ'},
 ];
-const FLOORNAMES=['朽ちた門','骨の回廊','蝕まれし聖堂','忘却の書庫','看守の間','血曇りの泉','囚われの庭','嘆きの大階段','王の墓前','塔の最深部'];
-/* enemy actions: atk garb1 garb2 charge smash curse heal shield drain */
+const FLOORNAMES=['朽ちた門','骨の回廊','蝕まれし聖堂','忘却の書庫','看守の間','血くもりの泉','囚われの庭','嘆きの大階段','王の墓前','塔の最深部'];
+/* ---- enemies: continuous scaling / real-time / ults ---- */
 const ENEMY_TIERS=[
  {min:1,max:3,list:[
-  {nm:'洞窟スライム',emo:'🟢',el:'wood',hp:40,atk:7,int:4,sc:['atk','atk','garb1'],vo:'slime'},
-  {nm:'墓場コウモリ',emo:'🦇',el:'fire',hp:34,atk:6,int:3,sc:['atk','atk','atk','garb1'],vo:'squeak'},
-  {nm:'ドブ大鼠',emo:'🐀',el:'wood',hp:46,atk:8,int:4,sc:['atk','garb1','atk'],vo:'squeak'},
-  {nm:'はぐれゴブリン',emo:'👺',el:'fire',hp:48,atk:8,int:4,sc:['atk','atk','charge','smash'],vo:'kekeke'},
-  {nm:'さまよう幽鬼',emo:'🕯️',el:'light',hp:42,atk:7,int:4,sc:['atk','garb1','curse'],vo:'moan'},
+  {nm:'ぷるぷるスライム',emo:'🟢',el:'wood',hpW:1.0,atkW:0.9,int:6.5,sc:['atk','atk','garb1','ult'],vo:'slime',ult:'ぷるぷる大爆発'},
+  {nm:'こうもりバッツ',emo:'🦇',el:'fire',hpW:0.8,atkW:0.85,int:5,sc:['atk','atk','atk','ult'],vo:'squeak',ult:'超音波シャウト'},
+  {nm:'おおねずみチュー太',emo:'🐀',el:'wood',hpW:1.05,atkW:1.0,int:6,sc:['atk','garb1','atk','ult'],vo:'squeak',ult:'百鼠じょうとう'},
+  {nm:'ゴブリンのゴブ吉',emo:'👺',el:'fire',hpW:1.1,atkW:1.05,int:6.5,sc:['atk','charge','smash','ult'],vo:'kekeke',ult:'ゴブ神拳'},
+  {nm:'まよい幽鬼ぽう',emo:'🕯️',el:'light',hpW:0.95,atkW:0.9,int:7,sc:['atk','garb1','curse','ult'],vo:'moan',ult:'うらみつらみ'},
  ]},
  {min:4,max:6,list:[
-  {nm:'蛮族オーク',emo:'👹',el:'fire',hp:118,atk:12,int:4,sc:['atk','atk','garb1','charge','smash'],vo:'growl'},
-  {nm:'沼の呪術師',emo:'🧙‍♀️',el:'water',hp:104,atk:11,int:4,sc:['curse','atk','atk','garb1'],vo:'hihihi'},
-  {nm:'石のゴーレム',emo:'🗿',el:'wood',hp:142,atk:11,int:5,sc:['shield','atk','charge','smash'],vo:'rumble'},
-  {nm:'牙猪ボアド',emo:'🐗',el:'fire',hp:112,atk:13,int:3,sc:['atk','atk','atk','garb1'],vo:'growl'},
-  {nm:'骸のハーピー',emo:'🦅',el:'light',hp:100,atk:12,int:3,sc:['atk','garb1','atk'],vo:'squeak'},
+  {nm:'オークのオル大将',emo:'👹',el:'fire',hpW:1.15,atkW:1.1,int:6.5,sc:['atk','atk','garb1','charge','smash','ult'],vo:'growl',ult:'大将バスター'},
+  {nm:'沼の呪術師ケロミ',emo:'🧙‍♀️',el:'water',hpW:1.0,atkW:1.0,int:6.5,sc:['curse','atk','atk','garb1','ult'],vo:'hihihi',ult:'呪いのフルコース'},
+  {nm:'いしゴーレムのゴロ',emo:'🗿',el:'wood',hpW:1.35,atkW:0.95,int:8,sc:['shield','atk','charge','smash','ult'],vo:'rumble',ult:'岩石プレス'},
+  {nm:'牙猪ボアボア',emo:'🐗',el:'fire',hpW:1.05,atkW:1.15,int:5,sc:['atk','atk','atk','garb1','ult'],vo:'growl',ult:'ちょとつもうしん'},
+  {nm:'ハーピーのピィ',emo:'🦅',el:'light',hpW:0.95,atkW:1.05,int:5,sc:['atk','garb1','atk','ult'],vo:'squeak',ult:'羽根あらし'},
  ]},
  {min:7,max:9,list:[
-  {nm:'死霊騎士',emo:'⚔️',el:'light',hp:214,atk:17,int:4,sc:['atk','charge','smash','garb2'],vo:'clank'},
-  {nm:'貴血のヴァンパイア',emo:'🧛',el:'fire',hp:196,atk:16,int:4,sc:['drain','curse','atk'],vo:'hihihi'},
-  {nm:'双牙のキメラ',emo:'🦁',el:'fire',hp:226,atk:18,int:4,sc:['atk','atk','charge','smash'],vo:'growl'},
-  {nm:'深淵の魚人',emo:'🐟',el:'water',hp:200,atk:15,int:3,sc:['garb1','atk','atk','garb2'],vo:'bubble'},
-  {nm:'白骨の王',emo:'☠️',el:'water',hp:232,atk:16,int:4,sc:['curse','atk','heal','garb1','atk'],vo:'fofo'},
+  {nm:'死霊騎士サーロス',emo:'⚔️',el:'light',hpW:1.2,atkW:1.15,int:6.5,sc:['atk','charge','smash','garb2','ult'],vo:'clank',ult:'冥府の一閃'},
+  {nm:'ヴァンパイアのヴァル',emo:'🧛',el:'fire',hpW:1.1,atkW:1.1,int:6,sc:['drain','curse','atk','ult'],vo:'hihihi',ult:'真紅のばんさん'},
+  {nm:'キメラのガオまる',emo:'🦁',el:'fire',hpW:1.25,atkW:1.2,int:6.5,sc:['atk','atk','charge','smash','ult'],vo:'growl',ult:'三重ほうこう'},
+  {nm:'深淵のギョロ目',emo:'🐟',el:'water',hpW:1.15,atkW:1.0,int:5.5,sc:['garb1','atk','atk','garb2','ult'],vo:'bubble',ult:'深海のほうよう'},
+  {nm:'白骨の王カルシオ',emo:'☠️',el:'water',hpW:1.3,atkW:1.05,int:6.5,sc:['curse','atk','heal','garb1','ult'],vo:'fofo',ult:'骨のカーニバル'},
  ]},
 ];
 const ELITES=[
- {min:3,max:3,nm:'牢のミノタウロス',emo:'🐂',el:'fire',hp:92,atk:10,int:4,sc:['atk','garb1','charge','smash'],vo:'growl'},
- {min:4,max:6,nm:'双頭蛇アンフィス',emo:'🐍',el:'wood',hp:188,atk:12,int:2,sc:['atk','atk','garb1'],vo:'hiss'},
- {min:4,max:6,nm:'鎧の亡霊',emo:'👻',el:'light',hp:176,atk:14,int:4,sc:['shield','atk','charge','smash'],vo:'moan'},
- {min:7,max:9,nm:'溶岩の巨人',emo:'🌋',el:'fire',hp:322,atk:20,int:5,sc:['charge','smash','garb2','atk'],vo:'rumble'},
- {min:7,max:9,nm:'夜の女王',emo:'🕷️',el:'water',hp:300,atk:18,int:3,sc:['atk','curse','garb1','atk'],vo:'hiss'},
+ {min:3,max:3,nm:'ミノタウロスのモー武',emo:'🐂',el:'fire',hpW:1.0,atkW:1.0,int:6,sc:['atk','garb1','charge','smash','ult'],vo:'growl',ult:'迷宮ラリアット'},
+ {min:4,max:6,nm:'双頭蛇ニョロ&ロニョ',emo:'🐍',el:'wood',hpW:1.0,atkW:0.9,int:4,sc:['atk','atk','garb1','ult'],vo:'hiss',ult:'ダブルバイト'},
+ {min:4,max:6,nm:'よろい亡霊ガシャン',emo:'👻',el:'light',hpW:0.95,atkW:1.05,int:6.5,sc:['shield','atk','charge','smash','ult'],vo:'clank',ult:'怨念フルアーマー'},
+ {min:7,max:9,nm:'溶岩巨人マグ蔵',emo:'🌋',el:'fire',hpW:1.15,atkW:1.15,int:8,sc:['charge','smash','garb2','atk','ult'],vo:'rumble',ult:'だいふんか'},
+ {min:7,max:9,nm:'夜の女王アラクネ',emo:'🕷️',el:'water',hpW:1.05,atkW:1.1,int:5,sc:['atk','curse','garb1','atk','ult'],vo:'hiss',ult:'千本の糸'},
 ];
 const BOSSES={
- 5:{nm:'迷宮の看守グレイヴ',emo:'⚰️',el:'light',hp:330,atk:15,int:4,sc:['atk','garb2','charge','smash','curse'],boss:true,vo:'fofo'},
- 10:{nm:'屍竜バリドボーン',emo:'🐉',el:'fire',hp:720,atk:22,int:4,sc:['atk','curse','garb2','charge','smash','heal'],boss:true,final:true,vo:'roar'},
+ 5:{nm:'迷宮の看守グレイヴ',emo:'⚰️',el:'light',hpW:1.0,atkW:1.0,int:6,sc:['atk','garb2','charge','smash','curse','ult'],boss:true,vo:'fofo',ult:'獄門クラッシュ'},
+ 10:{nm:'屍竜バリドボーン',emo:'🐉',el:'fire',hpW:1.15,atkW:1.15,int:6,sc:['atk','curse','garb2','charge','smash','heal','ult'],boss:true,final:true,vo:'roar',ult:'竜の黙示録'},
 };
 
 /* ============ run state ============ */
 let run=null, battle=null, state='title';
 function newRun(starter){
+  run={floor:1,gold:meta.up.gold*30,team:[],relics:[],kills:0,tut:true,
+    hpmax:meta.up.hp*10,hp:0,lv:1,exp:0};
   const m=makeAlly(starter);
-  run={floor:1,gold:0,team:[m],relics:[],kills:0,tut:true,
-    hpmax:m.hp,hp:m.hp,atkBoost:0};
+  run.team.push(m);
+  run.hpmax+=m.hp;run.hp=run.hpmax;
 }
-function makeAlly(base){const m={...base, sk:{...base.sk}, charge:0};if(run&&run.relics&&has('quill'))m.sk.need=Math.max(3,m.sk.need-1);return m;}
+function makeAlly(base){
+  const m={...base, sk:{...base.sk}, charge:0};
+  m.atk+=meta.up.atk;
+  if(run&&run.relics&&has('quill'))m.sk.need=Math.max(3,m.sk.need-1);
+  return m;
+}
 function has(id){return run.relics.some(r=>r.id===id);}
 function teamAtk(m){let a=m.atk;if(has('mask'))a=Math.round(a*1.3);return a;}
 function addGold(n){run.gold+=Math.round(n*(has('purse')?1.5:1));updateTop();}
@@ -487,43 +594,107 @@ function updateTop(){
   $('goldLabel').textContent='💰 '+run.gold;
   $('floorLabel').textContent=run?`B${run.floor}F ${FLOORNAMES[run.floor-1]||''}`:'MINOBORNES';
 }
+/* leveling */
+function expNeed(lv){return 16+lv*12;}
+function addExp(n){
+  run.exp+=n;
+  spawnFloat('EXP+'+n,'small');
+  while(run.exp>=expNeed(run.lv)){
+    run.exp-=expNeed(run.lv);
+    run.lv++;
+    run.team.forEach(m=>m.atk+=1);
+    run.hpmax+=6;healTeam(12);
+    banner('⬆ LEVEL UP! Lv'+run.lv);
+    sfx.levelup();confetti(14);
+  }
+  renderLv();
+}
+function renderLv(){
+  if(!run)return;
+  $('lvBadge').textContent='Lv'+run.lv;
+  $('expFill').style.width=clamp(run.exp/expNeed(run.lv)*100,0,100)+'%';
+}
+function confetti(n){
+  const cols=['#ff8f6b','#6fc3ff','#7fe39a','#ffd97a','#ff9ecf','#b9a6ff'];
+  const syms=['✦','●','▲','■','★'];
+  for(let i=0;i<n;i++){
+    const c=document.createElement('span');c.className='confetti';
+    c.textContent=pick(syms);
+    c.style.left=(5+rnd(90))+'%';
+    c.style.color=pick(cols);
+    c.style.animationDelay=(rnd(30)/100)+'s';
+    $('app').appendChild(c);
+    setTimeout(()=>c.remove(),1700);
+  }
+}
 
 /* ============ screens ============ */
 function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   $(id).classList.add('active');
 }
+let gachaTimers=[];
+function clearGachaTimers(){gachaTimers.forEach(t=>{clearInterval(t);clearTimeout(t);});gachaTimers=[];}
 function openOverlay(html){$('overlayBox').innerHTML=html;$('overlay').classList.add('show');}
-function closeOverlay(){$('overlay').classList.remove('show');}
+function closeOverlay(){clearGachaTimers();$('overlay').classList.remove('show');}
 $('overlay').addEventListener('click',e=>{if(e.target.id==='overlay')closeOverlay();});
 $('helpBtn').addEventListener('click',()=>{sfx.ui();openOverlay(helpHTML());});
 function helpHTML(){
-  return `<h3>― 遊び方 ―</h3>
-  <p>▶ ミノ(ブロック)で横一列を揃えると<b style="color:var(--gold2)">チーム全員で攻撃</b>。同時消しが多いほど大ダメージ(4列消し=×6)。</p>
-  <p>▶ 敵は<b style="color:var(--gold2)">ミノを置くたび</b>にカウントが減り、0で行動する。行動予告(⚔=攻撃 🧱=ガレキ 💢=溜め 🌀=呪い ✨=回復 🛡=守り)を見て立ち回ろう。</p>
-  <p>▶ 味方の顔の下ゲージが満タンになったら<b style="color:var(--gold2)">タップでスキル発動</b>。</p>
-  <p>▶ 素早く置くとQUICKボーナス(最大+20%)。連続でラインを消すとコンボ。属性相性は 火→木→水→火 (×1.5)。</p>
-  <p class="dim">操作: ドラッグ=移動 / タップ=回転 / 下フリック=即落下。ボタンやHOLD枠タップも使える。PCは←→↓、X/↑回転、SPACE落下、Cホールド。</p>
-  <p class="dim">HPは階をまたいで持ち越し。0になれば冒険は終わる。</p>
-  <button class="bigbtn" style="margin-top:6px" onclick="closeOverlay()">閉じる</button>
-  <button class="iconbtn" style="display:block;margin:10px auto 0" onclick="if(confirm('冒険を最初からやり直す？')){closeOverlay();toTitle();}">最初からやり直す</button>`;
+  return `<h3>― あそびかた ―</h3>
+  <p>▶ カケラ(ブロック)で横一列をそろえると<b style="color:var(--gold2)">チーム全員でこうげき</b>！ 同時消しが多いほど大ダメージ。</p>
+  <p>▶ カケラには<b style="color:var(--gold2)">属性の色</b>がある。消した色と同じ属性の仲間はダメージアップ(1マスごと+10%)。相性は 火→木→水→火(×1.5)。</p>
+  <p>▶ ❤️⚔️💰⭐💣の<b style="color:var(--gold2)">ルーン付きマス</b>を消すとボーナス発動！</p>
+  <p>▶ 敵は<b style="color:var(--blood)">時間経過</b>で行動する(バーが空になると行動)。<b style="color:var(--blood)">必殺技</b>の詠唱が始まったら、時計が0になる前に一定ダメージを与えて<b style="color:var(--life)">BREAK</b>しよう！</p>
+  <p>▶ 仲間の顔の下のゲージが満タンになったら<b style="color:var(--gold2)">タップでスキル発動</b>。カケラを置くたびたまる。</p>
+  <p>▶ 敵を倒すとEXP。レベルアップで全員強化。💰は🎰骨ガチャへ！</p>
+  <p class="dim">操作: ドラッグ=移動 / タップ=回転 / 下フリック=即落下 / HOLD枠タップ=ホールド。PCは←→↓、X/↑回転、SPACE落下、Cホールド。</p>
+  <p class="dim">HPは階をまたいで持ちこし。倒れても「魂」が残り、転生の祭壇で永続強化できる。</p>
+  <button class="bigbtn" style="margin-top:6px" onclick="closeOverlay()">とじる</button>
+  <button class="iconbtn" style="display:block;margin:10px auto 0" onclick="if(confirm('この冒険をあきらめて最初からやり直す？')){closeOverlay();toTitle();}">最初からやり直す</button>`;
 }
-function toTitle(){state='title';run=null;battle=null;updateTopSafe();setBGM('title');show('scr-title');}
+function toTitle(){state='title';run=null;battle=null;updateTopSafe();setBGM('title');renderTitle();show('scr-title');}
 function updateTopSafe(){if(run)updateTop();else{$('goldLabel').textContent='💰 0';$('floorLabel').textContent='MINOBORNES';}}
+function renderTitle(){$('soulsLabel').textContent='💠 魂: '+meta.souls;}
+
+/* --- shrine (meta upgrades) --- */
+$('btnShrine').addEventListener('click',()=>{sfx.ui();openShrine();});
+function openShrine(){
+  let html=`<h3>💠 転生の祭壇</h3><p class="dim" style="text-align:center">魂: <b style="color:#b9a6ff">${meta.souls}</b>　※強化は次の冒険から永続</p><div class="cardrow">`;
+  UPGRADES.forEach((u,i)=>{
+    const lv=meta.up[u.k],maxed=lv>=u.max,cost=u.cost(lv);
+    html+=`<button class="card ${maxed||meta.souls<cost?'disabled':''}" data-up="${i}">
+      <span class="emo">${u.emo}</span><div class="body">
+      <div class="t">${u.nm} <span style="color:var(--dim);font-size:10px">Lv${lv}/${u.max}</span></div>
+      <div class="d">${u.d}</div></div>
+      <span class="price">${maxed?'MAX':'💠'+cost}</span></button>`;
+  });
+  html+=`</div><button class="bigbtn" id="shrineClose">とじる</button>`;
+  openOverlay(html);
+  document.querySelectorAll('[data-up]').forEach(b=>{
+    b.addEventListener('click',()=>{
+      const u=UPGRADES[+b.dataset.up],lv=meta.up[u.k],cost=u.cost(lv);
+      if(lv>=u.max||meta.souls<cost)return;
+      meta.souls-=cost;meta.up[u.k]++;saveMeta();
+      sfx.levelup();confetti(10);renderTitle();openShrine();
+    });
+  });
+  $('shrineClose').addEventListener('click',()=>{sfx.ui();closeOverlay();});
+}
 
 /* --- title & starter --- */
 $('btnStart').addEventListener('click',()=>{sfx.ui();setBGM('dungeon');renderStarter();show('scr-starter');state='starter';});
 function allyCardHTML(m,extra=''){
+  const atkDisp=m.atk+(state==='starter'||state==='title'?meta.up.atk:0);
   return `<span class="emo">${m.emo}</span><div class="body">
-   <div class="t">${m.nm} ${chip(m.el)} <span style="color:var(--dim);font-size:10px">HP${m.hp} / ATK${m.atk}</span></div>
-   <div class="d">【${m.sk.nm}】${m.sk.d}<br><span style="color:#7a6bd6">必要ドロップ:${m.sk.need}</span>${extra}</div></div>`;
+   <div class="t">${m.nm} ${chip(m.el)} <span style="color:var(--dim);font-size:10px">HP${m.hp} / ATK${atkDisp}</span></div>
+   <div class="d">【${m.sk.nm}】${m.sk.d}<br><span style="color:#8f7bd8">必要カケラ数:${m.sk.need}</span>${extra}</div></div>`;
 }
 function renderStarter(){
   const row=$('starterCards');row.innerHTML='';
   STARTERS.forEach(s=>{
     const b=document.createElement('button');b.className='card';
     b.innerHTML=allyCardHTML(s);
-    b.addEventListener('click',()=>{sfx.skill();newRun(s);updateTop();gotoMap();});
+    b.addEventListener('click',()=>{sfx.skill();newRun(s);updateTop();renderLv();gotoMap();});
     row.appendChild(b);
   });
 }
@@ -536,32 +707,40 @@ function gotoMap(){
   let doors;
   if(run.floor===5||run.floor===10){
     doors=[{t:'boss'}];
-    $('mapFlavor').textContent=run.floor===10?'……最深部。巨大な気配が渦巻いている。':'重い扉の奥から、鎖の音がする。';
+    $('mapFlavor').textContent=run.floor===10?'……最深部。とても大きな気配がうずまいている。':'重い扉のおくから、鎖の音がする。';
   }else{
-    $('mapFlavor').textContent='進む扉を選べ。気配を読み、有利な相手や道を選ぶのも戦術だ。';
+    $('mapFlavor').textContent='すすむ扉をえらぼう。気配を読んで、有利な相手を選ぶのも作戦だ。';
     const extra=shuffle(['event','rest','battle'].concat(run.floor>=3?['elite']:[])).slice(0,2);
     doors=shuffle([{t:'battle'}].concat(extra.map(t=>({t}))));
   }
   doors.forEach(d=>{if(d.t==='battle'||d.t==='elite'||d.t==='boss')d.enemy=makeEnemy(d.t);});
-  const meta={
-    battle:{emo:'⚔️',nm:'戦いの扉',d:'魔物が待ち構えている。勝てば報酬。'},
-    elite:{emo:'💀',nm:'強敵の扉',d:'手強い相手。だが遺物(レリック)が確定で手に入る。'},
-    event:{emo:'❓',nm:'異変の扉',d:'何が起こるかわからない。'},
-    rest:{emo:'⛺',nm:'安らぎの扉',d:'ひととき休める場所。回復・瞑想・鍛錬。'},
-    boss:{emo:'👑',nm:'覇者の扉',d:'この階の主が待つ。'},
+  const meta_={
+    battle:{emo:'⚔️',nm:'たたかいの扉',d:'魔物が待ちかまえている。勝てば報酬とEXP。'},
+    elite:{emo:'💀',nm:'強敵の扉',d:'手ごわい相手。だが遺物(レリック)が確定で手に入る。'},
+    event:{emo:'❓',nm:'いへんの扉',d:'何が起こるかわからない。'},
+    rest:{emo:'⛺',nm:'やすらぎの扉',d:'ひとやすみ。回復・瞑想・鍛錬。'},
+    boss:{emo:'👑',nm:'覇者の扉',d:'この階のヌシが待つ。'},
   };
   doors.forEach(d=>{
     const b=document.createElement('button');b.className='card door';
-    const m=meta[d.t];
+    const m=meta_[d.t];
     const prev=d.enemy?`<br><span style="color:var(--gold2)">気配: ${d.enemy.emo} ${d.enemy.nm}</span> ${chip(d.enemy.el)}`:'';
     b.innerHTML=`<span class="emo">${m.emo}</span><div class="body"><div class="t">${m.nm}</div><div class="d">${m.d}${prev}</div></div>`;
     b.addEventListener('click',()=>{sfx.ui();enterDoor(d.t,d.enemy);});
     row.appendChild(b);
   });
+  const gb=$('gachaBtn');
+  gb.style.opacity=run.gold>=45?'1':'0.4';
   const rr=$('relicRow');
   rr.innerHTML=run.relics.map(r=>`<span class="relicchip">${r.emo}${r.nm}</span>`).join('')||'<span class="relicchip" style="opacity:.4">遺物なし</span>';
   show('scr-map');
 }
+$('gachaBtn').addEventListener('click',()=>{
+  if(state!=='map'||!run)return;
+  if(run.gold<45){sfx.ui();banner2('ゴールドがたりない…');return;}
+  openGacha();
+});
+function banner2(t){/* map用の軽いメッセージ */ const f=$('mapFlavor');f.textContent=t;}
 function enterDoor(t,enemy){
   if(t==='battle')startBattle('battle',enemy);
   else if(t==='elite')startBattle('elite',enemy);
@@ -576,32 +755,41 @@ function nextFloor(){
 }
 
 /* ============ battle ============ */
-const COLS=8,ROWS=14;
+const COLS=8,ROWS=13;
 let cv=$('board'),ctx=cv.getContext('2d'),CELL=30,DPR=1;
 function fitBoard(){
   const area=$('boardArea');
-  const w=area.clientWidth-4,h=area.clientHeight-4;
-  CELL=Math.max(14,Math.floor(Math.min(w/COLS,h/ROWS)));
+  const w=area.clientWidth-6,h=area.clientHeight-6;
+  if(w<=0||h<=0)return;
+  CELL=Math.max(12,Math.floor(Math.min(w/COLS,h/ROWS)));
   DPR=window.devicePixelRatio||1;
   cv.width=COLS*CELL*DPR;cv.height=ROWS*CELL*DPR;
   cv.style.width=COLS*CELL+'px';cv.style.height=ROWS*CELL+'px';
   ctx.setTransform(DPR,0,0,DPR,0,0);
 }
 window.addEventListener('resize',()=>{if(state==='battle')fitBoard();});
+if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>{if(state==='battle')fitBoard();});
 
 function makeEnemy(kind){
-  let base;
-  if(kind==='boss')base=BOSSES[run.floor];
+  let sp;
+  if(kind==='boss')sp=BOSSES[run.floor];
   else if(kind==='elite'){
     const c=ELITES.filter(e=>run.floor>=e.min&&run.floor<=e.max);
-    base=pick(c.length?c:ELITES);
+    sp=pick(c.length?c:ELITES);
   }else{
     const tier=ENEMY_TIERS.find(t=>run.floor>=t.min&&run.floor<=t.max)||ENEMY_TIERS[2];
-    base=pick(tier.list);
-    base={...base,hp:Math.round(base.hp*(1+0.07*(run.floor-tier.min)))};
+    sp=pick(tier.list);
   }
-  return {...base,hpmax:base.hp,hp:base.hp,cd:base.int+(has('hourglass')?1:0),
-    pi:0,charged:false,shield:false,atkMul:1,kind};
+  const f=run.floor;
+  const baseHp=34*Math.pow(1.24,f-1);
+  const baseAtk=6*Math.pow(1.12,f-1);
+  const km={battle:[1,1],elite:[1.55,1.2],boss:[2.3,1.3]}[kind]||[1,1];
+  const hp=Math.round(baseHp*sp.hpW*km[0]);
+  const atk=Math.max(1,Math.round(baseAtk*sp.atkW*km[1]));
+  const int=sp.int+(has('hourglass')?1.5:0);
+  return {...sp,kind,hpmax:hp,hp,atk,int,timer:int,pi:0,
+    charged:false,shield:false,atkMul:1,stun:0,cast:null,
+    ultDef:{nm:sp.ult||'necroブレス',mult:2.6,castTime:sp.boss?8:9.5}};
 }
 function startBattle(kind,pre){
   state='battle';
@@ -609,30 +797,37 @@ function startBattle(kind,pre){
   battle={
     kind,enemy:pre||makeEnemy(kind),
     board:Array.from({length:ROWS},()=>Array(COLS).fill(null)),
-    bag:[],queue:[],piece:null,hold:null,canHold:true,
+    queue:[],piece:null,hold:null,canHold:true,
     combo:0,quick:0,b2b:false,curse:0,allyShield:0,
     won:false,lost:false,gravAcc:0,lockAcc:0,lockResets:0,soft:false,
     spawnAt:0,over:false,
   };
+  const e=battle.enemy;
+  e.timer=e.int;e.stun=0;e.cast=null;
   refillQueue();
   if(has('bell'))run.team.forEach(m=>m.charge=clamp(m.charge+2,0,m.sk.need));
   show('scr-battle');
+  $('castRow').classList.add('hidden');
   requestAnimationFrame(()=>{fitBoard();spawnPiece();renderAllBattle();});
+  setTimeout(()=>{if(state==='battle')fitBoard();},350);
   banner(kind==='boss'?'👑 '+battle.enemy.nm:'たたかえ！');
   if(has('bomb')){setTimeout(()=>{if(battle&&!battle.over){dmgEnemy(25,'🧨');}},450);}
   if(run.tut){run.tut=false;setTimeout(()=>{openOverlay(
-   `<h3>― はじめての戦い ―</h3>
-    <p>▶ 横一列を揃えて消すと<b style="color:var(--gold2)">攻撃</b>！ 同時に多く消すほど強い。</p>
-    <p>▶ 敵の横の●●●は<b style="color:var(--gold2)">行動カウント</b>。ミノを置くたび減り、0で敵が動く。</p>
-    <p>▶ 下の仲間のゲージが満タンになったら<b style="color:var(--gold2)">顔をタップ</b>でスキル！</p>
-    <p class="dim">ドラッグ=移動 / タップ=回転 / 下フリック=即落下</p>
+   `<h3>― はじめてのたたかい ―</h3>
+    <p>▶ 横一列をそろえて消すと<b style="color:var(--gold2)">こうげき</b>！ 消したマスの<b style="color:var(--gold2)">色</b>と同じ属性の仲間はダメージUP。</p>
+    <p>▶ 敵の紫バーは<b style="color:var(--blood)">行動タイマー</b>。空になると敵が動く。急げ！</p>
+    <p>▶ 敵が<b style="color:var(--blood)">必殺技の詠唱</b>を始めたら、⏱が0になる前にダメージを与えて<b style="color:var(--life)">BREAK</b>！</p>
+    <p>▶ 下の仲間ゲージ満タンで<b style="color:var(--gold2)">顔タップ→スキル</b>。❤️⚔️⭐などのルーン付きマスもねらおう。</p>
     <button class="bigbtn" onclick="closeOverlay()">わかった！</button>`);},600);}
 }
+function newIdentity(t){
+  t=t||randShapeKey();
+  const id={t,el:pick(ELKEYS),rune:null,runeIdx:-1};
+  if(Math.random()<0.30){id.rune=randRune();id.runeIdx=rnd(SHAPES[t][0].length);}
+  return id;
+}
 function refillQueue(){
-  while(battle.queue.length<6){
-    if(!battle.bag.length)battle.bag=shuffle(['I','O','T','S','Z','J','L']);
-    battle.queue.push(battle.bag.pop());
-  }
+  while(battle.queue.length<6)battle.queue.push(newIdentity());
 }
 function collide(t,rot,px,py){
   for(const [dx,dy] of SHAPES[t][rot]){
@@ -642,12 +837,13 @@ function collide(t,rot,px,py){
   }
   return false;
 }
-function spawnPiece(){
+function spawnPiece(fromIdentity){
   refillQueue();
-  const t=battle.queue.shift();
-  const p={t,rot:0,x:2,y:t==='I'?-1:0};
-  if(collide(t,0,p.x,p.y)){collapseBoard();}
-  battle.piece=p;battle.canHold=true;
+  const id=fromIdentity||battle.queue.shift();
+  const p={t:id.t,el:id.el,rune:id.rune,runeIdx:id.runeIdx,rot:0,
+    x:Math.floor((COLS-shapeW(id.t))/2),y:0};
+  if(collide(p.t,0,p.x,p.y)){collapseBoard();}
+  battle.piece=p;if(!fromIdentity)battle.canHold=true;
   battle.gravAcc=0;battle.lockAcc=0;battle.lockResets=0;
   battle.spawnAt=performance.now();
   renderNext();
@@ -655,7 +851,7 @@ function spawnPiece(){
 function collapseBoard(){
   battle.board=Array.from({length:ROWS},()=>Array(COLS).fill(null));
   battle.combo=0;battle.quick=0;
-  banner('盤面崩壊！');sfx.hurt();
+  banner('盤面ほうかい！');sfx.hurt();
   hurtTeam(Math.ceil(run.hpmax*(has('anchor')?0.08:0.15)),true);
 }
 function tryMove(dx,dy){
@@ -689,78 +885,106 @@ function hardDrop(){
 function doHold(){
   if(!battle.canHold||!battle.piece)return;
   sfx.hold();
-  const cur=battle.piece.t;
-  if(battle.hold){battle.queue.unshift(battle.hold);}
-  battle.hold=cur;battle.canHold=false;
-  spawnPiece();battle.canHold=false;
+  const p=battle.piece;
+  const cur={t:p.t,el:p.el,rune:p.rune,runeIdx:p.runeIdx};
+  const held=battle.hold;
+  battle.hold=cur;
+  if(held)spawnPiece(held);else spawnPiece();
+  battle.canHold=false;
   renderHold();
 }
 function lockPiece(){
   const p=battle.piece;if(!p)return;
   battle.piece=null;
-  for(const [dx,dy] of SHAPES[p.t][p.rot]){
+  const cells=SHAPES[p.t][p.rot];
+  cells.forEach(([dx,dy],i)=>{
     const y=p.y+dy,x=p.x+dx;
-    if(y>=0&&y<ROWS)battle.board[y][x]=COLORS[p.t];
-  }
+    if(y>=0&&y<ROWS)battle.board[y][x]={el:p.el,rune:i===p.runeIdx?p.rune:null};
+  });
   sfx.lock();
-  /* quick gauge */
   const el=performance.now()-battle.spawnAt;
   const wmax=has('weight')?200:100;
   if(el<2600)battle.quick=clamp(battle.quick+34,0,wmax);
   else battle.quick=clamp(battle.quick-25,0,wmax);
-  /* clear lines */
-  let cleared=0;
+  /* clear lines: tally elements & runes */
+  let cleared=0;const tally={fire:0,water:0,wood:0,light:0};const runes=[];
   for(let y=ROWS-1;y>=0;y--){
-    if(battle.board[y].every(c=>c)){battle.board.splice(y,1);battle.board.unshift(Array(COLS).fill(null));cleared++;y++;}
+    if(battle.board[y].every(c=>c)){
+      battle.board[y].forEach(c=>{
+        if(tally[c.el]!=null)tally[c.el]++;
+        if(c.rune)runes.push(c.rune);
+      });
+      battle.board.splice(y,1);battle.board.unshift(Array(COLS).fill(null));cleared++;y++;
+    }
   }
   if(cleared>0){
     battle.combo++;
     const perfect=battle.board.every(r=>r.every(c=>!c));
-    dealLineDamage(cleared,perfect);
+    dealLineDamage(cleared,perfect,tally,runes);
     if(has('fang'))healTeam(2*cleared);
-    battle.b2b=(cleared===4);
+    battle.b2b=(cleared>=4);
     sfx.clear(cleared);
   }else{
     battle.combo=0;
   }
-  /* charge skills */
   const gain=has('sage')?2:1;
   run.team.forEach(m=>{m.charge=clamp(m.charge+gain,0,m.sk.need);});
   if(battle.curse>0)battle.curse--;
-  renderSlots();renderQuickCombo();
+  renderSlots();renderQuickCombo();renderEnemy();
   if(battle.over)return;
-  /* enemy countdown */
-  const e=battle.enemy;
-  e.cd--;
-  if(e.cd<=0){enemyAct();}
-  renderEnemy();
-  if(!battle.over)spawnPiece();
+  spawnPiece();
 }
-function dealLineDamage(lines,perfect){
+function dealLineDamage(lines,perfect,tally,runes){
   const e=battle.enemy;
   let base=0;
-  run.team.forEach(m=>{base+=teamAtk(m)*elemMul(m.el,e.el);});
-  const lineMul=[0,1,2.2,3.6,6][lines]||6;
+  run.team.forEach(m=>{
+    base+=teamAtk(m)*(1+0.10*(tally[m.el]||0))*elemMul(m.el,e.el);
+  });
+  const lineMul=[0,1,2.2,3.6,6,9][Math.min(lines,5)];
   let dmg=base*lineMul;
   const comboMul=1+(battle.combo-1)*0.2*(has('ring')?2:1);
   dmg*=Math.max(1,comboMul);
-  if(lines===4&&battle.b2b)dmg*=1.5;
+  if(lines>=4&&battle.b2b)dmg*=1.5;
   dmg*=1+battle.quick*0.002;
+  const swords=runes.filter(r=>r==='sword').length;
+  if(swords)dmg*=1+0.3*swords;
   if(has('sword'))dmg*=1.2;
   if(has('tmark')&&lines>=3)dmg*=1.6;
   if(battle.curse>0)dmg*=0.7;
   if(e.shield){dmg*=0.5;e.shield=false;}
-  dmg=Math.max(1,Math.round(dmg));
-  if(perfect){dmg*=3;banner('パーフェクト！');run.team.forEach(m=>m.charge=m.sk.need);}
-  else if(lines===4)banner('4ライン消し！');
+  dmg=Math.round(dmg);
+  const bombs=runes.filter(r=>r==='bomb').length;
+  if(bombs)dmg+=bombs*15;
+  dmg=Math.max(1,dmg);
+  if(perfect){dmg*=3;banner('✨パーフェクト！');run.team.forEach(m=>m.charge=m.sk.need);confetti(12);}
+  else if(lines>=4)banner(lines+'ライン消し！');
+  /* rune effects */
+  const hearts=runes.filter(r=>r==='heart').length;
+  if(hearts){const h=Math.round(run.hpmax*0.04*hearts);healTeam(h);spawnFloat('❤️+'+h,'heal small');}
+  const coins=runes.filter(r=>r==='coin').length;
+  if(coins){addGold(6*coins);sfx.coin();spawnFloat('💰+'+(6*coins),'small');}
+  const stars=runes.filter(r=>r==='star').length;
+  if(stars){run.team.forEach(m=>m.charge=clamp(m.charge+2*stars,0,m.sk.need));spawnFloat('⭐チャージ!','small');renderSlots();}
+  if(bombs)spawnFloat('💣ドカン!','small');
   const adv=run.team.some(m=>ADV[m.el]===e.el);
   dmgEnemy(dmg,null,adv&&lines>0);
 }
 function dmgEnemy(n,icon,adv){
   const e=battle.enemy;
+  if(e.stun>0)n=Math.round(n*1.2);
   e.hp=clamp(e.hp-n,0,e.hpmax);
-  spawnFloat((icon?icon+' ':'')+n+(adv?'!':''),adv?'':'');
+  if(e.cast){
+    e.cast.done+=n;
+    if(e.cast.done>=e.cast.need&&e.hp>0){
+      e.cast=null;e.stun=3.5;
+      $('castRow').classList.add('hidden');
+      banner('💥BREAK!!');sfx.break_();confetti(10);
+      spawnFloat('BREAK!','big');
+    }
+  }
+  spawnFloat((icon?icon+' ':'')+n+(adv?'!':''),n>=100?'big':'');
   $('enemyEmo').classList.remove('hit');void $('enemyEmo').offsetWidth;$('enemyEmo').classList.add('hit');
+  setTimeout(()=>{$('enemyEmo').classList.remove('hit');},130);
   sfx.hit();
   renderEnemy();
   if(e.hp<=0)winBattle();
@@ -768,26 +992,45 @@ function dmgEnemy(n,icon,adv){
 function spawnFloat(txt,cls){
   const f=document.createElement('div');f.className='float '+(cls||'');
   f.textContent=txt;
-  f.style.left=(20+rnd(45))+'%';f.style.top=(28+rnd(30))+'%';
+  f.style.left=(15+rnd(50))+'%';f.style.top=(24+rnd(34))+'%';
   $('fxLayer').appendChild(f);
   setTimeout(()=>f.remove(),950);
 }
+/* --- real-time enemy AI --- */
 function enemyAct(){
   const e=battle.enemy;
   const act=e.sc[e.pi%e.sc.length];e.pi++;
-  e.cd=e.int+(has('hourglass')?1:0);
-  if(e.final&&e.hp<e.hpmax*0.5)e.cd=Math.max(2,e.cd-1);
+  e.timer=e.int;
+  if(e.final&&e.hp<e.hpmax*0.5)e.timer=e.int*0.8;
   switch(act){
     case 'atk':enemyAttack(e.atk);break;
     case 'smash':enemyAttack(Math.round(e.atk*2.5));e.charged=false;break;
-    case 'charge':e.charged=true;spawnFloat('💢溜め','bad small');break;
+    case 'charge':e.charged=true;spawnFloat('💢ためている','bad small');break;
     case 'garb1':addGarbage(1);break;
     case 'garb2':addGarbage(2);break;
-    case 'curse':if(has('mirror')){spawnFloat('🪞呪い反射！','small');}else{battle.curse=8;spawnFloat('🌀呪い','bad small');}break;
+    case 'curse':if(has('mirror')){spawnFloat('🪞呪いはねかえし！','small');}else{battle.curse=8;spawnFloat('🌀呪い','bad small');}break;
     case 'heal':{const h=Math.round(e.hpmax*0.08);e.hp=clamp(e.hp+h,0,e.hpmax);spawnFloat('+'+h,'heal');}break;
     case 'shield':e.shield=true;spawnFloat('🛡','small');break;
     case 'drain':{const d=enemyAttack(e.atk);if(d>0){const h=Math.round(d/2);e.hp=clamp(e.hp+h,0,e.hpmax);spawnFloat('+'+h,'heal small');}}break;
+    case 'ult':startCast();break;
   }
+  renderEnemy();
+}
+function startCast(){
+  const e=battle.enemy;
+  e.cast={t:e.ultDef.castTime,need:Math.max(10,Math.round(e.hpmax*0.12)),done:0};
+  $('castRow').classList.remove('hidden');
+  $('castName').textContent='必殺『'+e.ultDef.nm+'』';
+  banner('⚡必殺技よういゅう…！');
+  sfx.warn();playVoice(e.vo);
+  renderEnemy();
+}
+function resolveUlt(){
+  const e=battle.enemy;
+  e.cast=null;
+  $('castRow').classList.add('hidden');
+  banner('⚡'+e.ultDef.nm+'！！');
+  enemyAttack(Math.round(e.atk*e.ultDef.mult));
   renderEnemy();
 }
 function enemyAttack(v){
@@ -814,7 +1057,7 @@ function hurtTeam(d,noShake){
 function addGarbage(n){
   for(let i=0;i<n;i++){
     battle.board.shift();
-    const row=Array(COLS).fill(COLORS.G);
+    const row=Array(COLS).fill(null).map(()=>({el:'gray',rune:null}));
     row[rnd(COLS)]=null;
     battle.board.push(row);
   }
@@ -841,19 +1084,27 @@ function useSkill(i){
   else if(fx==='heal')healFloat(Math.round(run.hpmax*v/100));
   else if(fx==='rows')clearBottomRows(v);
   else if(fx==='shield'){battle.allyShield+=1;renderTeamStatus();}
-  else if(fx==='delay'){e.cd+=v;spawnFloat('⏳+'+v,'small');}
-  else if(fx==='dmgdelay'){skillDmg(atkMod*v);if(!battle.over){e.cd+=1;spawnFloat('⏳+1','small');}}
-  else if(fx==='dmgdelay2'){skillDmg(atkMod*v);if(!battle.over){e.cd+=2;spawnFloat('⏳+2','small');}}
+  else if(fx==='delay'){delayEnemy(v);}
+  else if(fx==='dmgdelay'){skillDmg(atkMod*v);if(!battle.over)delayEnemy(1.5);}
+  else if(fx==='dmgdelay2'){skillDmg(atkMod*v);if(!battle.over)delayEnemy(2.5);}
   else if(fx==='vamp'){const d=skillDmg(atkMod*v);healFloat(d);}
   else if(fx==='debuff'){e.atkMul=0.7;spawnFloat('攻撃力DOWN','small');}
-  else if(fx==='minoI'){battle.queue.unshift('I','I','I');renderNext();spawnFloat('I×3！','small');}
+  else if(fx==='i4'){for(let k=0;k<3;k++)battle.queue.unshift({t:'I4',el:m.el,rune:null,runeIdx:-1});renderNext();spawnFloat('I4×3！','small');}
   else if(fx==='cleanse'){battle.curse=0;healFloat(Math.round(run.hpmax*v/100));}
   else if(fx==='gold'){addGold(30);sfx.coin();skillDmg(atkMod*v);}
   else if(fx==='tempo'){battle.quick=has('weight')?200:100;battle.combo+=2;spawnFloat('TEMPO UP!','small');renderQuickCombo();}
   else if(fx==='rowdmg'){clearBottomRows(1);skillDmg(atkMod*v);}
-  else if(fx==='healdelay'){healFloat(Math.round(run.hpmax*v/100));if(!battle.over){e.cd+=2;spawnFloat('⏳+2','small');}}
-  else if(fx==='rally'){run.team.forEach(o=>{if(o!==m)o.charge=clamp(o.charge+3,0,o.sk.need);});spawnFloat('鼓舞！','small');}
+  else if(fx==='healdelay'){healFloat(Math.round(run.hpmax*v/100));if(!battle.over)delayEnemy(2.5);}
+  else if(fx==='rally'){run.team.forEach(o=>{if(o!==m)o.charge=clamp(o.charge+3,0,o.sk.need);});spawnFloat('こぶ！','small');}
+  else if(fx==='chrono'){delayEnemy(8);skillDmg(atkMod*v);}
+  else if(fx==='starfall'){run.team.forEach(o=>{if(o!==m)o.charge=o.sk.need;});healFloat(Math.round(run.hpmax*v/100));spawnFloat('🌟スターフォール','small');}
+  else if(fx==='i4rush'){for(let k=0;k<4;k++)battle.queue.unshift({t:'I4',el:m.el,rune:null,runeIdx:-1});renderNext();skillDmg(atkMod*v);}
   renderSlots();renderEnemy();
+}
+function delayEnemy(sec){
+  const e=battle.enemy;
+  if(e.cast){e.cast.t+=sec;}else{e.timer+=sec;}
+  spawnFloat('⏳+'+sec+'秒','small');
 }
 function skillDmg(raw){
   let d=Math.max(1,Math.round(raw));
@@ -865,53 +1116,64 @@ function healFloat(n){healTeam(n);spawnFloat('+'+n,'heal');}
 function clearBottomRows(n){
   battle.board.splice(ROWS-n,n);
   for(let i=0;i<n;i++)battle.board.unshift(Array(COLS).fill(null));
-  spawnFloat('整地！','small');
+  spawnFloat('せいち！','small');
 }
 /* --- win / lose --- */
 function winBattle(){
   if(battle.over)return;
   battle.over=true;battle.won=true;battle.piece=null;
+  battle.enemy.cast=null;$('castRow').classList.add('hidden');
   run.kills++;
-  sfx.win();banner('勝利！');
+  sfx.win();banner('勝利！');confetti(10);
   if(has('moss'))healTeam(12);
   const kind=battle.kind;
-  let g=18+rnd(14)+run.floor*2;
-  if(kind==='elite')g+=30;
-  if(kind==='boss')g+=60;
+  let g=22+rnd(16)+run.floor*3;
+  if(kind==='elite')g+=32;
+  if(kind==='boss')g+=65;
   addGold(g);
+  const expMul=1+0.15*meta.up.exp;
+  const exp=Math.round((10+run.floor*3)*(kind==='elite'?2:kind==='boss'?4:1)*expMul);
+  addExp(exp);
   setTimeout(()=>{
     if(kind==='boss'&&run.floor===10){victory();return;}
-    openReward(kind,g);
-  },900);
+    openReward(kind,g,exp);
+  },1000);
 }
 function loseBattle(){
   if(battle.over)return;
   battle.over=true;battle.lost=true;battle.piece=null;
+  battle.enemy.cast=null;$('castRow').classList.add('hidden');
   sfx.lose();
   setTimeout(()=>gameOver(),800);
 }
-function scoreCalc(){return run.floor*100+run.kills*25+run.gold+Math.max(0,run.hp);}
+function scoreCalc(){return run.floor*100+run.kills*25+run.gold+Math.max(0,run.hp)+run.lv*20;}
+function soulsGain(win){return Math.round(scoreCalc()/40)+run.floor*2+(win?25:0);}
 function gameOver(){
   state='end';setBGM('end');
+  const s=soulsGain(false);
+  meta.souls+=s;saveMeta();
   $('endEmo').textContent='💀';
-  $('endTitle').textContent='力尽きた…';
-  $('endFlavor').textContent='亡骸は迷宮に呑まれ、また一体の"骨"となる。';
-  $('endStats').innerHTML=endStats();
+  $('endTitle').textContent='力つきた…';
+  $('endFlavor').textContent='だが魂はのこった。転生の祭壇で強くなり、また挑もう。';
+  $('endStats').innerHTML=endStats(s);
   show('scr-end');
 }
 function victory(){
   state='end';setBGM('title');
+  const s=soulsGain(true);
+  meta.souls+=s;saveMeta();
   $('endEmo').textContent='👑';
-  $('endTitle').textContent='屍竜討伐！';
-  $('endFlavor').textContent='塔は静まり返った。……だが、ミノは今も降り続けている。';
-  $('endStats').innerHTML=endStats();
-  sfx.win();
+  $('endTitle').textContent='屍竜とうばつ！！';
+  $('endFlavor').textContent='塔はしずまりかえった。……だが、カケラは今もふり続けている。';
+  $('endStats').innerHTML=endStats(s);
+  sfx.win();confetti(24);
   show('scr-end');
 }
-function endStats(){
-  return `到達 <b>B${run.floor}F</b> ／ 撃破 <b>${run.kills}</b>体<br>
+function endStats(souls){
+  return `到達 <b>B${run.floor}F</b> ／ 撃破 <b>${run.kills}</b>体 ／ Lv<b>${run.lv}</b><br>
   所持金 <b>${run.gold}G</b> ／ 生存HP <b>${Math.max(0,run.hp)}</b><br>
   スコア <b style="font-size:18px">${scoreCalc()}</b><br>
+  <span style="color:#b9a6ff;font-size:15px">💠 魂 +${souls}（合計 ${meta.souls}）</span><br>
   <span style="font-size:11px;color:var(--dim)">仲間: ${run.team.map(m=>m.emo).join(' ')}　遺物: ${run.relics.map(r=>r.emo).join(' ')||'なし'}</span>`;
 }
 $('btnAgain').addEventListener('click',()=>{sfx.ui();setBGM('dungeon');renderStarter();show('scr-starter');state='starter';});
@@ -926,10 +1188,10 @@ function randomRelic(){
   const c=RELICS.filter(r=>!has(r.id));
   return c.length?pick(c):null;
 }
-function openReward(kind,gold){
+function openReward(kind,gold,exp){
   state='reward';setBGM('dungeon');
-  $('rewardTitle').textContent=(kind==='boss'?'👑 階の主を討った！':kind==='elite'?'💀 強敵撃破！':'⚔️ 勝利！');
-  $('rewardGold').textContent=`${gold}G を手に入れた。報酬をひとつ選べ。`;
+  $('rewardTitle').textContent=(kind==='boss'?'👑 階のヌシをたおした！':kind==='elite'?'💀 強敵げきは！':'⚔️ 勝利！');
+  $('rewardGold').textContent=`${gold}G と ${exp}EXP を手に入れた。ごほうびをひとつ選ぼう。`;
   const row=$('cardRow');row.innerHTML='';
   const cards=[];
   const rel=randomRelic(),mon=randomRecruit();
@@ -952,7 +1214,7 @@ function openReward(kind,gold){
   }
   cards.forEach(c=>row.appendChild(rewardCard(c)));
   const skip=document.createElement('button');skip.className='card';skip.style.opacity=.7;
-  skip.innerHTML=`<span class="emo">🚪</span><div class="body"><div class="t">受け取らず進む</div><div class="d">次の階へ。</div></div>`;
+  skip.innerHTML=`<span class="emo">🚪</span><div class="body"><div class="t">受け取らずすすむ</div><div class="d">次の階へ。</div></div>`;
   skip.addEventListener('click',()=>{sfx.ui();nextFloor();});
   row.appendChild(skip);
   show('scr-reward');
@@ -960,25 +1222,32 @@ function openReward(kind,gold){
 function rewardCard(c){
   const b=document.createElement('button');b.className='card';
   if(c.k==='mon'){
+    b.classList.add('aura-r');
     b.innerHTML=allyCardHTML(c.v,'<br><span style="color:var(--gold2)">仲間にする</span>');
     b.addEventListener('click',()=>{recruitFlow(c.v,()=>nextFloor());});
   }else if(c.k==='relic'){
+    b.classList.add('aura-sr');
     b.innerHTML=`<span class="emo">${c.v.emo}</span><div class="body"><div class="t">遺物「${c.v.nm}」</div><div class="d">${c.v.d}</div></div>`;
     b.addEventListener('click',()=>{sfx.coin();gainRelic(c.v);nextFloor();});
   }else if(c.k==='heal'){
-    b.innerHTML=`<span class="emo">🧪</span><div class="body"><div class="t">生命の薬</div><div class="d">チームHPを35%回復する。</div></div>`;
+    b.innerHTML=`<span class="emo">🧪</span><div class="body"><div class="t">いのちの薬</div><div class="d">チームHPを35%回復する。</div></div>`;
     b.addEventListener('click',()=>{sfx.skill();healTeam(run.hpmax*0.35);nextFloor();});
   }else if(c.k==='train'){
-    b.innerHTML=`<span class="emo">📕</span><div class="body"><div class="t">鍛錬の書</div><div class="d">仲間全員のATK+2。</div></div>`;
+    b.innerHTML=`<span class="emo">📕</span><div class="body"><div class="t">たんれんの書</div><div class="d">仲間全員のATK+2。</div></div>`;
     b.addEventListener('click',()=>{sfx.skill();run.team.forEach(m=>m.atk+=2);nextFloor();});
   }else if(c.k==='gold'){
-    b.innerHTML=`<span class="emo">💰</span><div class="body"><div class="t">金貨の袋</div><div class="d">+25G。</div></div>`;
+    b.innerHTML=`<span class="emo">💰</span><div class="body"><div class="t">金貨のふくろ</div><div class="d">+25G。ガチャの足しに！</div></div>`;
     b.addEventListener('click',()=>{sfx.coin();addGold(25);nextFloor();});
   }else if(c.k==='forge'){
-    b.innerHTML=`<span class="emo">⚒️</span><div class="body"><div class="t">スキル錬磨</div><div class="d">仲間ひとりのスキル必要ドロップ-2(最低3)。</div></div>`;
-    b.addEventListener('click',()=>{pickMember('誰のスキルを錬磨する？',i=>{const m=run.team[i];m.sk.need=Math.max(3,m.sk.need-2);sfx.skill();nextFloor();});});
+    b.innerHTML=`<span class="emo">⚒️</span><div class="body"><div class="t">スキルれんま</div><div class="d">仲間ひとりのスキル必要数-2(最低3)。</div></div>`;
+    b.addEventListener('click',()=>{pickMember('だれのスキルをれんまする？',i=>{const m=run.team[i];m.sk.need=Math.max(3,m.sk.need-2);sfx.skill();nextFloor();});});
   }
   return b;
+}
+function gainRelic(r){
+  run.relics.push(r);
+  if(r.id==='crystal'){run.hpmax+=30;healTeam(30);}
+  if(r.id==='quill'){run.team.forEach(m=>m.sk.need=Math.max(3,m.sk.need-1));}
 }
 function pickMember(title,cb){
   let html=`<h3>${title}</h3><div class="cardrow">`;
@@ -992,11 +1261,6 @@ function pickMember(title,cb){
   });
   $('pmCancel').addEventListener('click',()=>{sfx.ui();closeOverlay();});
 }
-function gainRelic(r){
-  run.relics.push(r);
-  if(r.id==='crystal'){run.hpmax+=30;healTeam(30);}
-  if(r.id==='quill'){run.team.forEach(m=>m.sk.need=Math.max(3,m.sk.need-1));}
-}
 function recruitFlow(mon,done){
   if(run.team.length<4){
     const m=makeAlly(mon);
@@ -1005,7 +1269,7 @@ function recruitFlow(mon,done){
     sfx.skill();done();
     return;
   }
-  let html=`<h3>${mon.emo} ${mon.nm} を仲間に？</h3><p class="dim">チームは満員(4体)。入れ替える仲間を選べ。<br>※入れ替えた分の最大HPは失われる。</p><div class="cardrow">`;
+  let html=`<h3>${mon.emo} ${mon.nm} を仲間に？</h3><p class="dim">チームは満員(4体)。入れかえる仲間をえらぼう。<br>※入れかえた分の最大HPは失われる。</p><div class="cardrow">`;
   run.team.forEach((m,i)=>{
     html+=`<button class="card" data-rep="${i}"><span class="emo">${m.emo}</span><div class="body"><div class="t">${m.nm} ${chip(m.el)}</div><div class="d">HP${m.hp} ATK${m.atk}【${m.sk.nm}】</div></div></button>`;
   });
@@ -1023,6 +1287,100 @@ function recruitFlow(mon,done){
   $('repCancel').addEventListener('click',()=>{sfx.ui();closeOverlay();});
 }
 
+/* ============ GACHA (slot machine) ============ */
+const GACHA_COST=45;
+const SLOT_SYMS=['💀','🍖','🦴','🕯️','🔔','⭐','🌈'];
+function gachaRarity(){
+  const ur=5+2*meta.up.gacha;
+  const r=Math.random()*100;
+  if(r<ur)return 'UR';
+  if(r<ur+18)return 'SR';
+  if(r<ur+18+37)return 'R';
+  return 'N';
+}
+function openGacha(){
+  if(run.gold<GACHA_COST){sfx.ui();return;}
+  run.gold-=GACHA_COST;updateTop();
+  const rar=gachaRarity();
+  let html=`<h3>🎰 骨ガチャ</h3>
+  <div id="reels"><div class="reel" id="reel0">💀</div><div class="reel" id="reel1">💀</div><div class="reel" id="reel2">💀</div></div>
+  <div id="reachTxt"></div>
+  <div id="gachaResult"></div>`;
+  openOverlay(html);
+  const finals={UR:['🌈','🌈','🌈'],SR:['⭐','⭐','⭐'],R:['🔔','🔔','🔔'],N:null}[rar]
+    ||(function(){const a=pick(SLOT_SYMS),b=Math.random()<0.35?a:pick(SLOT_SYMS.filter(s=>s!==a));let c=pick(SLOT_SYMS.filter(s=>!(s===a&&s===b)));if(a===b&&c===a)c='🍖'===a?'💀':'🍖';return [a,b,c];})();
+  const reels=[0,1,2].map(i=>$('reel'+i));
+  const spins=reels.map(el=>{
+    const iv=setInterval(()=>{el.textContent=pick(SLOT_SYMS);sfx.reel();},70);
+    gachaTimers.push(iv);return iv;
+  });
+  const reach=(rar==='UR'||rar==='SR'||(rar==='N'&&finals[0]===finals[1]));
+  const stopAt=[800,1600,reach?3400:2400];
+  [0,1,2].forEach(i=>{
+    gachaTimers.push(setTimeout(()=>{
+      clearInterval(spins[i]);
+      reels[i].textContent=finals[i];
+      reels[i].classList.add('stopped');
+      sfx.reelstop();
+      if(i===1&&reach){$('reachTxt').textContent='リーチ…！！';sfx.warn();}
+      if(i===2)gachaReveal(rar);
+    },stopAt[i]));
+  });
+}
+function gachaReveal(rar){
+  $('reachTxt').textContent={UR:'✨🌈 U R 🌈✨',SR:'⭐ SR！',R:'🔔 R！',N:'ざんねん…'}[rar];
+  if(rar==='UR'){
+    const fl=document.createElement('div');fl.className='urflash';$('app').appendChild(fl);
+    setTimeout(()=>fl.remove(),2500);
+    confetti(24);sfx.levelup();
+  }else if(rar==='SR'){confetti(12);sfx.win();}
+  else if(rar==='R'){sfx.coin();}
+  const res=$('gachaResult');if(!res)return;
+  let inner='';let after=null;
+  if(rar==='UR'){
+    const cand=GACHA_UR.filter(m=>!ownedIds().includes(m.id));
+    if(cand.length){
+      const m=pick(cand);
+      inner=`<button class="card aura-ur" id="gPrize">${allyCardHTML(m,'<br><span style="color:#fff">仲間にする！</span>')}</button>`;
+      after=()=>{$('gPrize').addEventListener('click',()=>{closeOverlay();recruitFlow(m,()=>{gotoMap();});});};
+    }else{
+      addGold(150);sfx.coin();
+      inner=`<div class="card aura-ur"><span class="emo">💰</span><div class="body"><div class="t">大当たりジャックポット</div><div class="d">+150G！(UR仲間は全員集めた)</div></div></div>`;
+    }
+  }else if(rar==='SR'){
+    if(Math.random()<0.5){
+      const r=randomRelic();
+      if(r){gainRelic(r);inner=`<div class="card aura-sr"><span class="emo">${r.emo}</span><div class="body"><div class="t">遺物「${r.nm}」</div><div class="d">${r.d}</div></div></div>`;}
+      else{addGold(80);inner=`<div class="card aura-sr"><span class="emo">💰</span><div class="body"><div class="t">+80G</div></div></div>`;}
+    }else{
+      const m=randomRecruit();
+      if(m){
+        const sm={...m,atk:m.atk+3,nm:m.nm+'★'};
+        inner=`<button class="card aura-sr" id="gPrize">${allyCardHTML(sm,'<br><span style="color:var(--gold2)">★強個体！仲間にする</span>')}</button>`;
+        after=()=>{$('gPrize').addEventListener('click',()=>{closeOverlay();recruitFlow(sm,()=>{gotoMap();});});};
+      }else{addGold(80);inner=`<div class="card aura-sr"><span class="emo">💰</span><div class="body"><div class="t">+80G</div></div></div>`;}
+    }
+  }else if(rar==='R'){
+    const roll=rnd(3);
+    if(roll===0){healTeam(run.hpmax*0.35);inner=`<div class="card aura-r"><span class="emo">🧪</span><div class="body"><div class="t">いのちの薬</div><div class="d">HP35%回復！</div></div></div>`;}
+    else if(roll===1){const g=30+rnd(31);addGold(g);inner=`<div class="card aura-r"><span class="emo">💰</span><div class="body"><div class="t">+${g}G</div></div></div>`;}
+    else{run.team.forEach(m=>m.charge=m.sk.need);inner=`<div class="card aura-r"><span class="emo">⭐</span><div class="body"><div class="t">全員スキル満タン！</div></div></div>`;}
+  }else{
+    const g=8+rnd(8);addGold(g);
+    inner=`<div class="card aura-n"><span class="emo">🦴</span><div class="body"><div class="t">ホネのかけら…</div><div class="d">売って+${g}G。次はきっと当たる！</div></div></div>`;
+  }
+  inner+=`<button class="bigbtn" style="font-size:13px;padding:9px 20px" id="gAgain">もう一回まわす (${GACHA_COST}G)</button>
+  <button class="iconbtn" style="display:block;margin:6px auto 0" id="gClose">とじる</button>`;
+  res.innerHTML=inner;
+  updateTop();
+  if(after)after();
+  $('gAgain').addEventListener('click',()=>{
+    if(run.gold<GACHA_COST){$('gAgain').textContent='ゴールドがたりない…';return;}
+    closeOverlay();openGacha();
+  });
+  $('gClose').addEventListener('click',()=>{sfx.ui();closeOverlay();if(state==='map')gotoMap();});
+}
+
 /* ============ events & rest ============ */
 function evScreen(emo,title,text,btns){
   state='event';setBGM('dungeon');
@@ -1037,27 +1395,27 @@ function evScreen(emo,title,text,btns){
   show('scr-event');
 }
 function evResult(emo,title,text){
-  evScreen(emo,title,text,[{emo:'▶',t:'先へ進む',fn:nextFloor}]);
+  evScreen(emo,title,text,[{emo:'▶',t:'先へすすむ',fn:nextFloor}]);
 }
 function openRest(){
-  evScreen('⛺','安らぎの焚き火','骨の転がる迷宮に、ささやかな灯り。<br>ひとつだけ選べる。',[
-    {emo:'💤',t:'休む',d:'HPを40%回復する。',fn:()=>{healTeam(run.hpmax*0.4);evResult('💤','ぐっすり眠った','HPが回復した。夢に骨の音は聞こえない。');}},
-    {emo:'🧘',t:'瞑想する',d:'仲間全員のスキルを満タンにする。',fn:()=>{run.team.forEach(m=>m.charge=m.sk.need);evResult('🧘','精神統一','全員のスキルが冴えわたる。');}},
-    {emo:'🗡️',t:'鍛錬する',d:'仲間全員のATK+2。',fn:()=>{run.team.forEach(m=>m.atk+=2);evResult('🗡️','素振り千回','仲間たちの目つきが変わった。ATK+2。');}},
+  evScreen('⛺','やすらぎのたき火','骨のころがる迷宮に、ささやかな灯り。<br>ひとつだけ選べる。',[
+    {emo:'💤',t:'休む',d:'HPを40%回復する。',fn:()=>{healTeam(run.hpmax*0.4);evResult('💤','ぐっすり','HPが回復した。夢に骨の音は聞こえない。');}},
+    {emo:'🧘',t:'瞑想する',d:'仲間全員のスキルを満タンにする。',fn:()=>{run.team.forEach(m=>m.charge=m.sk.need);evResult('🧘','精神とういつ','全員のスキルが冴えわたる。');}},
+    {emo:'🗡️',t:'たんれんする',d:'仲間全員のATK+2。',fn:()=>{run.team.forEach(m=>m.atk+=2);evResult('🗡️','素振り千回','仲間たちの目つきが変わった。ATK+2。');}},
   ]);
 }
 const EVENTS=[
  function altar(){
-  evScreen('🕯️','怪しい祭壇','黒い蝋燭が骨の祭壇を照らす。<br>血の代償を求めているようだ。',[
-   {emo:'🩸',t:'血を捧げる(HP-15)',d:'遺物をひとつ授かる。',fn:()=>{
+  evScreen('🕯️','あやしい祭壇','黒いろうそくが骨の祭壇を照らす。<br>血の代償を求めているようだ。',[
+   {emo:'🩸',t:'血をささげる(HP-15)',d:'遺物をひとつ授かる。',fn:()=>{
      run.hp=clamp(run.hp-15,1,run.hpmax);
      const r=randomRelic();
-     if(r){gainRelic(r);evResult('✨','祭壇が応えた',`遺物「${r.emo}${r.nm}」を授かった。<br>${r.d}`);}
+     if(r){gainRelic(r);evResult('✨','祭壇がこたえた',`遺物「${r.emo}${r.nm}」を授かった。<br>${r.d}`);}
      else evResult('…','祭壇は沈黙した','もう授けるものがないようだ。');
    }},
-   {emo:'🙏',t:'祈る',d:'何かが起こる…かもしれない。',fn:()=>{
-     if(Math.random()<0.5){run.team.forEach(m=>m.charge=m.sk.need);evResult('✨','祈りが届いた','全員のスキルが満タンになった！');}
-     else evResult('…','何も起こらない','蝋燭が一本、静かに消えた。');
+   {emo:'🙏',t:'いのる',d:'何かが起こる…かもしれない。',fn:()=>{
+     if(Math.random()<0.5){run.team.forEach(m=>m.charge=m.sk.need);evResult('✨','祈りがとどいた','全員のスキルが満タンになった！');}
+     else evResult('…','なにも起こらない','ろうそくが一本、静かに消えた。');
    }},
    {emo:'🚪',t:'立ち去る',fn:nextFloor},
   ]);
@@ -1066,66 +1424,67 @@ const EVENTS=[
   const r=randomRelic(),m=randomRecruit();
   const btns=[];
   if(r)btns.push({emo:r.emo,t:`遺物「${r.nm}」 <span class="price">60G</span>`,d:r.d,dis:run.gold<60,fn:()=>{run.gold-=60;gainRelic(r);sfx.coin();updateTop();evResult(r.emo,'取引成立','「まいどあり…カタカタ」');}});
-  btns.push({emo:'🧪',t:'回復薬 <span class="price">30G</span>',d:'HPを40%回復。',dis:run.gold<30,fn:()=>{run.gold-=30;healTeam(run.hpmax*0.4);sfx.coin();updateTop();evResult('🧪','ごくごく','じんわり傷が塞がっていく。');}});
-  if(m)btns.push({emo:m.emo,t:`${m.nm}を雇う <span class="price">50G</span>`,d:`${EL[m.el].n}属性/【${m.sk.nm}】${m.sk.d}`,dis:run.gold<50,fn:()=>{run.gold-=50;sfx.coin();updateTop();recruitFlow(m,()=>evResult(m.emo,'契約成立','新たな仲間が加わった！'));}});
+  btns.push({emo:'🧪',t:'回復薬 <span class="price">30G</span>',d:'HPを40%回復。',dis:run.gold<30,fn:()=>{run.gold-=30;healTeam(run.hpmax*0.4);sfx.coin();updateTop();evResult('🧪','ごくごく','じんわり傷がふさがっていく。');}});
+  if(m)btns.push({emo:m.emo,t:`${m.nm}をやとう <span class="price">50G</span>`,d:`${EL[m.el].n}属性/【${m.sk.nm}】${m.sk.d}`,dis:run.gold<50,fn:()=>{run.gold-=50;sfx.coin();updateTop();recruitFlow(m,()=>evResult(m.emo,'契約成立','新たな仲間が加わった！'));}});
+  btns.push({emo:'🎰',t:`骨ガチャ <span class="price">45G</span>`,d:'何が出るかはお楽しみ。',dis:run.gold<45,fn:()=>{openGacha();}});
   btns.push({emo:'🚪',t:'立ち去る',fn:nextFloor});
-  evScreen('🎩','行商ガイコツ','「ヒヒ…冷やかしなら帰んな」<br>骨の商人が店を広げている。',btns);
+  evScreen('🎩','行商ガイコツ','「ヒヒ…ひやかしなら帰んな」<br>骨の商人が店をひろげている。',btns);
  },
  function spring(){
-  evScreen('⛲','忘れられた泉','底光りする水面。飲めば力が湧きそうだ。',[
-   {emo:'💧',t:'水を飲む',d:'HPを50%回復する。',fn:()=>{healTeam(run.hpmax*0.5);evResult('💧','甘露','傷が癒えていく。');}},
-   {emo:'🫗',t:'水を浴びる',d:'最大HP+12(即時回復も+12)。',fn:()=>{run.hpmax+=12;healTeam(12);evResult('🫗','活力','体の芯が強くなった。最大HP+12。');}},
+  evScreen('⛲','わすれられた泉','底光りする水面。飲めば力がわきそうだ。',[
+   {emo:'💧',t:'水をのむ',d:'HPを50%回復する。',fn:()=>{healTeam(run.hpmax*0.5);evResult('💧','かんろ','傷がいえていく。');}},
+   {emo:'🫗',t:'水をあびる',d:'最大HP+12(即時回復も+12)。',fn:()=>{run.hpmax+=12;healTeam(12);evResult('🫗','かつりょく','体のしんが強くなった。最大HP+12。');}},
    {emo:'🚪',t:'立ち去る',fn:nextFloor},
   ]);
  },
  function stray(){
   const m=randomRecruit();
   if(!m){EVENTS[4]();return;}
-  evScreen(m.emo,'迷子のモンスター',`${m.nm}が物陰からこちらを見ている。<br>${EL[m.el].n}属性／【${m.sk.nm}】${m.sk.d}`,[
+  evScreen(m.emo,'まいごのモンスター',`${m.nm}がものかげからこちらを見ている。<br>${EL[m.el].n}属性／【${m.sk.nm}】${m.sk.d}`,[
    {emo:'🤝',t:'仲間にする',fn:()=>{recruitFlow(m,()=>evResult(m.emo,'なついた！','新たな仲間が加わった。'));}},
-   {emo:'🍖',t:'餌だけあげて見送る',d:'+20G(お礼を落としていった)。',fn:()=>{addGold(20);sfx.coin();evResult('🍖','もぐもぐ','去り際に金貨を落としていった。+20G');}},
+   {emo:'🍖',t:'えさだけあげて見送る',d:'+20G(お礼を落としていった)。',fn:()=>{addGold(20);sfx.coin();evResult('🍖','もぐもぐ','去りぎわに金貨を落としていった。+20G');}},
   ]);
  },
  function vault(){
-  evScreen('💎','崩れた宝物庫','半壊した扉の奥に、埃をかぶった宝箱。<br>罠の気配もする。',[
-   {emo:'🗝️',t:'開ける',d:'60%: 宝／40%: 罠(HP-20)。',fn:()=>{
+  evScreen('💎','くずれた宝物庫','半壊した扉のおくに、ほこりをかぶった宝箱。<br>わなの気配もする。',[
+   {emo:'🗝️',t:'あける',d:'60%: お宝／40%: わな(HP-20)。',fn:()=>{
      if(Math.random()<0.6){
-       if(Math.random()<0.5){const r=randomRelic();if(r){gainRelic(r);evResult('✨','大当たり！',`遺物「${r.emo}${r.nm}」を発見！<br>${r.d}`);return;}}
+       if(Math.random()<0.5){const r=randomRelic();if(r){gainRelic(r);evResult('✨','大あたり！',`遺物「${r.emo}${r.nm}」を発見！<br>${r.d}`);return;}}
        const g=40+rnd(21);addGold(g);sfx.coin();evResult('💰','金貨ざくざく',`+${g}G！`);
-     }else{run.hp=clamp(run.hp-20,1,run.hpmax);sfx.hurt();evResult('💥','罠だ！','毒針が飛び出した。HP-20。');}
+     }else{run.hp=clamp(run.hp-20,1,run.hpmax);sfx.hurt();evResult('💥','わなだ！','毒針がとび出した。HP-20。');}
    }},
-   {emo:'🚪',t:'触れずに去る',fn:nextFloor},
+   {emo:'🚪',t:'ふれずに去る',fn:nextFloor},
   ]);
  },
  function whisper(){
-  evScreen('👻','亡者の囁き','「チカラ…ホシイカ…」<br>冷たい声が骨身に染みる。',[
+  evScreen('👻','亡者のささやき','「チカラ…ホシイカ…」<br>冷たい声が骨身にしみる。',[
    {emo:'🤝',t:'力を受け入れる',d:'遺物「亡者の契約」: ATK+15%／最大HP-10。',
     dis:has('pact'),
     fn:()=>{
      run.relics.push({id:'pact',nm:'亡者の契約',emo:'👻',d:'ATK+15%／最大HP-10'});
      run.team.forEach(m=>m.atk=Math.round(m.atk*1.15));
      run.hpmax=Math.max(30,run.hpmax-10);run.hp=clamp(run.hp,1,run.hpmax);
-     evResult('👻','契約完了','腕に黒い紋様が浮かぶ。力が…漲る。');
+     evResult('👻','契約完了','腕に黒いもんようが浮かぶ。力が…みなぎる。');
    }},
-   {emo:'🙅',t:'断る',d:'囁きは消え、静寂が戻る。',fn:()=>{evResult('🙅','拒絶','「…ソウカ」声は闇に溶けた。');}},
+   {emo:'🙅',t:'ことわる',d:'ささやきは消え、静けさがもどる。',fn:()=>{evResult('🙅','拒絶','「…ソウカ」声はやみに溶けた。');}},
   ]);
  },
  function gamble(){
   const bet=b=>{
     run.gold-=b;updateTop();
-    if(Math.random()<0.5){addGold(b*2);sfx.coin();evResult('🎲','勝った！',`骸骨が悔しそうに金貨を差し出す。+${b*2}G！`);}
+    if(Math.random()<0.5){addGold(b*2);sfx.coin();confetti(8);evResult('🎲','勝った！',`骸骨がくやしそうに金貨を差し出す。+${b*2}G！`);}
     else{sfx.hurt();evResult('🎲','負けた…','「ヘッヘッ…また来なよ」');}
   };
-  evScreen('🎲','骸骨賭博場','骨のディーラーがダイスを転がしている。<br>「倍賭けだ。乗るかい？」(勝率50%)',[
-   {emo:'🪙',t:'10G賭ける',d:'勝てば+20G。',dis:run.gold<10,fn:()=>bet(10)},
-   {emo:'💰',t:'30G賭ける',d:'勝てば+60G。',dis:run.gold<30,fn:()=>bet(30)},
+  evScreen('🎲','がいこつ賭博場','骨のディーラーがダイスをころがしている。<br>「倍がけだ。乗るかい？」(勝率50%)',[
+   {emo:'🪙',t:'10Gかける',d:'勝てば+20G。',dis:run.gold<10,fn:()=>bet(10)},
+   {emo:'💰',t:'30Gかける',d:'勝てば+60G。',dis:run.gold<30,fn:()=>bet(30)},
    {emo:'🚪',t:'立ち去る',fn:nextFloor},
   ]);
  },
  function armory(){
   evScreen('🗡️','古びた武器庫','朽ちた得物の山。まだ使える物もありそうだ。',[
-   {emo:'⚒️',t:'仲間に装備させる',d:'選んだ仲間ひとりのATK+4。',fn:()=>{pickMember('誰を強化する？',i=>{run.team[i].atk+=4;sfx.skill();evResult('⚒️','装備完了',`${run.team[i].nm}のATK+4！`);});}},
-   {emo:'🪙',t:'金目の物を漁る',d:'+15〜30G。',fn:()=>{const g=15+rnd(16);addGold(g);sfx.coin();evResult('🪙','換金成功',`くず鉄に混じって金細工を発見。+${g}G。`);}},
+   {emo:'⚒️',t:'仲間に装備させる',d:'選んだ仲間ひとりのATK+4。',fn:()=>{pickMember('だれを強化する？',i=>{run.team[i].atk+=4;sfx.skill();evResult('⚒️','装備かんりょう',`${run.team[i].nm}のATK+4！`);});}},
+   {emo:'🪙',t:'金目の物をあさる',d:'+15〜30G。',fn:()=>{const g=15+rnd(16);addGold(g);sfx.coin();evResult('🪙','換金成功',`くず鉄にまじって金細工を発見。+${g}G。`);}},
    {emo:'🚪',t:'立ち去る',fn:nextFloor},
   ]);
  },
@@ -1137,7 +1496,7 @@ function openEvent(){
 }
 
 /* ============ battle rendering ============ */
-function renderAllBattle(){renderEnemy();renderSlots();updateTeamHP();renderHold();renderNext();renderQuickCombo();renderTeamStatus();}
+function renderAllBattle(){renderEnemy();renderSlots();updateTeamHP();renderHold();renderNext();renderQuickCombo();renderTeamStatus();renderLv();}
 function renderEnemy(){
   if(!battle)return;
   const e=battle.enemy;
@@ -1147,20 +1506,29 @@ function renderEnemy(){
   $('enemyHpTxt').textContent=`${e.hp} / ${e.hpmax}`;
   const next=e.sc[e.pi%e.sc.length];
   const icon={atk:'⚔ '+Math.round(e.atk*e.atkMul*(e.charged?2.5:1)),
-    smash:'💥 '+Math.round(e.atk*2.5*e.atkMul),charge:'💢 溜め',garb1:'🧱 ガレキ1',garb2:'🧱 ガレキ2',
-    curse:'🌀 呪い',heal:'✨ 回復',shield:'🛡 守り',drain:'🩸 '+Math.round(e.atk*e.atkMul*(e.charged?2.5:1))}[next]||next;
+    smash:'💥 '+Math.round(e.atk*2.5*e.atkMul),charge:'💢 ため',garb1:'🧱 ガレキ1',garb2:'🧱 ガレキ2',
+    curse:'🌀 呪い',heal:'✨ 回復',shield:'🛡 まもり',
+    drain:'🩸 '+Math.round(e.atk*e.atkMul*(e.charged?2.5:1)),
+    ult:'⚡ 必殺技！'}[next]||next;
   $('intentTxt').textContent='次: '+icon;
-  const pips=$('pips');pips.innerHTML='';
-  const total=e.int+(has('hourglass')?1:0);
-  for(let i=0;i<Math.max(total,e.cd);i++){
-    const p=document.createElement('span');p.className='pip'+(i<e.cd?' on':'');pips.appendChild(p);
-  }
   const st=[];
-  if(e.charged)st.push('💢力を溜めている！');
-  if(e.shield)st.push('🛡守りの構え');
-  if(e.atkMul<1)st.push('⬇攻撃力低下');
-  if(battle.curse>0)st.push(`🌀呪い(あと${battle.curse}ドロップ 与ダメ-30%)`);
+  if(e.stun>0)st.push('😵ブレイク中(被ダメUP)');
+  if(e.charged)st.push('💢力をためている！');
+  if(e.shield)st.push('🛡まもりの構え');
+  if(e.atkMul<1)st.push('⬇攻撃力ていか');
+  if(battle.curse>0)st.push(`🌀呪い(あと${battle.curse}カケラ 与ダメ-30%)`);
   $('enemyStatus').textContent=st.join('　');
+}
+function renderTimers(){
+  if(!battle)return;
+  const e=battle.enemy;
+  if(e.cast){
+    $('castClock').textContent=Math.max(0,e.cast.t).toFixed(1);
+    $('castBreakFill').style.width=clamp(e.cast.done/e.cast.need*100,0,100)+'%';
+    $('timeFill').style.width='100%';
+  }else{
+    $('timeFill').style.width=clamp(e.timer/e.int*100,0,100)+'%';
+  }
 }
 function renderTeamStatus(){
   $('teamStatus').textContent=battle&&battle.allyShield>0?('🛡×'+battle.allyShield):'';
@@ -1189,16 +1557,30 @@ function renderSlots(){
 function renderQuickCombo(){
   if(!battle)return;
   $('quickFill').style.width=clamp(battle.quick,0,200)/2+'%';
-  $('comboTxt').textContent=battle.combo>1?`${battle.combo} COMBO!`:(battle.b2b?'B2B待機':'');
+  $('comboTxt').textContent=battle.combo>1?`${battle.combo} COMBO!`:(battle.b2b?'B2B!':'');
 }
-function drawMini(c,t){
+function drawMini(c,id){
   const g=c.getContext('2d');
   g.clearRect(0,0,c.width,c.height);
-  if(!t)return;
-  const cells=SHAPES[t][0];
-  const s=9,ox=(c.width-4*s)/2,oy=(c.height-2*s)/2-(t==='I'?4:0);
-  g.fillStyle=COLORS[t];
-  cells.forEach(([x,y])=>{g.fillRect(ox+x*s,oy+y*s,s-1,s-1);});
+  if(!id)return;
+  const cells=SHAPES[id.t][0];
+  const maxx=Math.max(...cells.map(cc=>cc[0]))+1,maxy=Math.max(...cells.map(cc=>cc[1]))+1;
+  const s=Math.min(12,Math.floor(Math.min((c.width-6)/maxx,(c.height-6)/maxy)));
+  const ox=(c.width-maxx*s)/2,oy=(c.height-maxy*s)/2;
+  g.fillStyle=EL[id.el]?EL[id.el].c:GRAYC;
+  cells.forEach(([x,y],i)=>{
+    rr(g,ox+x*s,oy+y*s,s-1.5,s-1.5,2.5);g.fill();
+  });
+  if(id.rune&&id.runeIdx>=0&&cells[id.runeIdx]){
+    const [rx,ry]=cells[id.runeIdx];
+    g.font=(s-2)+'px sans-serif';g.textAlign='center';g.textBaseline='middle';
+    g.fillText(RUNES[id.rune].emo,ox+rx*s+s/2,oy+ry*s+s/2);
+  }
+}
+function rr(g,x,y,w,h,r){
+  g.beginPath();
+  g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);
+  g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();
 }
 function renderHold(){drawMini($('holdC'),battle?battle.hold:null);}
 function renderNext(){
@@ -1211,11 +1593,9 @@ function banner(txt){
 }
 function drawBoard(){
   ctx.clearRect(0,0,COLS*CELL,ROWS*CELL);
-  /* grid */
-  ctx.strokeStyle='rgba(120,100,180,0.08)';ctx.lineWidth=1;
+  ctx.strokeStyle='rgba(160,140,220,0.07)';ctx.lineWidth=1;
   for(let x=1;x<COLS;x++){ctx.beginPath();ctx.moveTo(x*CELL+.5,0);ctx.lineTo(x*CELL+.5,ROWS*CELL);ctx.stroke();}
   for(let y=1;y<ROWS;y++){ctx.beginPath();ctx.moveTo(0,y*CELL+.5);ctx.lineTo(COLS*CELL,y*CELL+.5);ctx.stroke();}
-  /* stack */
   for(let y=0;y<ROWS;y++)for(let x=0;x<COLS;x++){
     const c=battle.board[y][x];
     if(c)drawCell(x,y,c,false);
@@ -1223,36 +1603,60 @@ function drawBoard(){
   const p=battle.piece;
   if(p){
     const gy=ghostY();
-    for(const [dx,dy] of SHAPES[p.t][p.rot]){
-      const y=gy+dy;if(y>=0)drawCell(p.x+dx,y,COLORS[p.t],true);
-    }
-    for(const [dx,dy] of SHAPES[p.t][p.rot]){
-      const y=p.y+dy;if(y>=0)drawCell(p.x+dx,y,COLORS[p.t],false);
-    }
+    const cells=SHAPES[p.t][p.rot];
+    cells.forEach(([dx,dy])=>{const y=gy+dy;if(y>=0)drawGhost(p.x+dx,y,p.el);});
+    cells.forEach(([dx,dy],i)=>{
+      const y=p.y+dy;if(y>=0)drawCell(p.x+dx,y,{el:p.el,rune:i===p.runeIdx?p.rune:null},false);
+    });
   }
 }
-function drawCell(x,y,color,ghost){
+function drawCell(x,y,cell,ghost){
   const px=x*CELL,py=y*CELL;
-  if(ghost){
-    ctx.strokeStyle=color;ctx.globalAlpha=0.35;ctx.lineWidth=2;
-    ctx.strokeRect(px+2,py+2,CELL-4,CELL-4);ctx.globalAlpha=1;
-    return;
+  const col=cell.el==='gray'?GRAYC:(EL[cell.el]?EL[cell.el].c:GRAYC);
+  ctx.fillStyle=col;
+  rr(ctx,px+1.5,py+1.5,CELL-3,CELL-3,Math.max(3,CELL*0.22));ctx.fill();
+  ctx.fillStyle='rgba(255,255,255,0.35)';
+  ctx.beginPath();ctx.arc(px+CELL*0.32,py+CELL*0.3,CELL*0.11,0,Math.PI*2);ctx.fill();
+  ctx.fillStyle='rgba(0,0,0,0.18)';
+  rr(ctx,px+1.5,py+CELL-6,CELL-3,4,2);ctx.fill();
+  if(cell.rune){
+    ctx.font=Math.floor(CELL*0.55)+'px sans-serif';
+    ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(RUNES[cell.rune].emo,px+CELL/2,py+CELL/2+1);
   }
-  ctx.fillStyle=color;
-  ctx.fillRect(px+1,py+1,CELL-2,CELL-2);
-  ctx.fillStyle='rgba(255,255,255,0.28)';
-  ctx.fillRect(px+1,py+1,CELL-2,3);
-  ctx.fillStyle='rgba(0,0,0,0.3)';
-  ctx.fillRect(px+1,py+CELL-4,CELL-2,3);
+}
+function drawGhost(x,y,el){
+  const px=x*CELL,py=y*CELL;
+  ctx.strokeStyle=EL[el]?EL[el].c:GRAYC;ctx.globalAlpha=0.35;ctx.lineWidth=2;
+  rr(ctx,px+2.5,py+2.5,CELL-5,CELL-5,Math.max(3,CELL*0.2));ctx.stroke();
+  ctx.globalAlpha=1;
 }
 
 /* ============ game loop ============ */
+function battlePaused(){
+  return $('overlay').classList.contains('show')||document.hidden;
+}
 let lastT=0;
 function loop(t){
   requestAnimationFrame(loop);
   const dt=Math.min(60,t-lastT);lastT=t;
   if(state!=='battle'||!battle||battle.over)return;
-  if($('overlay').classList.contains('show')){drawBoard();return;}
+  if(battlePaused()){drawBoard();return;}
+  /* enemy real-time */
+  const e=battle.enemy;
+  if(e.stun>0){
+    e.stun-=dt/1000;
+    if(e.stun<=0){e.stun=0;renderEnemy();}
+  }else if(e.cast){
+    e.cast.t-=dt/1000;
+    if(e.cast.t<=0)resolveUlt();
+  }else{
+    e.timer-=dt/1000;
+    if(e.timer<=0)enemyAct();
+  }
+  renderTimers();
+  if(!battle||battle.over)return;
+  /* piece physics */
   const p=battle.piece;
   if(p){
     const grounded=collide(p.t,p.rot,p.x,p.y+1);
@@ -1289,7 +1693,7 @@ bindHold($('btnD'),()=>{if(inB())battle.soft=true;},()=>{if(battle)battle.soft=f
 $('btnRot').addEventListener('pointerdown',e=>{e.preventDefault();ensureAC();if(inB())tryRotate(1);});
 $('btnDrop').addEventListener('pointerdown',e=>{e.preventDefault();ensureAC();if(inB())hardDrop();});
 $('holdC').parentElement.addEventListener('pointerdown',e=>{e.preventDefault();if(inB())doHold();});
-function inB(){return state==='battle'&&battle&&!battle.over&&!$('overlay').classList.contains('show');}
+function inB(){return state==='battle'&&battle&&!battle.over&&!battlePaused();}
 /* canvas gestures */
 let g={on:false,x0:0,y0:0,t0:0,accX:0,moved:false};
 cv.addEventListener('pointerdown',e=>{
@@ -1330,6 +1734,7 @@ document.addEventListener('keydown',e=>{
 document.addEventListener('keyup',e=>{if(e.key==='ArrowDown'&&battle)battle.soft=false;});
 
 updateTopSafe();
+renderTitle();
 setBGM('title');
 </script>
 </body>
