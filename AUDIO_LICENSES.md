@@ -7,12 +7,35 @@ App Store 公開に向け、ゲーム内で使用する **すべての音源（B
 
 ## 現在の状態
 
-現行バージョンの BGM・効果音は **すべて WebAudio による自作合成音**です。
-外部素材を一切使用していないため、著作権上の第三者リスクはありません（作者＝本プロジェクト、権利フリー、クレジット不要）。
+- **BGM（場面別6種＋属性別4種）**: 外部の **CC0（パブリックドメイン相当）** 音源を使用（下表「導入済み BGM」）。すべて商用利用可・クレジット表記不要。`bgm/*.mp3` に配置し、ファイルが無い場面は従来の自作シンセ音へ自動フォールバック。
+- **効果音（SE）**: 引き続き **WebAudio による自作合成音**（作者＝本プロジェクト、権利フリー、クレジット不要）。
 
 | 用途 | タイトル | 作者 | ライセンス | 配布元URL | 商用利用 | クレジット表記 | 備考 |
 |---|---|---|---|---|---|---|---|
-| BGM/SE 全般 | 自作シンセ音（WebAudio合成） | 本プロジェクト | オリジナル（権利フリー） | – | 可 | 不要 | 差し替え前の暫定音源 |
+| SE 全般 | 自作シンセ音（WebAudio合成） | 本プロジェクト | オリジナル（権利フリー） | – | 可 | 不要 | 効果音は自作合成のまま |
+
+---
+
+## 導入済み BGM（CC0・2026-07-11 導入）
+
+すべて **CC0**（Creative Commons Zero / パブリックドメイン相当）。**商用利用可・クレジット表記不要**。各曲のライセンスは、配布元ページの CC0 表示および同梱 INFO.txt で **個別に確認済み**。
+
+| ファイル | 場面 | 原曲 | 作者 | ライセンス | 配布元/ライセンス確認URL | 商用 | クレジット |
+|---|---|---|---|---|---|---|---|
+| bgm/title.mp3 | タイトル（かわいい/軽快） | Retro Game Music Pack – Title Screen | Juhani Junkala (SubspaceAudio) | CC0 | https://opengameart.org/content/5-chiptunes-action | 可 | 不要 |
+| bgm/dungeon.mp3 | 選択・マップ（探索） | Chiptune Adventures – Stage 1 | Juhani Junkala (SubspaceAudio) | CC0 | https://opengameart.org/content/4-chiptunes-adventure | 可 | 不要 |
+| bgm/battle.mp3 | 通常戦闘 | Retro Game Music Pack – Level 2 | Juhani Junkala (SubspaceAudio) | CC0 | https://opengameart.org/content/5-chiptunes-action | 可 | 不要 |
+| bgm/boss.mp3 | ボス戦（ダーク/緊迫） | Chiptune Adventures – Boss Fight | Juhani Junkala (SubspaceAudio) | CC0 | https://opengameart.org/content/4-chiptunes-adventure | 可 | 不要 |
+| bgm/victory.mp3 | クリア（明るい/壮大） | Retro Game Music Pack – Ending | Juhani Junkala (SubspaceAudio) | CC0 | https://opengameart.org/content/5-chiptunes-action | 可 | 不要 |
+| bgm/gameover.mp3 | ゲームオーバー（静かで重い） | Tragic ambient main menu (ambientmain_0) | brandon75689（投稿: HaelDB） | CC0（OGA-BY 3.0 とのデュアル／**CC0を選択適用**） | https://opengameart.org/content/tragic-ambient-main-menu | 可 | 不要 |
+| bgm/battle_fire.mp3 | 属性戦闘・火（任意） | Retro Game Music Pack – Level 3 | Juhani Junkala (SubspaceAudio) | CC0 | https://opengameart.org/content/5-chiptunes-action | 可 | 不要 |
+| bgm/battle_water.mp3 | 属性戦闘・水（任意） | Chiptune Adventures – Stage 2 | Juhani Junkala (SubspaceAudio) | CC0 | https://opengameart.org/content/4-chiptunes-adventure | 可 | 不要 |
+| bgm/battle_wood.mp3 | 属性戦闘・木（任意） | Retro Game Music Pack – Level 1 | Juhani Junkala (SubspaceAudio) | CC0 | https://opengameart.org/content/5-chiptunes-action | 可 | 不要 |
+| bgm/battle_light.mp3 | 属性戦闘・光（任意） | Chiptune Adventures – Stage Select | Juhani Junkala (SubspaceAudio) | CC0 | https://opengameart.org/content/4-chiptunes-adventure | 可 | 不要 |
+
+> **変換**: 原曲（WAV/OGG）を ffmpeg で mp3（192kbps / 44.1kHz / stereo）へ変換。CC0 のため改変・再配布に制約なし。
+> **補足**: OpenGameArt の「5 Chiptunes (Action)」ページで配布される実ファイルは Juhani Junkala「Retro Game Music Pack」（Title Screen / Level 1–3 / Ending）。同梱 INFO.txt にも "released under CC0 creative commons license" と明記。
+> **CITライセンス方針**: gameover 曲はデュアルライセンス（OGA-BY 3.0 / CC0）だが、本プロジェクトでは **CC0 の側を選択**して利用（クレジット不要）。
 
 ---
 
