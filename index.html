@@ -72,86 +72,119 @@ h2.sect{font-size:16px;color:var(--gold2);text-align:center;letter-spacing:2px;m
   background:linear-gradient(60deg,#3a2d63,#4b2d5e,#2d4b63,#3a2d63);background-size:300% 300%;animation:rainbowBG 2s linear infinite;}
 @keyframes rainbowBG{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
 @keyframes pulseG{0%,100%{box-shadow:0 0 10px rgba(240,182,79,.4);}50%{box-shadow:0 0 22px rgba(240,182,79,.9);}}
-/* ---------- battle layout ---------- */
+/* ---------- battle scene ---------- */
 #scr-battle{padding:0;overflow:hidden;}
-/* app allows landscape width */
-#battleStage{flex:1;display:flex;gap:6px;padding:6px;min-height:0;position:relative;}
-/* rotate hint (portrait only) */
-#rotateHint{display:none;position:absolute;inset:0;z-index:80;background:rgba(10,6,22,.96);
-  flex-direction:column;align-items:center;justify-content:center;font-size:26px;color:var(--gold2);
-  text-align:center;line-height:1.8;}
-@media (orientation:portrait){#scr-battle.active #rotateHint{display:flex;}}
-/* LEFT enemy column */
-#enemyCol{width:28%;min-width:120px;flex:none;display:flex;flex-direction:column;justify-content:center;
-  background:linear-gradient(160deg,#2e2352,#1c1533);border:1px solid var(--line);border-radius:14px;padding:8px;position:relative;}
-#enemyEmo{font-size:64px;line-height:1;text-align:center;filter:drop-shadow(4px 6px 8px rgba(0,0,0,.7));
-  transition:transform .1s;animation:bob 2.6s ease-in-out infinite;transform:scaleX(-1);}
-@keyframes bob{0%,100%{transform:scaleX(-1) translateY(0);}50%{transform:scaleX(-1) translateY(-5px);}}
+/* one continuous battle scene background (sky → arena → floor) */
+#battleStage{flex:1;display:flex;gap:0;padding:0;min-height:0;position:relative;
+  background:
+    radial-gradient(120% 80% at 30% 18%, rgba(90,60,150,.35), transparent 60%),
+    radial-gradient(90% 70% at 50% 108%, rgba(60,180,140,.16), transparent 60%),
+    linear-gradient(180deg,#241a3d 0%,#1b1430 46%,#140f26 62%,#0f0b1f 100%);}
+/* faint arena floor line */
+#battleStage::before{content:'';position:absolute;left:0;right:0;top:58%;height:42%;pointer-events:none;
+  background:linear-gradient(180deg,rgba(120,90,200,.10),transparent 70%);
+  border-top:1px solid rgba(150,120,220,.12);}
+#rotateHint{display:none;}
+/* ===== LEFT: enemy (upper, slightly distant) ===== */
+#enemyCol{width:34%;min-width:120px;flex:none;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start;padding:10px 6px 0;position:relative;background:none;border:none;z-index:3;}
+#enemyEmo{font-size:74px;line-height:1;text-align:center;transform:scaleX(-1);
+  filter:drop-shadow(6px 10px 7px rgba(0,0,0,.55));transition:transform .1s;animation:bob 2.8s ease-in-out infinite;position:relative;}
+#enemyEmo::after{content:'';position:absolute;left:50%;bottom:-10px;width:70%;height:14px;transform:translateX(-50%) scaleX(-1);
+  background:radial-gradient(ellipse,rgba(0,0,0,.5),transparent 70%);border-radius:50%;z-index:-1;}
+@keyframes bob{0%,100%{transform:scaleX(-1) translateY(0);}50%{transform:scaleX(-1) translateY(-6px);}}
 #enemyEmo.hit{animation:none;transform:scaleX(-1) scale(.82) rotate(8deg);}
 #enemyEmo.lunge{animation:lungeAtk .4s ease-in-out!important;}
 @keyframes lungeAtk{0%{transform:scaleX(-1) translateX(0) scale(1);}35%{transform:scaleX(-1) translateX(46px) scale(1.25) rotate(6deg);}55%{transform:scaleX(-1) translateX(-6px);}100%{transform:scaleX(-1) translateX(0) scale(1);}}
-#enemyEmo.danger{animation:enemyRage .3s ease-in-out infinite!important;filter:drop-shadow(0 0 10px rgba(255,40,60,.9));}
+#enemyEmo.danger{animation:enemyRage .3s ease-in-out infinite!important;filter:drop-shadow(0 0 12px rgba(255,40,60,.9));}
 @keyframes enemyRage{0%,100%{transform:scaleX(-1) scale(1.05) rotate(2deg);}50%{transform:scaleX(-1) scale(1.14) rotate(-2deg);}}
-#enemyName{font-size:12px;color:var(--ink);display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:center;margin-top:4px;text-align:center;}
-.hpwrap{height:13px;background:#120d22;border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:4px 0;position:relative;}
-.hpfill{height:100%;background:linear-gradient(90deg,#d14b6a,#ff8f9f);transition:width .25s;border-radius:8px;}
-.hptxt{position:absolute;inset:0;font-size:9px;text-align:center;line-height:12px;color:#fff;text-shadow:0 1px 2px #000;}
-#intentRow{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--gold2);flex-wrap:wrap;}
-#timeWrap{flex:1;height:7px;background:#120d22;border:1px solid var(--line);border-radius:5px;overflow:hidden;min-width:50px;}
+/* floating enemy HUD */
+#enemyHud{width:100%;max-width:210px;margin-top:8px;background:rgba(20,12,38,.62);backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);border-radius:14px;padding:6px 9px;box-shadow:0 4px 14px rgba(0,0,0,.4);}
+#enemyName{font-size:12px;color:#fff;display:flex;gap:4px;align-items:center;flex-wrap:wrap;justify-content:center;text-align:center;text-shadow:0 1px 2px #000;}
+.hpwrap{height:11px;background:rgba(0,0,0,.45);border-radius:7px;overflow:hidden;margin:4px 0;position:relative;}
+.hpfill{height:100%;background:linear-gradient(90deg,#e04b6a,#ff96a6);transition:width .25s;border-radius:7px;}
+.hptxt{position:absolute;inset:0;font-size:8px;text-align:center;line-height:11px;color:#fff;text-shadow:0 1px 2px #000;}
+#intentRow{display:flex;align-items:center;gap:6px;font-size:10px;color:var(--gold2);flex-wrap:wrap;justify-content:center;}
+#timeWrap{flex:1;height:6px;background:rgba(0,0,0,.45);border-radius:5px;overflow:hidden;min-width:44px;}
 #timeFill{height:100%;width:100%;background:linear-gradient(90deg,#8f7bd8,#c3b3ff);border-radius:5px;}
-#enemyStatus{font-size:10px;color:var(--dim);margin-top:3px;min-height:12px;text-align:center;}
-#castRow{margin-top:4px;background:#3d1230;border:1.5px solid var(--blood);border-radius:10px;padding:3px 8px;
-  font-size:11px;color:#ffd2da;animation:pulseR .7s infinite;}
+#enemyStatus{font-size:9px;color:var(--dim);margin-top:2px;min-height:10px;text-align:center;}
+#castRow{margin-top:4px;background:rgba(90,20,60,.7);border:1px solid var(--blood);border-radius:9px;padding:3px 8px;
+  font-size:10px;color:#ffd2da;animation:pulseR .7s infinite;}
 @keyframes pulseR{0%,100%{box-shadow:0 0 6px rgba(255,107,122,.4);}50%{box-shadow:0 0 16px rgba(255,107,122,.95);}}
 #castTop{display:flex;align-items:center;gap:6px;}
-#castClock{margin-left:auto;font-family:'DotGothic16',monospace;font-size:15px;color:#fff;}
-.breakwrap{height:6px;background:#120d22;border-radius:4px;overflow:hidden;margin-top:2px;}
+#castClock{margin-left:auto;font-family:'DotGothic16',monospace;font-size:14px;color:#fff;}
+.breakwrap{height:5px;background:rgba(0,0,0,.45);border-radius:4px;overflow:hidden;margin-top:2px;}
 #castBreakFill{height:100%;width:0%;background:linear-gradient(90deg,#6ee7a0,#c8ffde);border-radius:4px;transition:width .15s;}
-/* CENTER board column */
-#centerCol{flex:1;display:flex;flex-direction:column;min-width:0;gap:5px;}
-#topRail{display:flex;gap:5px;height:44px;flex:none;}
-#topRail .railbox{padding:3px 5px;display:flex;flex-direction:column;justify-content:center;}
+/* ===== CENTER: board as floating battlefield ===== */
+#centerCol{flex:1;display:flex;flex-direction:column;min-width:0;min-height:0;gap:4px;padding:4px 2px 6px;z-index:2;}
+#topRail{display:flex;gap:6px;height:40px;flex:none;padding:0 4px;align-items:stretch;justify-content:center;}
+#topRail .railbox{padding:2px 7px;display:flex;flex-direction:column;justify-content:center;}
 .nxrow{display:flex;gap:3px;justify-content:center;}
-.railbox{background:var(--panel);border:1px solid var(--line);border-radius:10px;text-align:center;}
-.railbox .lbl{font-size:8px;color:var(--dim);letter-spacing:1px;margin-bottom:2px;}
+.railbox{background:rgba(20,12,38,.5);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);border:none;border-radius:11px;text-align:center;}
+.railbox .lbl{font-size:8px;color:var(--dim);letter-spacing:1px;margin-bottom:1px;}
 .railbox canvas{display:block;margin:0 auto;}
-#quickWrap{height:7px;background:#120d22;border:1px solid var(--line);border-radius:5px;overflow:hidden;}
+#quickWrap{height:6px;background:rgba(0,0,0,.4);border-radius:5px;overflow:hidden;min-width:56px;}
 #quickFill{height:100%;width:0%;background:linear-gradient(90deg,#4fb6ff,#a5e6ff);transition:width .2s;border-radius:5px;}
-#comboTxt{font-size:10px;color:var(--gold2);min-height:12px;margin-top:2px;font-family:'DotGothic16',sans-serif;}
-#boardArea{flex:1;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;position:relative;overflow:hidden;}
-#board{background:#120c20;border:2px solid var(--line);border-radius:10px;touch-action:none;box-shadow:inset 0 0 26px rgba(0,0,0,.8);}
-#controls{display:flex;gap:5px;flex:none;padding-bottom:env(safe-area-inset-bottom);}
-.ctl{flex:1;padding:11px 0;font-size:18px;background:var(--panel2);border:1.5px solid var(--line);
-  border-radius:12px;color:var(--ink);cursor:pointer;touch-action:none;font-family:inherit;transition:transform .06s;}
-.ctl:active{transform:scale(.93);background:var(--line);}
-#btnDrop{flex:1.3;color:var(--gold2);border-color:#7a6330;}
-/* RIGHT party column */
-#partyCol{width:30%;min-width:132px;flex:none;display:flex;flex-direction:column;gap:4px;overflow:hidden;}
-#lvRow{display:flex;align-items:center;gap:6px;}
-#lvBadge{font-size:10px;color:#241b45;background:var(--gold2);border-radius:8px;padding:0 7px;font-weight:bold;white-space:nowrap;}
-#expWrap{flex:1;height:5px;background:#120d22;border:1px solid var(--line);border-radius:4px;overflow:hidden;}
+#comboTxt{font-size:10px;color:var(--gold2);min-height:12px;margin-top:1px;font-family:'DotGothic16',sans-serif;}
+#boardArea{flex:1;display:flex;align-items:center;justify-content:center;min-width:0;min-height:0;position:relative;overflow:visible;}
+/* glowing arena ring behind the board */
+#boardArea::before{content:'';position:absolute;left:50%;top:50%;width:min(96%,86vh);aspect-ratio:1;transform:translate(-50%,-50%);
+  background:radial-gradient(circle,rgba(150,120,230,.16),rgba(90,70,170,.06) 46%,transparent 62%);pointer-events:none;}
+#board{background:rgba(14,10,26,.82);border:1.5px solid rgba(160,130,230,.35);border-radius:14px;touch-action:none;
+  box-shadow:0 0 0 3px rgba(20,12,40,.5),0 0 26px rgba(120,90,210,.4),inset 0 0 24px rgba(0,0,0,.7);}
+#controls{display:flex;gap:6px;flex:none;padding:2px 6px calc(4px + env(safe-area-inset-bottom));justify-content:center;}
+.ctl{flex:1;max-width:88px;padding:11px 0;font-size:19px;background:rgba(38,28,66,.72);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
+  border:1px solid rgba(150,120,220,.25);border-radius:16px;color:var(--ink);cursor:pointer;touch-action:none;
+  font-family:inherit;transition:transform .06s;box-shadow:0 3px 10px rgba(0,0,0,.35);}
+.ctl:active{transform:scale(.9);background:rgba(70,58,117,.85);}
+#btnDrop{flex:1.3;max-width:110px;color:var(--gold2);border-color:rgba(240,182,79,.5);}
+/* ===== RIGHT: party (lower, closer to player) ===== */
+#partyCol{width:32%;min-width:118px;flex:none;display:flex;flex-direction:column;justify-content:flex-end;gap:5px;
+  padding:6px 6px 8px;overflow:visible;background:none;border:none;z-index:3;}
+#lvRow{display:flex;align-items:center;gap:5px;}
+#lvBadge{font-size:10px;color:#241b45;background:var(--gold2);border-radius:8px;padding:0 7px;font-weight:bold;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.3);}
+#expWrap{flex:1;height:5px;background:rgba(0,0,0,.4);border-radius:4px;overflow:hidden;}
 #expFill{height:100%;width:0%;background:linear-gradient(90deg,#b9a6ff,#e3d9ff);border-radius:4px;transition:width .25s;}
-#teamHpRow{display:flex;align-items:center;gap:6px;}
-#teamHpWrap{flex:1;height:14px;background:#120d22;border:1px solid var(--line);border-radius:8px;overflow:hidden;position:relative;}
+#teamHpRow{display:flex;align-items:center;gap:6px;background:rgba(20,12,38,.55);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);border-radius:11px;padding:3px 7px;}
+#teamHpWrap{flex:1;height:13px;background:rgba(0,0,0,.4);border-radius:8px;overflow:hidden;position:relative;}
 #teamHpFill{height:100%;background:linear-gradient(90deg,#37b06b,#7dedae);transition:width .25s;border-radius:8px;}
 #teamHpTxt{position:absolute;inset:0;text-align:center;font-size:9px;line-height:13px;color:#fff;text-shadow:0 1px 2px #000;}
-#teamStatus{font-size:10px;min-width:30px;text-align:right;color:var(--gold2);}
-#slots{flex:1;display:flex;flex-direction:column;gap:4px;min-height:0;}
-.slot{flex:1;background:var(--panel2);border:1.5px solid var(--line);border-radius:12px;padding:3px 6px;
-  cursor:pointer;position:relative;transition:box-shadow .2s,transform .1s;display:flex;align-items:center;gap:6px;min-height:0;overflow:hidden;}
-.slot:active{transform:scale(.97);}
-.slot .semo{font-size:26px;line-height:1;flex:none;}
+#teamStatus{font-size:10px;min-width:24px;text-align:right;color:var(--gold2);}
+#slots{flex:none;display:flex;flex-direction:column;gap:5px;min-height:0;}
+.slot{background:rgba(30,20,56,.66);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);border:1px solid rgba(150,120,220,.22);
+  border-radius:14px;padding:4px 7px;cursor:pointer;position:relative;transition:box-shadow .2s,transform .1s;
+  display:flex;align-items:center;gap:7px;overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,.3);}
+.slot:active{transform:scale(.96);}
+.slot .semo{font-size:30px;line-height:1;flex:none;filter:drop-shadow(2px 3px 3px rgba(0,0,0,.5));}
 .slot .sbody{flex:1;min-width:0;}
-.slot .snm{font-size:9px;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.slot .srole{font-size:8px;color:var(--dim);}
-.slot .cwrap{height:6px;background:#120d22;border-radius:3px;overflow:hidden;margin-top:3px;}
+.slot .snm{font-size:9px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 2px #000;}
+.slot .cwrap{height:6px;background:rgba(0,0,0,.4);border-radius:3px;overflow:hidden;margin-top:3px;}
 .slot .cfill{height:100%;background:#8f7bd8;transition:width .2s;border-radius:3px;}
 .slot .sst{font-size:8px;color:var(--gold2);min-height:9px;white-space:nowrap;overflow:hidden;}
-.slot.hero{border-color:#c8a6ff;}
+.slot.hero{border-color:rgba(200,166,255,.7);background:rgba(48,32,78,.7);}
+.slot.hero .semo{font-size:33px;}
 .slot.ready{border-color:var(--gold);animation:readyB 1s infinite;}
 .slot.ready .cfill{background:var(--gold);}
-.slot.empty{opacity:.25;cursor:default;}
-@keyframes readyB{0%,100%{box-shadow:0 0 6px rgba(240,182,79,.45);transform:translateY(0);}50%{box-shadow:0 0 15px rgba(240,182,79,.95);transform:translateY(-1px);}}
+.slot.empty{opacity:.22;cursor:default;}
+@keyframes readyB{0%,100%{box-shadow:0 0 8px rgba(240,182,79,.5);transform:translateY(0);}50%{box-shadow:0 0 18px rgba(240,182,79,.95);transform:translateY(-2px);}}
+/* ===== PORTRAIT: stack enemy / board / party ===== */
+@media (orientation:portrait){
+  #battleStage{flex-direction:column;}
+  #enemyCol{width:100%;flex:none;flex-direction:row;align-items:center;justify-content:center;gap:10px;padding:8px 10px 0;}
+  #enemyEmo{font-size:62px;}
+  #enemyHud{margin-top:0;flex:1;max-width:none;}
+  #centerCol{flex:1;padding:4px 4px 4px;}
+  #partyCol{width:100%;flex:none;justify-content:flex-start;padding:4px 8px 6px;}
+  #partyTop{display:flex;gap:6px;align-items:center;}
+  #lvRow{flex:1;}
+  #teamHpRow{flex:2;}
+  #slots{flex-direction:row;}
+  #slots .slot{flex:1;flex-direction:column;text-align:center;gap:2px;padding:5px 3px;}
+  #slots .slot .semo{font-size:26px;}
+  #slots .slot .sbody{width:100%;}
+  #controls .ctl{max-width:none;}
+}
 /* stage-wide fx */
 #fxLayer{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:36;}
 .float{position:absolute;font-size:22px;color:var(--gold2);text-shadow:0 0 8px rgba(240,182,79,.8),0 2px 3px #000;
@@ -347,14 +380,16 @@ h2.sect{font-size:16px;color:var(--gold2);text-align:center;letter-spacing:2px;m
       <!-- LEFT: enemy -->
       <div id="enemyCol">
         <div id="enemyEmo">👺</div>
-        <div id="enemyName">ゴブリン</div>
-        <div class="hpwrap"><div class="hpfill" id="enemyHpFill"></div><div class="hptxt" id="enemyHpTxt"></div></div>
-        <div id="intentRow"><span id="intentTxt">⚔ 8</span><div id="timeWrap"><div id="timeFill"></div></div></div>
-        <div id="castRow" class="hidden">
-          <div id="castTop">⚡<span id="castName">必殺技</span><span id="castClock">9.0</span></div>
-          <div class="breakwrap"><div id="castBreakFill"></div></div>
+        <div id="enemyHud">
+          <div id="enemyName">ゴブリン</div>
+          <div class="hpwrap"><div class="hpfill" id="enemyHpFill"></div><div class="hptxt" id="enemyHpTxt"></div></div>
+          <div id="intentRow"><span id="intentTxt">⚔ 8</span><div id="timeWrap"><div id="timeFill"></div></div></div>
+          <div id="castRow" class="hidden">
+            <div id="castTop">⚡<span id="castName">必殺技</span><span id="castClock">9.0</span></div>
+            <div class="breakwrap"><div id="castBreakFill"></div></div>
+          </div>
+          <div id="enemyStatus"></div>
         </div>
-        <div id="enemyStatus"></div>
       </div>
       <!-- CENTER: board -->
       <div id="centerCol">
@@ -1122,16 +1157,26 @@ const COLS=8,ROWS=13;
 let cv=$('board'),ctx=cv.getContext('2d'),CELL=30,DPR=1;
 function fitBoard(){
   const area=$('boardArea');
-  const w=area.clientWidth-6,h=area.clientHeight-6;
+  if(!area)return;
+  const r=area.getBoundingClientRect();
+  const w=r.width-8,h=r.height-8;
   if(w<=0||h<=0)return;
-  CELL=Math.max(12,Math.floor(Math.min(w/COLS,h/ROWS)));
-  DPR=window.devicePixelRatio||1;
+  /* fit the WHOLE board inside the available area (height-bound in landscape) */
+  CELL=Math.max(10,Math.floor(Math.min(w/COLS,h/ROWS)));
+  DPR=Math.min(window.devicePixelRatio||1,2); /* cap DPR for perf */
   cv.width=COLS*CELL*DPR;cv.height=ROWS*CELL*DPR;
   cv.style.width=COLS*CELL+'px';cv.style.height=ROWS*CELL+'px';
   ctx.setTransform(DPR,0,0,DPR,0,0);
+  if(battle&&!battle.over)drawBoard();
 }
-window.addEventListener('resize',()=>{if(state==='battle')fitBoard();});
-if(window.visualViewport)window.visualViewport.addEventListener('resize',()=>{if(state==='battle')fitBoard();});
+function refitSoon(){
+  /* re-measure across a few frames so orientation/layout changes settle */
+  [0,60,180,360].forEach(t=>setTimeout(()=>{if(state==='battle')fitBoard();},t));
+  requestAnimationFrame(()=>{if(state==='battle')fitBoard();});
+}
+window.addEventListener('resize',()=>{if(state==='battle')refitSoon();});
+window.addEventListener('orientationchange',()=>{if(state==='battle')refitSoon();});
+if(window.visualViewport){window.visualViewport.addEventListener('resize',()=>{if(state==='battle')fitBoard();});}
 
 function makeEnemy(kind){
   let sp;
@@ -1173,7 +1218,7 @@ function startBattle(kind,pre){
   show('scr-battle');
   $('castRow').classList.add('hidden');
   requestAnimationFrame(()=>{fitBoard();spawnPiece();renderAllBattle();});
-  setTimeout(()=>{if(state==='battle')fitBoard();},350);
+  refitSoon();
   banner(kind==='boss'?'👑 '+battle.enemy.nm:'たたかえ！');
   if(has('bomb')){setTimeout(()=>{if(battle&&!battle.over){dmgEnemy(25,'🧨');}},450);}
   if(run.tut){run.tut=false;setTimeout(()=>{openOverlay(
