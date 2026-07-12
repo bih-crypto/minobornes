@@ -445,8 +445,8 @@ h2.sect{font-size:16px;color:var(--gold2);text-align:center;letter-spacing:2px;m
 
   <!-- STARTER -->
   <section class="screen" id="scr-starter">
-    <h2 class="sect">主人公をえらぼう</h2>
-    <p class="sectsub">君の分身となるリーダー。旅の中で仲間が3体まで加わる。</p>
+    <h2 class="sect">クラスをえらぼう</h2>
+    <p class="sectsub"><b id="starterName">主人公</b>のクラスで初期能力が変わる。旅の中で仲間が3体まで加わる。</p>
     <div class="cardrow" id="starterCards"></div>
   </section>
 
@@ -873,23 +873,29 @@ const ROLES={
  tank:{nm:'守護',emo:'🛡️',hits:1,mult:0.85,crit:.05,fx:'bash',guard:1,d:'攻撃時に守りを固める'},
 };
 const ROLE_OF={
+ hero_knight:'warrior',hero_mage:'mage',hero_hunter:'archer',hero_cleric:'priest',
  garm:'warrior',aqua:'priest',silva:'tank',lux:'mage',
  skeld:'warrior',vampi:'thief',draco:'mage',pheni:'priest',lich:'mage',yukime:'mage',
  krake:'tank',gomes:'tank',pixy:'archer',mimic:'thief',bolnya:'archer',pegaro:'priest',
  kagerou:'thief',kajin:'warrior',seiren:'priest',hakurei:'archer',
  chronoa:'mage',bebigon:'warrior',spica:'priest',minokami:'tank',
 };
+/* ===== 主人公クラス（開始時に名前を入力して選択）===== */
 const STARTERS=[
- {id:'garm', nm:'焔狼ガルム', emo:'🐺', el:'fire', hp:56, atk:13,
-  sk:{nm:'火炎球',need:6,fx:'dmg',v:3.5,d:'敵にATK×3.5の炎ダメージ'}},
- {id:'aqua', nm:'水霊アクア', emo:'💧', el:'water', hp:62, atk:11,
-  sk:{nm:'癒しの雫',need:7,fx:'heal',v:35,d:'チームHPを35%回復'}},
- {id:'silva',nm:'森鹿シルワ', emo:'🦌', el:'wood', hp:64, atk:12,
-  sk:{nm:'大地ならし',need:5,fx:'rows',v:2,d:'盤面の下2段を消し去る(整地)'}},
- {id:'lux',  nm:'聖鳥ルクス', emo:'🕊️', el:'light', hp:52, atk:12,
-  sk:{nm:'光のまもり',need:6,fx:'shield',v:1,d:'次の敵の攻撃を1回無効化'}},
+ {id:'hero_knight', nm:'焔の剣士', emo:'⚔️', el:'fire', hp:60, atk:13,
+  sk:{nm:'烈火の一閃',need:6,fx:'dmg',v:4,d:'敵にATK×4の炎ダメージ'}},
+ {id:'hero_mage', nm:'碧の魔道士', emo:'🪄', el:'water', hp:50, atk:12,
+  sk:{nm:'蒼天の大魔法',need:8,fx:'dmg',v:5.5,d:'敵にATK×5.5の水魔法'}},
+ {id:'hero_hunter', nm:'翠の狩人', emo:'🏹', el:'wood', hp:58, atk:12,
+  sk:{nm:'貫きの矢',need:6,fx:'dmg',v:4,d:'盾を無視しATK×4のダメージ'}},
+ {id:'hero_cleric', nm:'聖の神官', emo:'✨', el:'light', hp:56, atk:11,
+  sk:{nm:'聖なる癒し',need:7,fx:'heal',v:40,d:'チームHPを40%回復'}},
 ];
 const RECRUITS=[
+ {id:'garm', nm:'焔狼ガルム', emo:'🐺', el:'fire', hp:56, atk:13,sk:{nm:'火炎球',need:6,fx:'dmg',v:3.5,d:'敵にATK×3.5の炎ダメージ'}},
+ {id:'aqua', nm:'水霊アクア', emo:'💧', el:'water', hp:62, atk:11,sk:{nm:'癒しの雫',need:7,fx:'heal',v:35,d:'チームHPを35%回復'}},
+ {id:'silva',nm:'森鹿シルワ', emo:'🦌', el:'wood', hp:64, atk:12,sk:{nm:'大地ならし',need:5,fx:'rows',v:2,d:'盤面の下2段を消し去る(整地)'}},
+ {id:'lux',  nm:'聖鳥ルクス', emo:'🕊️', el:'light', hp:52, atk:12,sk:{nm:'光のまもり',need:6,fx:'shield',v:1,d:'次の敵の攻撃を1回無効化'}},
  {id:'skeld',nm:'骨剣士スケルド',emo:'💀',el:'fire',hp:48,atk:16,sk:{nm:'骨くだき',need:8,fx:'dmg',v:5,d:'敵にATK×5の大ダメージ'}},
  {id:'vampi',nm:'血蝙蝠ヴァンピ',emo:'🦇',el:'fire',hp:44,atk:11,sk:{nm:'吸血',need:6,fx:'vamp',v:2.5,d:'ATK×2.5ダメージ＋同量回復'}},
  {id:'draco',nm:'竜児ドラコ',emo:'🐲',el:'fire',hp:70,atk:15,sk:{nm:'竜のほうこう',need:9,fx:'dmg',v:6,d:'敵にATK×6の必殺ダメージ'}},
@@ -975,8 +981,10 @@ const BOSSES={
 let run=null, battle=null, state='opening';
 function newRun(starter){
   run={floor:1,gold:meta.up.gold*30,team:[],relics:[],kills:0,tut:true,
-    hpmax:meta.up.hp*10,hp:0,lv:1,exp:0,startAt:Date.now()};
+    hpmax:meta.up.hp*10,hp:0,lv:1,exp:0,startAt:Date.now(),
+    heroName:(pendingHeroName||'レオ'),heroClass:starter.nm};
   const m=makeAlly(starter);
+  m.nm=run.heroName;               /* 表示は入力した名前。画像キーは m.id(クラス) のまま */
   run.team.push(m);
   run.hpmax+=m.hp;run.hp=run.hpmax;
   statAdd('runs',1);statAdd('maxFloor',0);
@@ -1135,8 +1143,30 @@ function openShrine(){
   $('shrineClose').addEventListener('click',()=>{sfx.ui();closeOverlay();});
 }
 
-/* --- title & starter --- */
-$('btnStart').addEventListener('click',()=>{sfx.ui();setBGM('dungeon');renderStarter();show('scr-starter');state='starter';});
+/* --- title → name entry → class select --- */
+let pendingHeroName='';
+$('btnStart').addEventListener('click',()=>{sfx.ui();openNameEntry();});
+function openNameEntry(){
+  openOverlay(`<h3>主人公の名前は？</h3>
+    <p class="dim" style="text-align:center">冒険の主役に名前をつけよう（8文字まで）</p>
+    <input id="heroNameInput" type="text" maxlength="8" placeholder="れい: レオ"
+      style="width:100%;box-sizing:border-box;font-family:inherit;font-size:18px;text-align:center;
+      padding:10px;margin:10px 0;border-radius:12px;border:1.5px solid var(--line);
+      background:var(--panel2);color:var(--ink);">
+    <button class="bigbtn" id="nameOk">この名前で決定</button>
+    <button class="iconbtn" id="nameRand" style="display:block;margin:8px auto 0;font-size:12px;padding:7px 16px;">🎲 おまかせ</button>`);
+  const inp=$('heroNameInput');
+  setTimeout(()=>{try{inp.focus();}catch(e){}},50);
+  const go=()=>{
+    pendingHeroName=(inp.value||'').trim().slice(0,8)||'レオ';
+    closeOverlay();sfx.skill();setBGM('dungeon');
+    renderStarter();show('scr-starter');state='starter';
+  };
+  $('nameOk').addEventListener('click',go);
+  inp.addEventListener('keydown',e=>{if(e.key==='Enter')go();});
+  const names=['レオ','ミナ','カイ','ソラ','リン','ノア','ユキ','ハル','ルカ','セナ'];
+  $('nameRand').addEventListener('click',()=>{inp.value=pick(names);sfx.ui();});
+}
 function allyCardHTML(m,extra=''){
   const atkDisp=m.atk+(state==='starter'||state==='title'?meta.up.atk:0);
   const role=ROLES[ROLE_OF[m.id]||m.role||'warrior'];
@@ -1145,6 +1175,7 @@ function allyCardHTML(m,extra=''){
    <div class="d">${role.d}／【${m.sk.nm}】${m.sk.d}<br><span style="color:#8f7bd8">必殺チャージ:カケラ${m.sk.need}個</span>${extra}</div></div>`;
 }
 function renderStarter(){
+  const nmEl=$('starterName');if(nmEl)nmEl.textContent=(pendingHeroName||'主人公');
   const row=$('starterCards');row.innerHTML='';
   STARTERS.forEach(s=>{
     const b=document.createElement('button');b.className='card';
@@ -1925,7 +1956,7 @@ function endStats(souls){
   <span style="color:#b9a6ff;font-size:15px">💠 魂 +${souls}（合計 ${meta.souls}）</span><br>
   <span style="font-size:11px;color:var(--dim)">仲間: ${run.team.map(m=>m.emo).join(' ')}　遺物: ${run.relics.map(r=>r.emo).join(' ')||'なし'}</span>`;
 }
-$('btnAgain').addEventListener('click',()=>{sfx.ui();setBGM('dungeon');renderStarter();show('scr-starter');state='starter';});
+$('btnAgain').addEventListener('click',()=>{sfx.ui();openNameEntry();});
 
 /* ============ rewards ============ */
 function ownedIds(){return run.team.map(m=>m.id);}
