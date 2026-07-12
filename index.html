@@ -117,10 +117,10 @@ h2.sect{font-size:16px;color:var(--gold2);text-align:center;letter-spacing:2px;m
 #slots{display:flex;flex-direction:column;gap:7px;}
 .slot{display:flex;align-items:center;gap:6px;cursor:pointer;position:relative;transition:transform .1s;padding:2px;}
 .slot:active{transform:scale(.97);}
-.slot .portrait{flex:none;width:56px;height:54px;position:relative;display:flex;align-items:flex-end;justify-content:center;overflow:visible;}
+.slot .portrait{flex:none;width:70px;height:66px;position:relative;display:flex;align-items:flex-end;justify-content:center;overflow:visible;}
 .slot .portrait::after{content:'';position:absolute;bottom:1px;left:50%;transform:translateX(-50%);
-  width:44px;height:12px;background:radial-gradient(ellipse,rgba(120,90,200,.6),transparent 70%);border-radius:50%;}
-.slot .semo{font-size:40px;line-height:1;filter:drop-shadow(2px 4px 4px rgba(0,0,0,.55));animation:heroIdle 2.6s ease-in-out infinite;position:relative;z-index:1;}
+  width:56px;height:14px;background:radial-gradient(ellipse,rgba(120,90,200,.6),transparent 70%);border-radius:50%;}
+.slot .semo{font-size:52px;line-height:1;filter:drop-shadow(2px 4px 4px rgba(0,0,0,.55));animation:heroIdle 2.6s ease-in-out infinite;position:relative;z-index:1;}
 .slot .info{flex:1;min-width:0;background:rgba(20,13,38,.62);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
   border-radius:12px;padding:4px 8px;box-shadow:0 3px 10px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.07);}
 .slot .snm{font-size:10px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 2px #000;display:flex;justify-content:space-between;gap:4px;}
@@ -223,11 +223,23 @@ h2.sect{font-size:16px;color:var(--gold2);text-align:center;letter-spacing:2px;m
 .cimg.imgfail{display:none;}
 .cemo{display:none;}
 .cimg.imgfail + .cemo{display:inline;}
-.slot .semo .cimg{width:58px;height:58px;margin-bottom:-6px;filter:drop-shadow(2px 4px 4px rgba(0,0,0,.55));}
-.slot.hero .semo .cimg{width:68px;height:68px;margin-bottom:-8px;}
-#enemyEmo .cimg{width:132px;height:132px;filter:drop-shadow(-6px 12px 8px rgba(0,0,0,.6));}
+.slot .semo .cimg{width:66px;height:66px;margin-bottom:-8px;filter:drop-shadow(2px 4px 4px rgba(0,0,0,.55));}
+.slot.hero .semo .cimg{width:78px;height:78px;margin-bottom:-10px;}
+#enemyEmo .cimg{width:142px;height:142px;filter:drop-shadow(-6px 12px 8px rgba(0,0,0,.6));}
 .card .emo .cimg{width:56px;height:56px;margin:-6px 0;}
+/* character steps forward and strikes (toward the board on the right) */
+.slot.lungeZ{z-index:30!important;}
+.slot .semo.attacking{animation:charAtk .55s ease!important;}
+@keyframes charAtk{
+  0%{transform:translateX(0) rotate(0);}
+  22%{transform:translateX(16px) translateY(-5px) scale(1.1);}
+  42%{transform:translateX(54px) scale(1.2) rotate(-7deg);}
+  58%{transform:translateX(40px) scale(1.15);}
+  100%{transform:translateX(0) rotate(0);}
+}
 .reel .cimg{width:44px;height:44px;}
+#partyBar .pe .cimg{width:30px;height:30px;}
+.cutChar .cimg{width:96px;height:96px;object-fit:contain;vertical-align:middle;}
 /* ===== OPENING ===== */
 #scr-opening{align-items:center;justify-content:center;overflow:hidden;cursor:pointer;
   background:radial-gradient(120% 90% at 50% 15%,rgba(90,60,150,.4),transparent 55%),linear-gradient(180deg,#1b1233,#0d0918 70%);}
@@ -1211,7 +1223,7 @@ function gotoMap(){
     const b=document.createElement('button');b.className='card door';
     const m=meta_[d.t];
     const prev=d.enemy?`<br><span style="color:var(--gold2)">気配: ${d.enemy.emo} ${d.enemy.nm}</span> ${chip(d.enemy.el)}`:'';
-    b.innerHTML=`<span class="emo">${m.emo}</span><div class="body"><div class="t">${m.nm}</div><div class="d">${m.d}${prev}</div></div>`;
+    b.innerHTML=`<span class="emo">${charInner(m.id,m.emo)}</span><div class="body"><div class="t">${m.nm}</div><div class="d">${m.d}${prev}</div></div>`;
     b.addEventListener('click',()=>{sfx.ui();enterDoor(d.t,d.enemy);});
     row.appendChild(b);
   });
@@ -1230,7 +1242,7 @@ function renderPartyBar(){
    <div class="prow">`;
   for(let i=0;i<4;i++){
     const m=run.team[i];
-    if(m)h+=`<div class="pmem" data-mem="${i}"><div class="pe">${m.emo}</div><div class="pn">${m.nm}</div><div class="pa">ATK${m.atk} ${EL[m.el].n}</div></div>`;
+    if(m)h+=`<div class="pmem" data-mem="${i}"><div class="pe">${charInner(m.id,m.emo)}</div><div class="pn">${m.nm}</div><div class="pa">ATK${m.atk} ${EL[m.el].n}</div></div>`;
     else h+=`<div class="pmem" style="opacity:.25"><div class="pe">➕</div><div class="pn">空き</div><div class="pa">-</div></div>`;
   }
   h+=`</div>`;
@@ -1578,7 +1590,7 @@ function runCombo(members,power,elMul,lines,perfect,bombs){
 }
 function comboMemberStrike(m,role,power,colorBonus,finale,idx){
   const e=battle.enemy;
-  heroRush(m.emo);
+  slotLunge(idx);
   const adv=ADV[m.el]===e.el, resist=ADV[e.el]===m.el;
   const eMul=elemMul(m.el,e.el);
   let hits=role.hits;
@@ -1702,10 +1714,15 @@ function playerAtkFx(lines,mainEl,heroEmo,ultName){
     confetti(16);
   }
 }
-function heroRush(emo){
-  const h=document.createElement('div');h.className='hero';h.textContent=emo;
-  $('heroStrike').appendChild(h);
-  setTimeout(()=>h.remove(),600);
+function heroRush(emo){/* 旧・中央フライ演出は廃止（キャラ本体が動く slotLunge に置換） */}
+function slotLunge(idx){
+  const slot=document.querySelectorAll('#slots .slot')[idx];
+  if(!slot)return;
+  const semo=slot.querySelector('.semo');
+  if(!semo)return;
+  semo.classList.remove('attacking');void semo.offsetWidth;semo.classList.add('attacking');
+  slot.classList.add('lungeZ');
+  setTimeout(()=>{semo.classList.remove('attacking');slot.classList.remove('lungeZ');},560);
 }
 function bigDmgNum(n){
   const d=document.createElement('div');d.className='dmgnum';d.textContent=n;
@@ -1746,7 +1763,7 @@ function showAchToast(res){
 function skillCutin(m){
   const c=$('cutin');
   c.innerHTML=`<div class="cutBand">
-    <div class="cutChar">${m.emo}</div>
+    <div class="cutChar">${charInner(m.id,m.emo)}</div>
     <div class="cutText"><div class="cutName">${chip(m.el)} ${m.nm}</div><div class="cutSkill">${m.sk.nm}</div></div>
     <div class="cutSlash"></div></div>`;
   c.classList.add('show');
@@ -1848,7 +1865,7 @@ function execSkill(m){
   const atkMod=teamAtk(m)*elemMul(m.el,e.el)*(has('sword')?1.2:1)*(battle.curse>0?0.7:1);
   const fx=m.sk.fx,v=m.sk.v;
   const dmgSkills=['dmg','dmgdelay','dmgdelay2','vamp','gold','rowdmg','chrono','i4rush'];
-  if(dmgSkills.includes(fx)){heroRush(m.emo);shakeScreen(true);}
+  if(dmgSkills.includes(fx)){slotLunge(run.team.indexOf(m));shakeScreen(true);}
   if(fx==='dmg')skillDmg(atkMod*v);
   else if(fx==='heal')healFloat(Math.round(run.hpmax*v/100));
   else if(fx==='rows')clearBottomRows(v);
@@ -2032,7 +2049,7 @@ function gainRelic(r){
 function pickMember(title,cb){
   let html=`<h3>${title}</h3><div class="cardrow">`;
   run.team.forEach((m,i)=>{
-    html+=`<button class="card" data-pm="${i}"><span class="emo">${m.emo}</span><div class="body"><div class="t">${m.nm} ${chip(m.el)}</div><div class="d">ATK${m.atk}【${m.sk.nm}】必要${m.sk.need}</div></div></button>`;
+    html+=`<button class="card" data-pm="${i}"><span class="emo">${charInner(m.id,m.emo)}</span><div class="body"><div class="t">${m.nm} ${chip(m.el)}</div><div class="d">ATK${m.atk}【${m.sk.nm}】必要${m.sk.need}</div></div></button>`;
   });
   html+=`</div><button class="bigbtn" id="pmCancel">やめておく</button>`;
   openOverlay(html);
@@ -2051,8 +2068,8 @@ function recruitFlow(mon,done){
   }
   let html=`<h3>${mon.emo} ${mon.nm} を仲間に？</h3><p class="dim">パーティは満員(主人公＋仲間3体)。入れかえる<b style="color:var(--gold2)">仲間</b>をえらぼう。<br>※主人公は入れかえられない。入れかえた分の最大HPは失われる。</p><div class="cardrow">`;
   run.team.forEach((m,i)=>{
-    if(i===0){html+=`<div class="card disabled"><span class="emo">${m.emo}</span><div class="body"><div class="t">★主人公 ${m.nm}</div><div class="d">リーダーは離脱できない</div></div></div>`;return;}
-    html+=`<button class="card" data-rep="${i}"><span class="emo">${m.emo}</span><div class="body"><div class="t">${m.nm} ${chip(m.el)}</div><div class="d">HP${m.hp} ATK${m.atk}【${m.sk.nm}】</div></div></button>`;
+    if(i===0){html+=`<div class="card disabled"><span class="emo">${charInner(m.id,m.emo)}</span><div class="body"><div class="t">★主人公 ${m.nm}</div><div class="d">リーダーは離脱できない</div></div></div>`;return;}
+    html+=`<button class="card" data-rep="${i}"><span class="emo">${charInner(m.id,m.emo)}</span><div class="body"><div class="t">${m.nm} ${chip(m.el)}</div><div class="d">HP${m.hp} ATK${m.atk}【${m.sk.nm}】</div></div></button>`;
   });
   html+=`</div><button class="bigbtn" id="repCancel">やめておく</button>`;
   openOverlay(html);
@@ -2395,15 +2412,12 @@ function renderHpSmooth(dt){
 function renderSlots(){
   const wrap=$('slots');wrap.innerHTML='';
   const hpPct=run?clamp(hpShown/run.hpmax*100,0,100):100;
-  for(let i=0;i<4;i++){
+  const n=run?run.team.length:0;
+  for(let i=0;i<n;i++){
     const m=run.team[i];
+    if(!m)continue;
     const d=document.createElement('div');
-    if(!m){
-      d.className='slot empty';
-      d.innerHTML=`<div class="portrait"><div class="semo">·</div></div>
-        <div class="info"><div class="snm"><span>なかま募集中</span></div>
-        <div class="php"><i style="width:0%"></i></div><div class="sst">-</div></div>`;
-    }else{
+    {
       const ready=m.charge>=m.sk.need;
       const role=ROLES[m.role]||ROLES.warrior;
       const isHero=i===0;
